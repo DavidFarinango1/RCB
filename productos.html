@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Productos | RCB - Repuestos Casa Blanca</title>
+<meta name="description" content="Catálogo completo de RCB: protectores de voltaje, cintas aislantes, repuestos para refrigeración, materiales eléctricos y herramientas.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="container">
+      <a href="index.html" class="logo"><img src="assets/logo.svg" alt="RCB - Repuestos Casa Blanca"></a>
+      <div class="search-box">
+        <input type="text" placeholder="Buscar productos, categorías...">
+        <button aria-label="Buscar">🔍</button>
+      </div>
+      <div class="topbar-actions">
+        <a href="https://wa.me/593991234567" class="topbar-item">
+          <span class="icon">💬</span>
+          <span><span class="label">WhatsApp</span><span class="value">099 123 4567</span></span>
+        </a>
+        <a href="#" class="topbar-item">
+          <span class="icon">👤</span>
+          <span><span class="label">Iniciar sesión</span><span class="value">Mi cuenta</span></span>
+        </a>
+        <a href="#" class="topbar-item">
+          <span class="icon">🛒</span>
+          <span><span class="label"><span class="cart-badge">0</span></span><span class="value">Carrito</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar">
+    <div class="container">
+      <button class="mobile-toggle" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">INICIO</a></li>
+        <li><a href="nosotros.html">NOSOTROS</a></li>
+        <li><a href="productos.html" class="active">PRODUCTOS</a></li>
+        <li><a href="blog.html">BLOG</a></li>
+        <li><a href="videos.html">VIDEOS</a></li>
+        <li><a href="galeria.html">GALERÍA</a></li>
+        <li><a href="index.html#contacto">CONTACTOS</a></li>
+      </ul>
+      <a href="index.html#contacto" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="page-header">
+    <div class="container">
+      <h1>Catálogo de Productos</h1>
+      <p>Protectores de voltaje, cintas aislantes, repuestos para refrigeración, materiales eléctricos y herramientas.</p>
+      <div class="breadcrumb"><a href="index.html">Inicio</a> &nbsp;›&nbsp; Productos</div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="catalog-layout">
+      <aside class="catalog-sidebar">
+        <div class="card">
+          <h3 style="margin-bottom:12px;">Categorías</h3>
+          <ul id="category-list"></ul>
+        </div>
+        <div class="card help-card">
+          <h3>¿No encuentras lo que buscas?</h3>
+          <p>Escríbenos y te ayudamos a encontrar el repuesto exacto que necesitas.</p>
+          <a href="https://wa.me/593991234567" class="btn btn-primary btn-sm">💬 Hablar por WhatsApp</a>
+        </div>
+      </aside>
+
+      <div class="catalog-content">
+        <div class="catalog-toolbar">
+          <input type="text" id="catalog-search" class="catalog-search" placeholder="Buscar por nombre o SKU...">
+          <select id="sort-select">
+            <option value="relevancia">Ordenar por: Relevancia</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre">Nombre A-Z</option>
+          </select>
+          <span id="results-count"></span>
+        </div>
+
+        <div id="product-grid" class="product-grid-catalog"></div>
+        <div id="empty-state" class="empty-state">
+          <p style="font-size:2rem;">🔍</p>
+          <p>No encontramos productos con ese criterio. Intenta con otra búsqueda o categoría.</p>
+        </div>
+        <div id="pagination" class="pagination" style="margin-top:24px;"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/logo.svg" alt="RCB">
+        <p><strong>Repuestos Casa Blanca</strong></p>
+        <p>Protección que se nota, calidad que se queda.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Facebook">📘</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+        </div>
+      </div>
+      <div>
+        <h4>Enlaces rápidos</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="videos.html">Videos</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Categorías</h4>
+        <ul>
+          <li><a href="productos.html?cat=voltaje">Protectores de voltaje</a></li>
+          <li><a href="productos.html?cat=cintas">Cintas aislantes</a></li>
+          <li><a href="productos.html?cat=refrigeracion">Repuestos para refrigeración</a></li>
+          <li><a href="productos.html?cat=electricos">Materiales eléctricos</a></li>
+          <li><a href="productos.html?cat=herramientas">Herramientas y accesorios</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Atención al cliente</h4>
+        <ul>
+          <li>💬 WhatsApp: 099 123 4567</li>
+          <li>✉️ ventas@rcb.com.ec</li>
+          <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
+          <li>🕐 Sábados: 9:00 - 13:00</li>
+        </ul>
+        <h4 style="margin-top:18px;">Medios de pago</h4>
+        <div class="payment-row">
+          <span>VISA</span><span>Mastercard</span><span>Amex</span><span>Transferencia</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 RCB (Repuestos Casa Blanca). Todos los derechos reservados.</span>
+      <span><a href="#">Política de privacidad</a> · <a href="#">Términos y condiciones</a></span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp">💬</a>
+
+<!-- Modal de detalle de producto -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script src="assets/products.js"></script>
+<script src="assets/catalog.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

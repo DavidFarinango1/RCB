@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 130" role="img" aria-label="RCB - Repuestos Casa Blanca">
+  <defs>
+    <linearGradient id="rcbGradLight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#001A66"/>
+      <stop offset="100%" stop-color="#003A9B"/>
+    </linearGradient>
+  </defs>
+  <text x="0" y="95" font-family="Montserrat, Arial, sans-serif" font-weight="800" font-style="italic" font-size="100" letter-spacing="-2" fill="url(#rcbGradLight)">RCB</text>
+  <path d="M300,30
+           C 335,15 375,25 392,55
+           C 375,48 350,50 335,60
+           C 358,62 380,72 388,90
+           C 368,82 345,82 330,90
+           C 345,97 362,102 370,112
+           C 348,110 322,100 308,82
+           C 316,64 310,44 300,30 Z"
+        fill="#0A6BFF"/>
+</svg>

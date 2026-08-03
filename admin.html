@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Administrador | RCB</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="admin-login" id="admin-login">
+  <div class="admin-login-box">
+    <img src="assets/logo.svg" alt="RCB">
+    <h1>Panel Administrador</h1>
+    <p>Ingresa tus credenciales para gestionar el catálogo de productos.</p>
+    <form id="login-form">
+      <input type="text" id="login-user" placeholder="Usuario" autocomplete="username" required>
+      <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+      <p class="admin-error" id="login-error">Usuario o contraseña incorrectos.</p>
+    </form>
+    <p class="admin-hint">Demo: usuario <strong>admin</strong> / contraseña <strong>rcb2026</strong></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="admin-shell" id="admin-shell">
+  <aside class="admin-sidebar">
+    <img src="assets/logo.svg" alt="RCB">
+    <nav>
+      <a href="#" class="active">📦 Productos</a>
+      <a href="productos.html" target="_blank">🔗 Ver catálogo público</a>
+      <a href="index.html" target="_blank">🏠 Ver sitio</a>
+    </nav>
+    <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-header">
+      <h1>Gestión de productos</h1>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-tertiary btn-sm" id="reset-catalog-btn">Restaurar catálogo original</button>
+        <button class="btn btn-primary btn-sm" id="add-product-btn">+ Agregar producto</button>
+      </div>
+    </div>
+
+    <p class="admin-notice">
+      ⚠️ Este panel guarda los cambios solo en este navegador (localStorage). Es una demo funcional
+      sin backend ni base de datos compartida — ideal para probar la gestión del catálogo, pero
+      para que los cambios se vean igual en todos los dispositivos y visitantes se necesita
+      conectar esta lógica a un servidor/base de datos real.
+    </p>
+
+    <div class="admin-stats">
+      <div class="admin-stat-card"><strong id="stat-total">0</strong><span>Productos totales</span></div>
+      <div class="admin-stat-card"><strong id="stat-cats">0</strong><span>Categorías activas</span></div>
+      <div class="admin-stat-card"><strong id="stat-value">$0.00</strong><span>Valor total del catálogo</span></div>
+      <div class="admin-stat-card"><strong id="stat-out">0</strong><span>Productos agotados</span></div>
+    </div>
+
+    <div class="admin-panel">
+      <div style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="admin-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- FORMULARIO PRODUCTO -->
+<div class="admin-form-overlay" id="admin-form-overlay">
+  <div class="admin-form-box">
+    <h2 id="form-title">Agregar producto</h2>
+    <form id="product-form">
+      <div class="form-row">
+        <label>SKU (código único)</label>
+        <input type="text" id="field-id" placeholder="Ej: PV-110" required>
+      </div>
+      <div class="form-row">
+        <label>Nombre del producto</label>
+        <input type="text" id="field-name" required>
+      </div>
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="field-category"></select>
+      </div>
+      <div class="form-row">
+        <label>Precio (USD)</label>
+        <input type="number" id="field-price" step="0.01" min="0" required>
+      </div>
+      <div class="form-row">
+        <label>Ícono (emoji)</label>
+        <input type="text" id="field-icon" placeholder="⚡">
+      </div>
+      <div class="form-row">
+        <label><input type="checkbox" id="field-stock" style="width:auto;display:inline-block;margin-right:6px;">En stock</label>
+      </div>
+      <div class="form-row">
+        <label>Descripción</label>
+        <textarea id="field-description"></textarea>
+      </div>
+      <div class="form-row">
+        <label>Especificaciones (una por línea)</label>
+        <textarea id="field-specs" placeholder="Voltaje: 110V&#10;Corriente: 15A"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-tertiary" id="cancel-form-btn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/products.js"></script>
+<script src="assets/admin.js"></script>
+</body>
+</html>

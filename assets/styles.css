@@ -650,12 +650,12 @@ footer.site-footer {
 .gallery-item.wide { grid-column: span 2; }
 
 /* ---------- Nosotros (About) ---------- */
-.about-intro {
+.about-intro { padding: 60px 0; }
+.about-intro-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   gap: 40px;
   align-items: center;
-  padding: 60px 0;
 }
 .about-intro h1 { font-size: 2.1rem; font-weight: 800; color: var(--azul-oscuro); margin-bottom: 16px; line-height: 1.2; }
 .about-intro p { color: #4B5563; font-size: 1rem; margin-bottom: 26px; }
@@ -1000,7 +1000,7 @@ footer.site-footer {
   .video-grid, .video-grid.row2 { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .gallery-grid { grid-template-columns: repeat(3, 1fr); }
-  .about-intro, .story-grid, .community-grid { grid-template-columns: 1fr; }
+  .about-intro-grid, .story-grid, .community-grid { grid-template-columns: 1fr; }
   .offer-grid { grid-template-columns: 1fr 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .catalog-layout { grid-template-columns: 1fr; }

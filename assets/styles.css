@@ -198,12 +198,12 @@ img { max-width: 100%; display: block; }
 .hero .container {
   display: block;
 }
-.hero-copy { max-width: 560px; }
 .hero h1 {
   font-size: 2.75rem;
   font-weight: 800;
   line-height: 1.15;
   margin-bottom: 18px;
+  max-width: 480px;
 }
 .hero h1 .accent { color: var(--azul-brillante); }
 .hero p.lead {
@@ -215,17 +215,19 @@ img { max-width: 100%; display: block; }
 }
 .hero-features {
   display: flex;
-  gap: 28px;
+  gap: 26px;
   margin-bottom: 30px;
   flex-wrap: wrap;
+  max-width: 760px;
 }
-.hero-feature { display: flex; gap: 10px; align-items: flex-start; max-width: 170px; }
+.hero-feature { display: flex; gap: 10px; align-items: flex-start; max-width: 200px; }
 .hero-feature .ico {
   width: 34px; height: 34px; border-radius: 50%;
   background: rgba(10,107,255,0.2);
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: 1rem;
+  flex-shrink: 0;
 }
+.hero-feature .ico svg { width: 18px; height: 18px; }
 .hero-feature strong { display: block; font-size: 0.82rem; font-weight: 700; }
 .hero-feature span { font-size: 0.76rem; color: rgba(255,255,255,0.7); }
 .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }

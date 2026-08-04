@@ -198,6 +198,7 @@ img { max-width: 100%; display: block; }
 .hero .container {
   display: block;
 }
+.hero-copy { max-width: 500px; }
 .hero h1 {
   font-size: 2.75rem;
   font-weight: 800;
@@ -215,12 +216,11 @@ img { max-width: 100%; display: block; }
 }
 .hero-features {
   display: flex;
-  gap: 26px;
+  gap: 20px;
   margin-bottom: 30px;
   flex-wrap: wrap;
-  max-width: 760px;
 }
-.hero-feature { display: flex; gap: 10px; align-items: flex-start; max-width: 200px; }
+.hero-feature { display: flex; gap: 10px; align-items: flex-start; max-width: 220px; }
 .hero-feature .ico {
   width: 34px; height: 34px; border-radius: 50%;
   background: rgba(10,107,255,0.2);

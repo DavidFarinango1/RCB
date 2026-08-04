@@ -185,17 +185,20 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Hero (Home) ---------- */
 .hero {
-  background: linear-gradient(120deg, var(--azul-oscuro) 0%, var(--azul-principal) 60%, #002F82 100%);
+  background:
+    linear-gradient(90deg, var(--azul-oscuro) 0%, rgba(0,26,102,0.88) 30%, rgba(0,26,102,0.35) 60%, rgba(0,26,102,0.05) 85%),
+    url('../imagen/imagen1.png') no-repeat center right / cover;
   color: var(--blanco);
-  padding: 36px 0;
+  padding: 60px 0;
+  min-height: 480px;
+  display: flex;
+  align-items: center;
   overflow: hidden;
 }
 .hero .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-  align-items: center;
+  display: block;
 }
+.hero-copy { max-width: 560px; }
 .hero h1 {
   font-size: 2.75rem;
   font-weight: 800;
@@ -1013,7 +1016,13 @@ footer.site-footer {
 }
 
 @media (max-width: 860px) {
-  .hero .container { grid-template-columns: 1fr; }
+  .hero {
+    background:
+      linear-gradient(180deg, rgba(0,26,102,0.92) 0%, rgba(0,26,102,0.8) 55%, rgba(0,26,102,0.55) 100%),
+      url('../imagen/imagen1.png') no-repeat center 65% / cover;
+    min-height: 420px;
+  }
+  .hero-copy { max-width: 100%; }
   .search-box { display: none; }
   .nav-links { display: none; }
   .mobile-toggle { display: block; }

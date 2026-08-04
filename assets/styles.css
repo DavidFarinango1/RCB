@@ -136,6 +136,7 @@ img { max-width: 100%; display: block; }
   font-size: 0.85rem;
 }
 .topbar-item .icon { color: var(--azul-principal); font-size: 1.2rem; }
+.topbar-item .icon img.wa-icon { width: 20px; height: 20px; display: block; }
 .topbar-item .label { color: #64748B; display: block; font-size: 0.75rem; }
 .topbar-item .value { font-weight: 600; color: var(--texto-oscuro); }
 .cart-badge {
@@ -424,6 +425,7 @@ footer.site-footer {
   box-shadow: 0 6px 18px rgba(0,0,0,0.25);
   z-index: 50;
 }
+.whatsapp-float img { width: 32px; height: 32px; }
 
 /* ---------- Page header (Blog / Videos) ---------- */
 .page-header {

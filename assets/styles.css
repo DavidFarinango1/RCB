@@ -90,7 +90,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   gap: 24px;
 }
-.logo img { height: 34px; }
+.logo img { height: 52px; }
 .search-box {
   flex: 1;
   max-width: 480px;

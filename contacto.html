@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contactos | RCB - Repuestos Casa Blanca</title>
+<meta name="description" content="Contáctanos y solicita una cotización. Protectores de voltaje, cintas aislantes y repuestos para instalaciones eléctricas, refrigeración y climatización.">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/styles.css?v=23">
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="container">
+      <a href="index.html" class="logo"><img src="imagen/logo.png" alt="RCB - Repuestos Casa Blanca"></a>
+      <div class="search-box">
+        <input type="text" placeholder="Buscar productos, categorías...">
+        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      </div>
+      <div class="topbar-actions">
+        <a href="https://wa.me/593991234567" class="topbar-item">
+          <span class="icon"><img src="assets/whatsapp.svg" class="wa-icon" alt="WhatsApp"></span>
+          <span><span class="label">WhatsApp</span><span class="value">099 123 4567</span></span>
+        </a>
+        <a href="admin.html" class="topbar-item">
+          <span class="icon">👤</span>
+          <span><span class="label">Iniciar sesión</span><span class="value">Mi cuenta</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar">
+    <div class="container">
+      <button class="mobile-toggle" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">INICIO</a></li>
+        <li><a href="nosotros.html">NOSOTROS</a></li>
+        <li><a href="productos.html">PRODUCTOS</a></li>
+        <li><a href="blog.html">BLOG</a></li>
+        <li><a href="videos.html">VIDEOS</a></li>
+        <li><a href="galeria.html">GALERÍA</a></li>
+        <li><a href="contacto.html" class="active">CONTACTOS</a></li>
+      </ul>
+      <a href="contacto.html" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="page-header">
+    <div class="container">
+      <h1>Contáctanos</h1>
+      <p>Escríbenos, cuéntanos qué necesitas y te ayudamos a encontrar la mejor solución para tu proyecto.</p>
+      <div class="breadcrumb"><a href="index.html">Inicio</a> &nbsp;›&nbsp; Contactos</div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="contact-layout">
+      <div class="contact-info">
+        <div class="card">
+          <h3 style="margin-bottom:16px;">Información de contacto</h3>
+          <div class="contact-info-item">
+            <span class="ico"><img src="assets/whatsapp.svg" alt="WhatsApp" style="width:22px;height:22px;"></span>
+            <div><strong>WhatsApp</strong><span>099 123 4567</span></div>
+          </div>
+          <div class="contact-info-item">
+            <span class="ico">✉️</span>
+            <div><strong>Correo</strong><span>ventas@rcb.com.ec</span></div>
+          </div>
+          <div class="contact-info-item">
+            <span class="ico">🕐</span>
+            <div><strong>Horario de atención</strong><span>Lunes a Viernes: 8:30 - 18:00<br>Sábados: 9:00 - 13:00</span></div>
+          </div>
+          <div class="contact-info-item">
+            <span class="ico">📍</span>
+            <div><strong>Ubicación</strong><span>Ecuador — envíos a todo el país</span></div>
+          </div>
+          <a href="https://wa.me/593991234567" class="btn btn-primary" style="width:100%;margin-top:10px;">💬 Hablar por WhatsApp</a>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <h3 style="margin-bottom:10px;">Síguenos</h3>
+          <div class="social-row" style="margin-top:0;">
+            <a href="#" aria-label="Facebook" style="background:var(--gris-fondo);color:var(--azul-principal);">📘</a>
+            <a href="#" aria-label="Instagram" style="background:var(--gris-fondo);color:var(--azul-principal);">📷</a>
+            <a href="#" aria-label="YouTube" style="background:var(--gris-fondo);color:var(--azul-principal);">▶</a>
+            <a href="#" aria-label="TikTok" style="background:var(--gris-fondo);color:var(--azul-principal);">🎵</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card contact-form-card">
+        <h3 style="margin-bottom:4px;">Solicitar cotización</h3>
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:20px;">Completa el formulario y te enviamos la información directamente por WhatsApp.</p>
+        <form id="quote-form">
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label>Nombre completo *</label>
+              <input type="text" id="quote-name" required>
+            </div>
+            <div class="contact-field">
+              <label>Teléfono *</label>
+              <input type="tel" id="quote-phone" required>
+            </div>
+          </div>
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label>Correo electrónico</label>
+              <input type="email" id="quote-email">
+            </div>
+            <div class="contact-field">
+              <label>Empresa (opcional)</label>
+              <input type="text" id="quote-company">
+            </div>
+          </div>
+          <div class="contact-field">
+            <label>Categoría de interés</label>
+            <select id="quote-category"></select>
+          </div>
+          <div class="contact-field">
+            <label>Cuéntanos qué necesitas *</label>
+            <textarea id="quote-message" rows="4" required placeholder="Ej: Necesito 10 protectores de voltaje de 220V para un proyecto residencial."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">💬 Enviar solicitud por WhatsApp</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/logo.svg" alt="RCB">
+        <p><strong>Repuestos Casa Blanca</strong></p>
+        <p>Protección que se nota, calidad que se queda.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Facebook">📘</a>
+          <a href="#" aria-label="Instagram">📷</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="TikTok">🎵</a>
+        </div>
+      </div>
+      <div>
+        <h4>Enlaces rápidos</h4>
+        <ul>
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="productos.html">Productos</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="videos.html">Videos</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="contacto.html">Contactos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Categorías</h4>
+        <ul>
+          <li><a href="productos.html?cat=voltaje">Protectores de voltaje</a></li>
+          <li><a href="productos.html?cat=cintas">Cintas aislantes</a></li>
+          <li><a href="productos.html?cat=refrigeracion">Repuestos para refrigeración</a></li>
+          <li><a href="productos.html?cat=electricos">Materiales eléctricos</a></li>
+          <li><a href="productos.html?cat=herramientas">Herramientas y accesorios</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Atención al cliente</h4>
+        <ul>
+          <li>💬 WhatsApp: 099 123 4567</li>
+          <li>✉️ ventas@rcb.com.ec</li>
+          <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
+          <li>🕐 Sábados: 9:00 - 13:00</li>
+        </ul>
+        <h4 style="margin-top:18px;">Medios de pago</h4>
+        <div class="payment-row">
+          <span>VISA</span><span>Mastercard</span><span>Amex</span><span>Transferencia</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024 RCB (Repuestos Casa Blanca). Todos los derechos reservados.</span>
+      <span><a href="#">Política de privacidad</a> · <a href="#">Términos y condiciones</a></span>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+
+<script src="assets/categories.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('quote-category');
+    if (select) {
+      let categories = window.RCB_DEFAULT_CATEGORIES || [];
+      const saved = localStorage.getItem('rcb_categories');
+      if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
+      select.innerHTML = '<option value="">Selecciona una categoría (opcional)</option>' +
+        categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    }
+
+    const form = document.getElementById('quote-form');
+    if (form) {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('quote-name').value.trim();
+        const phone = document.getElementById('quote-phone').value.trim();
+        const email = document.getElementById('quote-email').value.trim();
+        const company = document.getElementById('quote-company').value.trim();
+        const category = document.getElementById('quote-category').value;
+        const message = document.getElementById('quote-message').value.trim();
+
+        let text = `Hola, quiero solicitar una cotización.\n\nNombre: ${name}\nTeléfono: ${phone}`;
+        if (email) text += `\nCorreo: ${email}`;
+        if (company) text += `\nEmpresa: ${company}`;
+        if (category) text += `\nCategoría de interés: ${category}`;
+        text += `\n\nDetalle:\n${message}`;
+
+        window.open(`https://wa.me/593991234567?text=${encodeURIComponent(text)}`, '_blank');
+      });
+    }
+  });
+</script>
+<script src="assets/social-icons.js"></script>
+<script src="assets/script.js"></script>
+</body>
+</html>

@@ -6,7 +6,7 @@
 <title>RCB | Repuestos Casa Blanca - Protección que tu hogar necesita</title>
 <meta name="description" content="Protectores de voltaje, cintas aislantes y repuestos de calidad para instalaciones eléctricas, refrigeración y climatización.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=2">
+<link rel="stylesheet" href="assets/styles.css?v=23">
 </head>
 <body>
 
@@ -16,7 +16,7 @@
       <a href="index.html" class="logo"><img src="imagen/logo.png" alt="RCB - Repuestos Casa Blanca"></a>
       <div class="search-box">
         <input type="text" placeholder="Buscar productos, categorías...">
-        <button aria-label="Buscar">🔍</button>
+        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
       </div>
       <div class="topbar-actions">
         <a href="https://wa.me/593991234567" class="topbar-item">
@@ -26,10 +26,6 @@
         <a href="admin.html" class="topbar-item">
           <span class="icon">👤</span>
           <span><span class="label">Iniciar sesión</span><span class="value">Mi cuenta</span></span>
-        </a>
-        <a href="#" class="topbar-item">
-          <span class="icon">🛒</span>
-          <span><span class="label"><span class="cart-badge">0</span></span><span class="value">Carrito</span></span>
         </a>
       </div>
     </div>
@@ -45,9 +41,9 @@
         <li><a href="blog.html">BLOG</a></li>
         <li><a href="videos.html">VIDEOS</a></li>
         <li><a href="galeria.html">GALERÍA</a></li>
-        <li><a href="#contacto">CONTACTOS</a></li>
+        <li><a href="contacto.html">CONTACTOS</a></li>
       </ul>
-      <a href="#contacto" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
+      <a href="contacto.html" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
     </div>
   </nav>
 </header>
@@ -85,48 +81,29 @@
   <section class="section" id="productos">
     <div class="container">
       <h2 class="section-title">NUESTRAS CATEGORÍAS</h2>
-      <div class="cat-grid">
-        <div class="cat-card">
-          <div class="cat-icon">⚡</div>
-          <h3>PROTECTORES DE VOLTAJE</h3>
-          <a href="productos.html?cat=voltaje">Ver productos →</a>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">🌀</div>
-          <h3>CINTAS AISLANTES</h3>
-          <a href="productos.html?cat=cintas">Ver productos →</a>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">❄️</div>
-          <h3>REPUESTOS PARA REFRIGERACIÓN</h3>
-          <a href="productos.html?cat=refrigeracion">Ver productos →</a>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">🔧</div>
-          <h3>MATERIALES ELÉCTRICOS</h3>
-          <a href="productos.html?cat=electricos">Ver productos →</a>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">🛠️</div>
-          <h3>HERRAMIENTAS Y ACCESORIOS</h3>
-          <a href="productos.html?cat=herramientas">Ver productos →</a>
-        </div>
-      </div>
+      <div class="cat-grid" id="home-category-grid"></div>
     </div>
   </section>
 
-  <!-- HISTORIA DE RCB (resumen) -->
-  <section class="about-story">
+  <!-- PRODUCTOS NUEVOS -->
+  <section class="section" style="padding-top:0;" id="home-new-section">
     <div class="container">
-      <div class="story-grid">
-        <div class="visual">🏢</div>
-        <div>
-          <h2>Historia de RCB</h2>
-          <p>RCB (Repuestos Casa Blanca) nació con el propósito de ofrecer soluciones prácticas y confiables para el sector de línea blanca, seleccionando cuidadosamente cada repuesto, herramienta y accesorio para garantizar calidad y un verdadero aporte al trabajo técnico.</p>
-          <p>Hoy seguimos fortaleciendo nuestro catálogo con nuevas soluciones e importaciones estratégicas, para ser el aliado confiable de técnicos y negocios especializados en línea blanca.</p>
-          <a href="nosotros.html#historia" class="btn btn-secondary" style="margin-top:6px;">Conoce nuestra historia →</a>
-        </div>
+      <div class="card-head" style="margin-bottom:20px;">
+        <h2 class="section-title" style="margin-bottom:0;text-align:left;">PRODUCTOS NUEVOS</h2>
+        <a href="productos.html">Ver catálogo →</a>
       </div>
+      <div class="product-grid-catalog" id="home-new-grid"></div>
+    </div>
+  </section>
+
+  <!-- PRODUCTOS EN OFERTA -->
+  <section class="section" style="padding-top:0;" id="home-offer-section">
+    <div class="container">
+      <div class="card-head" style="margin-bottom:20px;">
+        <h2 class="section-title" style="margin-bottom:0;text-align:left;">PRODUCTOS EN OFERTA</h2>
+        <a href="productos.html">Ver catálogo →</a>
+      </div>
+      <div class="product-grid-catalog" id="home-offer-grid"></div>
     </div>
   </section>
 
@@ -181,15 +158,61 @@
     </div>
   </section>
 
-  <!-- STRIP -->
-  <div class="strip">
+  <!-- SOBRE RCB (resumen) -->
+  <section class="about-story">
     <div class="container">
-      <div class="strip-item"><span class="ico">🚚</span><div><strong>ENVÍOS A TODO ECUADOR</strong></div></div>
-      <div class="strip-item"><span class="ico">🔒</span><div><strong>PAGOS SEGUROS Y CONFIABLES</strong></div></div>
-      <div class="strip-item"><span class="ico">🛡️</span><div><strong>GARANTÍA TOTAL EN TODOS LOS PRODUCTOS</strong></div></div>
-      <div class="strip-item"><span class="ico">🎧</span><div><strong>ATENCIÓN PERSONALIZADA POR WHATSAPP</strong></div></div>
+      <div class="story-grid">
+        <div class="visual"><img src="imagen/imagen8.png" alt="RCB - aliado de confianza para técnicos" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
+        <div>
+          <h2>Sobre RCB</h2>
+          <p>RCB (Repuestos Casa Blanca) es una empresa ecuatoriana dedicada a la comercialización y desarrollo de productos para los sectores eléctrico, refrigeración, climatización y mantenimiento. Nuestro compromiso es ofrecer soluciones confiables, productos de calidad y asesoría que ayuden a nuestros clientes a realizar instalaciones más seguras, eficientes y duraderas.</p>
+          <a href="nosotros.html" class="btn btn-secondary" style="margin-top:6px;">Conoce más sobre RCB →</a>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- SOLICITAR COTIZACIÓN -->
+  <section class="section">
+    <div class="container">
+      <div class="card contact-form-card" style="max-width:720px;margin:0 auto;">
+        <h2 class="section-title" style="margin-bottom:4px;">Solicitar cotización</h2>
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:20px;text-align:center;">Completa el formulario y te enviamos la información directamente por WhatsApp.</p>
+        <form id="home-quote-form">
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label>Nombre completo *</label>
+              <input type="text" id="home-quote-name" required>
+            </div>
+            <div class="contact-field">
+              <label>Teléfono *</label>
+              <input type="tel" id="home-quote-phone" required>
+            </div>
+          </div>
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label>Correo electrónico</label>
+              <input type="email" id="home-quote-email">
+            </div>
+            <div class="contact-field">
+              <label>Empresa (opcional)</label>
+              <input type="text" id="home-quote-company">
+            </div>
+          </div>
+          <div class="contact-field">
+            <label>Categoría de interés</label>
+            <select id="home-quote-category"></select>
+          </div>
+          <div class="contact-field">
+            <label>Cuéntanos qué necesitas *</label>
+            <textarea id="home-quote-message" rows="4" required placeholder="Ej: Necesito 10 protectores de voltaje de 220V para un proyecto residencial."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">💬 Enviar solicitud por WhatsApp</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer" id="contacto">
@@ -213,7 +236,7 @@
           <li><a href="#productos">Productos</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="videos.html">Videos</a></li>
-          <li><a href="#contacto">Contacto</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
@@ -249,6 +272,42 @@
 
 <a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
 
+<script src="assets/categories.js"></script>
+<script src="assets/products.js"></script>
+<script src="assets/social-icons.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('home-quote-category');
+    if (select) {
+      let categories = window.RCB_DEFAULT_CATEGORIES || [];
+      const saved = localStorage.getItem('rcb_categories');
+      if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
+      select.innerHTML = '<option value="">Selecciona una categoría (opcional)</option>' +
+        categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+    }
+
+    const form = document.getElementById('home-quote-form');
+    if (form) {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('home-quote-name').value.trim();
+        const phone = document.getElementById('home-quote-phone').value.trim();
+        const email = document.getElementById('home-quote-email').value.trim();
+        const company = document.getElementById('home-quote-company').value.trim();
+        const category = document.getElementById('home-quote-category').value;
+        const message = document.getElementById('home-quote-message').value.trim();
+
+        let text = `Hola, quiero solicitar una cotización.\n\nNombre: ${name}\nTeléfono: ${phone}`;
+        if (email) text += `\nCorreo: ${email}`;
+        if (company) text += `\nEmpresa: ${company}`;
+        if (category) text += `\nCategoría de interés: ${category}`;
+        text += `\n\nDetalle:\n${message}`;
+
+        window.open(`https://wa.me/593991234567?text=${encodeURIComponent(text)}`, '_blank');
+      });
+    }
+  });
+</script>
 <script src="assets/script.js"></script>
 </body>
 </html>

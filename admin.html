@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=2">
+<link rel="stylesheet" href="assets/styles.css?v=23">
 </head>
 <body>
 
@@ -31,21 +31,16 @@
   <aside class="admin-sidebar">
     <img src="assets/logo.svg" alt="RCB">
     <nav>
-      <a href="#" class="active">📦 Productos</a>
-      <a href="productos.html" target="_blank">🔗 Ver catálogo público</a>
-      <a href="index.html" target="_blank">🏠 Ver sitio</a>
+      <a href="#" class="active" data-tab="productos">📦 Productos</a>
+      <a href="#" data-tab="categorias">🗂️ Categorías</a>
+      <a href="#" data-tab="blog">📝 Blog</a>
+      <a href="#" data-tab="videos">🎬 Videos</a>
+      <a href="#" data-tab="galeria">🖼️ Galería</a>
     </nav>
     <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
   </aside>
 
   <main class="admin-main">
-    <div class="admin-header">
-      <h1>Gestión de productos</h1>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn btn-tertiary btn-sm" id="reset-catalog-btn">Restaurar catálogo original</button>
-        <button class="btn btn-primary btn-sm" id="add-product-btn">+ Agregar producto</button>
-      </div>
-    </div>
 
     <p class="admin-notice">
       ⚠️ Este panel guarda los cambios solo en este navegador (localStorage). Es una demo funcional
@@ -54,30 +49,168 @@
       conectar esta lógica a un servidor/base de datos real.
     </p>
 
-    <div class="admin-stats">
-      <div class="admin-stat-card"><strong id="stat-total">0</strong><span>Productos totales</span></div>
-      <div class="admin-stat-card"><strong id="stat-cats">0</strong><span>Categorías activas</span></div>
-      <div class="admin-stat-card"><strong id="stat-value">$0.00</strong><span>Valor total del catálogo</span></div>
-      <div class="admin-stat-card"><strong id="stat-out">0</strong><span>Productos agotados</span></div>
-    </div>
+    <div class="admin-tab-panel" data-tab-panel="productos">
+      <div class="admin-header">
+        <h1>Gestión de productos</h1>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-tertiary btn-sm" id="reset-catalog-btn">Restaurar catálogo original</button>
+          <button class="btn btn-primary btn-sm" id="add-product-btn">+ Agregar producto</button>
+        </div>
+      </div>
 
-    <div class="admin-panel">
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Producto</th>
-              <th>Categoría</th>
-              <th>Precio</th>
-              <th>Estado</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="admin-table-body"></tbody>
-        </table>
+      <div class="admin-stats">
+        <div class="admin-stat-card"><strong id="stat-total">0</strong><span>Productos totales</span></div>
+        <div class="admin-stat-card"><strong id="stat-cats">0</strong><span>Categorías activas</span></div>
+        <div class="admin-stat-card"><strong id="stat-value">$0.00</strong><span>Valor total del catálogo</span></div>
+        <div class="admin-stat-card"><strong id="stat-out">0</strong><span>Productos agotados</span></div>
+      </div>
+
+      <div class="admin-panel">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+          <input type="text" id="product-filter-search" placeholder="Buscar por nombre o SKU..." style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
+          <select id="product-filter-status" style="padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
+            <option value="todos">Todos los estados</option>
+            <option value="stock">En stock</option>
+            <option value="agotado">Agotado</option>
+          </select>
+        </div>
+        <div class="tab-row" id="product-filter-categories" style="margin-bottom:16px;"></div>
+        <p id="product-filter-count" style="font-size:0.8rem;color:#64748B;margin-bottom:10px;"></p>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>SKU</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
+
+    <div class="admin-tab-panel" data-tab-panel="categorias" style="display:none;">
+      <div class="admin-header">
+        <h1>Categorías</h1>
+        <button class="btn btn-primary btn-sm" id="add-category-btn">+ Agregar categoría</button>
+      </div>
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:6px;">Crea las categorías del catálogo. Aparecen al instante en el sitio y en el selector de productos.</p>
+        <div class="admin-chip-grid" id="category-chip-grid"></div>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-tab-panel="blog" style="display:none;">
+      <div class="admin-header">
+        <h1>Blog</h1>
+        <button class="btn btn-primary btn-sm" id="add-post-btn">+ Agregar entrada</button>
+      </div>
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <h2 style="font-size:1rem;margin-bottom:4px;">Categorías de blog</h2>
+        <p style="font-size:0.82rem;color:#64748B;margin-bottom:12px;">Crea una nueva categoría para organizar las entradas. Aparece al instante como pestaña y en el filtro de categorías en <a href="blog.html" target="_blank">el blog público</a>.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <input type="text" id="blog-cat-name" placeholder="Ej: Novedades" style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
+          <button type="button" class="btn btn-secondary btn-sm" id="add-blog-category-btn">+ Agregar categoría</button>
+        </div>
+        <div class="admin-chip-grid" id="blog-category-chip-grid"></div>
+      </div>
+
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:6px;">Crea, edita o elimina las entradas del blog. Aparecen al instante en <a href="blog.html" target="_blank">el blog público</a>. Marca una como "Destacada" para que se muestre arriba de todo.</p>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Fecha</th>
+                <th>Destacada</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-post-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-tab-panel="videos" style="display:none;">
+      <div class="admin-header">
+        <h1>Videos</h1>
+        <button class="btn btn-primary btn-sm" id="add-video-btn">+ Agregar video</button>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <h2 style="font-size:1rem;margin-bottom:4px;">Categorías de video</h2>
+        <p style="font-size:0.82rem;color:#64748B;margin-bottom:12px;">Crea una nueva categoría para organizar los videos. Aparece al instante como pestaña en <a href="videos.html" target="_blank">el sitio público</a>.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <input type="text" id="video-cat-name" placeholder="Ej: Mantenimiento" style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
+          <button type="button" class="btn btn-secondary btn-sm" id="add-video-category-btn">+ Agregar categoría</button>
+        </div>
+        <div class="admin-chip-grid" id="video-category-chip-grid"></div>
+      </div>
+
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:6px;">Agrega videos pegando el enlace de YouTube — la miniatura se toma automáticamente, o puedes subir una personalizada. Aparecen al instante en <a href="videos.html" target="_blank">el sitio público</a>.</p>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Duración</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-video-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-tab-panel="galeria" style="display:none;">
+      <div class="admin-header">
+        <h1>Galería</h1>
+        <button class="btn btn-primary btn-sm" id="add-gallery-item-btn">+ Agregar foto</button>
+      </div>
+
+      <div class="admin-panel" style="margin-bottom:20px;">
+        <h2 style="font-size:1rem;margin-bottom:4px;">Categorías de galería</h2>
+        <p style="font-size:0.82rem;color:#64748B;margin-bottom:12px;">Crea una nueva categoría para organizar las fotos. Aparece al instante como pestaña en <a href="galeria.html" target="_blank">el sitio público</a>.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+          <input type="text" id="gallery-cat-name" placeholder="Ej: Proyectos" style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
+          <button type="button" class="btn btn-secondary btn-sm" id="add-gallery-category-btn">+ Agregar categoría</button>
+        </div>
+        <div class="admin-chip-grid" id="gallery-category-chip-grid"></div>
+      </div>
+
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:6px;">Sube las fotos de la galería. Aparecen al instante en <a href="galeria.html" target="_blank">el sitio público</a>.</p>
+        <div style="overflow-x:auto;">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-gallery-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -86,6 +219,17 @@
   <div class="admin-form-box">
     <h2 id="form-title">Agregar producto</h2>
     <form id="product-form">
+      <div class="form-row">
+        <label>Imagen del producto (máx. 1.5 MB)</label>
+        <div class="admin-image-upload" id="product-image-preview">Vista previa de la imagen</div>
+        <div class="img-adjust-toolbar" id="product-image-toolbar" style="display:none;">
+          <button type="button" id="product-zoom-out" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" id="product-zoom-in" title="Acercar">+</button>
+          <button type="button" id="product-reset-fit" class="reset-btn">Restablecer posición</button>
+        </div>
+        <input type="file" id="field-image" accept="image/*">
+      </div>
       <div class="form-row">
         <label>SKU (código único)</label>
         <input type="text" id="field-id" placeholder="Ej: PV-110" required>
@@ -98,13 +242,23 @@
         <label>Categoría</label>
         <select id="field-category"></select>
       </div>
-      <div class="form-row">
-        <label>Precio (USD)</label>
-        <input type="number" id="field-price" step="0.01" min="0" required>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label>Precio (USD)</label>
+          <input type="number" id="field-price" step="0.01" min="0" placeholder="opcional">
+        </div>
+        <div>
+          <label>Precio anterior</label>
+          <input type="number" id="field-oldprice" step="0.01" min="0" placeholder="opcional">
+        </div>
       </div>
       <div class="form-row">
-        <label>Ícono (emoji)</label>
-        <input type="text" id="field-icon" placeholder="⚡">
+        <label>Etiqueta</label>
+        <select id="field-label">
+          <option value="">Sin etiqueta</option>
+          <option value="oferta">Oferta</option>
+          <option value="nuevo">Nuevo</option>
+        </select>
       </div>
       <div class="form-row">
         <label><input type="checkbox" id="field-stock" style="width:auto;display:inline-block;margin-right:6px;">En stock</label>
@@ -125,6 +279,179 @@
   </div>
 </div>
 
+<!-- FORMULARIO CATEGORÍA -->
+<div class="admin-form-overlay" id="category-form-overlay">
+  <div class="admin-form-box">
+    <h2 id="category-form-title">Agregar categoría</h2>
+    <form id="category-form">
+      <div class="form-row">
+        <label>Imagen (opcional, máx. 1.5 MB)</label>
+        <div class="admin-image-upload" id="category-image-preview">Sin imagen</div>
+        <div class="img-adjust-toolbar" id="category-image-toolbar" style="display:none;">
+          <button type="button" id="category-zoom-out" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" id="category-zoom-in" title="Acercar">+</button>
+          <button type="button" id="category-reset-fit" class="reset-btn">Restablecer posición</button>
+        </div>
+        <input type="file" id="cat-field-image" accept="image/*">
+      </div>
+      <div class="form-row">
+        <label>Nombre</label>
+        <input type="text" id="cat-field-name" placeholder="Ej: Protectores de voltaje" required>
+      </div>
+      <div class="form-row">
+        <label>Nombre corto</label>
+        <input type="text" id="cat-field-short" placeholder="Opcional">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-tertiary" id="cancel-category-form-btn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- FORMULARIO ENTRADA DE BLOG -->
+<div class="admin-form-overlay" id="post-form-overlay">
+  <div class="admin-form-box">
+    <h2 id="post-form-title">Agregar entrada</h2>
+    <form id="post-form">
+      <div class="form-row">
+        <label>Imagen de portada (máx. 1.5 MB)</label>
+        <div class="admin-image-upload" id="post-image-preview">Vista previa de la imagen</div>
+        <div class="img-adjust-toolbar" id="post-image-toolbar" style="display:none;">
+          <button type="button" id="post-zoom-out" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" id="post-zoom-in" title="Acercar">+</button>
+          <button type="button" id="post-reset-fit" class="reset-btn">Restablecer posición</button>
+        </div>
+        <input type="file" id="post-field-image" accept="image/*">
+      </div>
+      <div class="form-row">
+        <label>Título</label>
+        <input type="text" id="post-field-title" required>
+      </div>
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="post-field-category"></select>
+      </div>
+      <div class="form-row">
+        <label>Resumen</label>
+        <textarea id="post-field-excerpt" placeholder="Resumen breve que se muestra en la tarjeta del artículo" required></textarea>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label>Fecha</label>
+          <input type="text" id="post-field-date" placeholder="Ej: 20 mayo, 2024" required>
+        </div>
+        <div>
+          <label>Tiempo de lectura</label>
+          <input type="text" id="post-field-readtime" placeholder="Ej: 5 min de lectura">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Archivo PDF adjunto (opcional, máx. 3 MB)</label>
+        <p id="post-pdf-status" style="font-size:0.78rem;color:#64748B;margin-bottom:6px;">Ningún PDF adjunto.</p>
+        <input type="file" id="post-field-pdf" accept="application/pdf">
+        <button type="button" id="post-remove-pdf-btn" class="btn btn-tertiary btn-sm" style="margin-top:8px;display:none;">Quitar PDF</button>
+      </div>
+      <div class="form-row">
+        <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Destacada (se muestra arriba de todo el blog)</label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-tertiary" id="cancel-post-form-btn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- FORMULARIO VIDEO -->
+<div class="admin-form-overlay" id="video-form-overlay">
+  <div class="admin-form-box">
+    <h2 id="video-form-title">Agregar video</h2>
+    <form id="video-form">
+      <div class="form-row">
+        <label>Enlace de YouTube</label>
+        <input type="text" id="video-field-youtube" placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div class="form-row">
+        <label>Miniatura (se obtiene automáticamente del enlace de YouTube)</label>
+        <div class="admin-image-upload" id="video-image-preview">Pega el enlace de YouTube para ver la miniatura</div>
+      </div>
+      <div class="form-row">
+        <label>Título</label>
+        <input type="text" id="video-field-title" required>
+      </div>
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="video-field-category"></select>
+      </div>
+      <div class="form-row">
+        <label>Descripción</label>
+        <textarea id="video-field-description"></textarea>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label>Duración</label>
+          <input type="text" id="video-field-duration" placeholder="Ej: 5:32">
+        </div>
+        <div>
+          <label>Fecha</label>
+          <input type="text" id="video-field-date" placeholder="Ej: 20 mayo, 2024">
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Vistas (texto libre)</label>
+        <input type="text" id="video-field-views" placeholder="Ej: 1.2K vistas">
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-tertiary" id="cancel-video-form-btn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- FORMULARIO FOTO DE GALERÍA -->
+<div class="admin-form-overlay" id="gallery-form-overlay">
+  <div class="admin-form-box">
+    <h2 id="gallery-form-title">Agregar foto</h2>
+    <form id="gallery-form">
+      <div class="form-row">
+        <label>Imagen (máx. 1.5 MB)</label>
+        <div class="admin-image-upload" id="gallery-image-preview">Vista previa de la imagen</div>
+        <div class="img-adjust-toolbar" id="gallery-image-toolbar" style="display:none;">
+          <button type="button" id="gallery-zoom-out" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" id="gallery-zoom-in" title="Acercar">+</button>
+          <button type="button" id="gallery-reset-fit" class="reset-btn">Restablecer posición</button>
+        </div>
+        <input type="file" id="gallery-field-image" accept="image/*">
+      </div>
+      <div class="form-row">
+        <label>Descripción</label>
+        <input type="text" id="gallery-field-caption" placeholder="Ej: Protector de voltaje RCB" required>
+      </div>
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="gallery-field-category"></select>
+      </div>
+      <div class="form-row">
+        <label><input type="checkbox" id="gallery-field-wide" style="width:auto;display:inline-block;margin-right:6px;">Destacar (ocupa 2 columnas)</label>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-tertiary" id="cancel-gallery-form-btn">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/categories.js"></script>
+<script src="assets/posts.js"></script>
+<script src="assets/videos-data.js"></script>
+<script src="assets/gallery-data.js"></script>
 <script src="assets/products.js"></script>
 <script src="assets/admin.js"></script>
 </body>

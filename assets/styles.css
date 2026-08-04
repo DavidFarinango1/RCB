@@ -292,6 +292,8 @@ img { max-width: 100%; display: block; }
 }
 .cat-card h3 { font-size: 0.95rem; margin-bottom: 10px; color: var(--texto-oscuro); }
 .cat-card a { color: var(--azul-brillante); font-size: 0.82rem; font-weight: 600; }
+.values-grid { grid-template-columns: repeat(3, 1fr); }
+.values-grid .cat-card h3 { margin-bottom: 0; }
 
 /* ---------- Info grid (home lower section) ---------- */
 .info-grid {

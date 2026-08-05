@@ -6,7 +6,7 @@
 <title>Nosotros | RCB - Repuestos Casa Blanca</title>
 <meta name="description" content="Conoce a RCB: empresa ecuatoriana dedicada a la comercialización y desarrollo de productos para los sectores eléctrico, refrigeración, climatización y mantenimiento.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=23">
+<link rel="stylesheet" href="assets/styles.css?v=29">
 </head>
 <body>
 
@@ -15,19 +15,13 @@
     <div class="container">
       <a href="index.html" class="logo"><img src="imagen/logo.png" alt="RCB - Repuestos Casa Blanca"></a>
       <div class="search-box">
+        <select class="search-cat-select" id="header-search-category" aria-label="Categoría"></select>
         <input type="text" placeholder="Buscar productos, categorías...">
-        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Buscar</button>
       </div>
-      <div class="topbar-actions">
-        <a href="https://wa.me/593991234567" class="topbar-item">
-          <span class="icon"><img src="assets/whatsapp.svg" class="wa-icon" alt="WhatsApp"></span>
-          <span><span class="label">WhatsApp</span><span class="value">099 123 4567</span></span>
-        </a>
-        <a href="admin.html" class="topbar-item">
-          <span class="icon">👤</span>
-          <span><span class="label">Iniciar sesión</span><span class="value">Mi cuenta</span></span>
-        </a>
-      </div>
+      <a href="admin.html" class="topbar-admin-link">
+        <span class="ico">👤</span> Administrador
+      </a>
     </div>
   </div>
 
@@ -54,16 +48,11 @@
     <div class="container">
     <div class="about-intro-grid">
       <div>
-        <h1>Queremos ayudar a tu negocio a crecer, siendo tu proveedor de confianza en repuestos eléctricos, refrigeración y climatización.</h1>
-        <p>RCB (Repuestos Casa Blanca) es una empresa ecuatoriana dedicada a la comercialización y desarrollo de productos para los sectores eléctrico, refrigeración, climatización y mantenimiento. Nuestro compromiso es ofrecer soluciones confiables, productos de calidad y asesoría que ayuden a nuestros clientes a realizar instalaciones más seguras, eficientes y duraderas.</p>
-        <div class="stats-row">
-          <div class="stat-box"><strong>+5</strong><span>Categorías de productos</span></div>
-          <div class="stat-box"><strong>100%</strong><span>Ecuador, cobertura nacional</span></div>
-          <div class="stat-box"><strong>+10</strong><span>Años de trayectoria*</span></div>
-          <div class="stat-box"><strong>4.8★</strong><span>Calificación de clientes*</span></div>
-        </div>
+        <h1 id="about-intro-title"></h1>
+        <p id="about-intro-text"></p>
+        <div class="stats-row" id="about-stats-row"></div>
       </div>
-      <div class="about-intro-visual"><img src="imagen/imagen8.png" alt="RCB - aliado de confianza para técnicos" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
+      <div class="about-intro-visual"><img id="about-intro-image" src="imagen/imagen8.png" alt="RCB" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
     </div>
     </div>
   </section>
@@ -73,13 +62,10 @@
   <section class="about-story" id="historia">
     <div class="container">
       <div class="story-grid">
-        <div class="visual"><img src="imagen/imagen7.png" alt="RCB - Protección que tu hogar necesita" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
+        <div class="visual"><img id="about-historia-image" src="imagen/imagen7.png" alt="RCB" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
         <div>
-          <h2>Historia de RCB</h2>
-          <p>RCB (Repuestos Casa Blanca) nació con el propósito de ofrecer soluciones prácticas y confiables para el sector de línea blanca, entendiendo las necesidades reales que enfrentan técnicos, talleres y negocios especializados en su trabajo diario.</p>
-          <p>Desde sus inicios, la empresa se ha dedicado a la comercialización de repuestos, herramientas, accesorios y productos especializados para línea blanca, seleccionando cuidadosamente cada artículo para garantizar calidad, funcionalidad y un verdadero aporte al trabajo técnico.</p>
-          <p>A lo largo de su crecimiento, RCB ha mantenido una filosofía clara: ofrecer productos que ayuden a optimizar los procesos de diagnóstico, mantenimiento y reparación, permitiendo a los profesionales trabajar de manera más eficiente, reducir tiempos de servicio y obtener mejores resultados.</p>
-          <p>Hoy, RCB continúa fortaleciendo su catálogo mediante la incorporación de nuevas soluciones e importaciones estratégicas, con el objetivo de convertirse en un aliado confiable para quienes buscan calidad, innovación y respaldo en el sector de línea blanca.</p>
+          <h2 id="about-historia-title"></h2>
+          <div id="about-historia-text"></div>
         </div>
       </div>
     </div>
@@ -91,11 +77,11 @@
       <div class="community-grid">
         <div class="community-card">
           <h3 style="margin-bottom:10px;">Misión</h3>
-          <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;">Comercializar repuestos, herramientas, accesorios y soluciones innovadoras para el sector de línea blanca, proporcionando productos de calidad que permitan a técnicos y profesionales realizar su trabajo con mayor eficiencia, rapidez y confianza.</p>
+          <p id="about-mision-text" style="color:rgba(255,255,255,0.85);font-size:0.9rem;"></p>
         </div>
         <div class="community-card" style="background:var(--azul-principal);">
           <h3 style="margin-bottom:10px;">Visión</h3>
-          <p style="color:rgba(255,255,255,0.85);font-size:0.9rem;">Ser la marca líder en repuestos, herramientas y soluciones para línea blanca en Ecuador, y una referencia en Latinoamérica por la calidad de sus productos, su capacidad de innovación y su compromiso con el desarrollo del sector técnico.</p>
+          <p id="about-vision-text" style="color:rgba(255,255,255,0.85);font-size:0.9rem;"></p>
         </div>
       </div>
     </div>
@@ -105,32 +91,7 @@
   <section class="section" style="padding-top:0;">
     <div class="container">
       <h2 class="section-title">NUESTROS VALORES</h2>
-      <div class="cat-grid values-grid">
-        <div class="cat-card">
-          <div class="cat-icon">🛡️</div>
-          <h3>Calidad y confiabilidad</h3>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">💡</div>
-          <h3>Innovación orientada a soluciones reales</h3>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">🤝</div>
-          <h3>Compromiso con el cliente</h3>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">📈</div>
-          <h3>Mejora continua</h3>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">⚖️</div>
-          <h3>Integridad y transparencia</h3>
-        </div>
-        <div class="cat-card">
-          <div class="cat-icon">🔥</div>
-          <h3>Pasión por la excelencia técnica</h3>
-        </div>
-      </div>
+      <div class="cat-grid values-grid" id="about-valores-grid"></div>
     </div>
   </section>
 
@@ -138,7 +99,7 @@
   <section class="about-cta" style="background:var(--gris-fondo);">
     <div class="container">
       <h2>Nuestro propósito</h2>
-      <p>Impulsar el crecimiento de técnicos y negocios especializados mediante repuestos, herramientas y accesorios que faciliten el trabajo diario, optimicen el tiempo de servicio y contribuyan a ofrecer resultados profesionales de mayor calidad.</p>
+      <p id="about-proposito-text"></p>
     </div>
   </section>
 
@@ -227,10 +188,6 @@
           <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
           <li>🕐 Sábados: 9:00 - 13:00</li>
         </ul>
-        <h4 style="margin-top:18px;">Medios de pago</h4>
-        <div class="payment-row">
-          <span>VISA</span><span>Mastercard</span><span>Amex</span><span>Transferencia</span>
-        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -242,6 +199,9 @@
 
 <a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
 
+<script src="assets/categories.js"></script>
+<script src="assets/about-data.js"></script>
+<script src="assets/about-render.js"></script>
 <script src="assets/social-icons.js"></script>
 <script src="assets/script.js"></script>
 </body>

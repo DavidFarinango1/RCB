@@ -6,7 +6,7 @@
 <title>RCB | Repuestos Casa Blanca - Protección que tu hogar necesita</title>
 <meta name="description" content="Protectores de voltaje, cintas aislantes y repuestos de calidad para instalaciones eléctricas, refrigeración y climatización.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=23">
+<link rel="stylesheet" href="assets/styles.css?v=29">
 </head>
 <body>
 
@@ -15,19 +15,13 @@
     <div class="container">
       <a href="index.html" class="logo"><img src="imagen/logo.png" alt="RCB - Repuestos Casa Blanca"></a>
       <div class="search-box">
+        <select class="search-cat-select" id="header-search-category" aria-label="Categoría"></select>
         <input type="text" placeholder="Buscar productos, categorías...">
-        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Buscar</button>
       </div>
-      <div class="topbar-actions">
-        <a href="https://wa.me/593991234567" class="topbar-item">
-          <span class="icon"><img src="assets/whatsapp.svg" class="wa-icon" alt="WhatsApp"></span>
-          <span><span class="label">WhatsApp</span><span class="value">099 123 4567</span></span>
-        </a>
-        <a href="admin.html" class="topbar-item">
-          <span class="icon">👤</span>
-          <span><span class="label">Iniciar sesión</span><span class="value">Mi cuenta</span></span>
-        </a>
-      </div>
+      <a href="admin.html" class="topbar-admin-link">
+        <span class="ico">👤</span> Administrador
+      </a>
     </div>
   </div>
 
@@ -149,7 +143,7 @@
             <h3>RCB LAB – VIDEOS EN YOUTUBE</h3>
             <a href="videos.html">Ver todos →</a>
           </div>
-          <div class="video-embed">
+          <div class="video-embed" id="home-featured-video">
             <span class="play-btn">▶</span>
             <span class="video-caption">CINTA MOMIA PEGABLE VS NO PEGABLE · PRUEBAS REALES</span>
           </div>
@@ -162,10 +156,10 @@
   <section class="about-story">
     <div class="container">
       <div class="story-grid">
-        <div class="visual"><img src="imagen/imagen8.png" alt="RCB - aliado de confianza para técnicos" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
+        <div class="visual"><img id="home-about-image" src="imagen/imagen8.png" alt="RCB" style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></div>
         <div>
           <h2>Sobre RCB</h2>
-          <p>RCB (Repuestos Casa Blanca) es una empresa ecuatoriana dedicada a la comercialización y desarrollo de productos para los sectores eléctrico, refrigeración, climatización y mantenimiento. Nuestro compromiso es ofrecer soluciones confiables, productos de calidad y asesoría que ayuden a nuestros clientes a realizar instalaciones más seguras, eficientes y duraderas.</p>
+          <p id="home-about-text"></p>
           <a href="nosotros.html" class="btn btn-secondary" style="margin-top:6px;">Conoce más sobre RCB →</a>
         </div>
       </div>
@@ -257,10 +251,6 @@
           <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
           <li>🕐 Sábados: 9:00 - 13:00</li>
         </ul>
-        <h4 style="margin-top:18px;">Medios de pago</h4>
-        <div class="payment-row">
-          <span>VISA</span><span>Mastercard</span><span>Amex</span><span>Transferencia</span>
-        </div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -274,6 +264,9 @@
 
 <script src="assets/categories.js"></script>
 <script src="assets/products.js"></script>
+<script src="assets/videos-data.js"></script>
+<script src="assets/about-data.js"></script>
+<script src="assets/about-render.js"></script>
 <script src="assets/social-icons.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

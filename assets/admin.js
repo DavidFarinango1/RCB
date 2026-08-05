@@ -922,6 +922,9 @@
         <td>${v.duration || "—"}</td>
         <td>${v.date || "—"}</td>
         <td>
+          <button data-video-home="${v.id}" class="btn ${v.home ? 'btn-primary' : 'btn-tertiary'} btn-sm">${v.home ? "⭐ En Inicio" : "Colocar en Inicio"}</button>
+        </td>
+        <td>
           <div class="row-actions">
             <button data-video-edit="${v.id}">Editar</button>
             <button data-video-del="${v.id}" class="del-btn">Eliminar</button>
@@ -931,6 +934,17 @@
     }).join("");
     videoTableBody.querySelectorAll("[data-video-edit]").forEach(b => b.addEventListener("click", () => openVideoForm(b.dataset.videoEdit)));
     videoTableBody.querySelectorAll("[data-video-del]").forEach(b => b.addEventListener("click", () => deleteVideo(b.dataset.videoDel)));
+    videoTableBody.querySelectorAll("[data-video-home]").forEach(b => b.addEventListener("click", () => setHomeVideo(b.dataset.videoHome)));
+  }
+
+  function setHomeVideo(id) {
+    const list = getVideos();
+    const target = list.find(v => v.id === id);
+    const alreadyHome = target && target.home;
+    list.forEach(v => { v.home = false; });
+    if (!alreadyHome && target) target.home = true;
+    if (!saveVideos(list)) return;
+    renderVideosTable();
   }
 
   /* ================= GALERÍA ================= */
@@ -1113,6 +1127,146 @@
     galleryTableBody.querySelectorAll("[data-gallery-del]").forEach(b => b.addEventListener("click", () => deleteGalleryItem(b.dataset.galleryDel)));
   }
 
+  /* ================= NOSOTROS ================= */
+  const KEY_ABOUT = "rcb_about";
+  function getAbout() {
+    const defaults = window.RCB_DEFAULT_ABOUT || {};
+    const saved = localStorage.getItem(KEY_ABOUT);
+    if (saved) { try { return { ...defaults, ...JSON.parse(saved) }; } catch (e) { /* ignore */ } }
+    return { ...defaults };
+  }
+  function saveAbout(data) { return save(KEY_ABOUT, data); }
+
+  const aboutIntroImageInput = document.getElementById("about-field-intro-image");
+  const aboutIntroImagePreview = document.getElementById("about-intro-image-preview");
+  const aboutIntroImageToolbar = document.getElementById("about-intro-image-toolbar");
+  const aboutHistoriaImageInput = document.getElementById("about-field-historia-image");
+  const aboutHistoriaImagePreview = document.getElementById("about-historia-image-preview");
+  const aboutHistoriaImageToolbar = document.getElementById("about-historia-image-toolbar");
+
+  let currentAboutIntroImage = null;
+  let currentAboutIntroImageFit = defaultFit();
+  let currentAboutHistoriaImage = null;
+  let currentAboutHistoriaImageFit = defaultFit();
+
+  const aboutIntroAdjuster = aboutIntroImagePreview ? setupImageAdjuster({
+    box: aboutIntroImagePreview,
+    toolbar: aboutIntroImageToolbar,
+    zoomInBtn: document.getElementById("about-intro-zoom-in"),
+    zoomOutBtn: document.getElementById("about-intro-zoom-out"),
+    resetBtn: document.getElementById("about-intro-reset-fit"),
+    getFit: () => currentAboutIntroImageFit,
+    setFit: fit => { currentAboutIntroImageFit = fit; }
+  }) : null;
+  const aboutHistoriaAdjuster = aboutHistoriaImagePreview ? setupImageAdjuster({
+    box: aboutHistoriaImagePreview,
+    toolbar: aboutHistoriaImageToolbar,
+    zoomInBtn: document.getElementById("about-historia-zoom-in"),
+    zoomOutBtn: document.getElementById("about-historia-zoom-out"),
+    resetBtn: document.getElementById("about-historia-reset-fit"),
+    getFit: () => currentAboutHistoriaImageFit,
+    setFit: fit => { currentAboutHistoriaImageFit = fit; }
+  }) : null;
+
+  if (aboutIntroImageInput) {
+    aboutIntroImageInput.addEventListener("change", () => {
+      readImageFile(aboutIntroImageInput, dataUrl => {
+        if (dataUrl === undefined) return;
+        currentAboutIntroImage = dataUrl;
+        currentAboutIntroImageFit = defaultFit();
+        aboutIntroImagePreview.innerHTML = dataUrl ? `<img src="${dataUrl}" alt="">` : "Vista previa de la imagen";
+        aboutIntroAdjuster.refresh();
+      });
+    });
+  }
+  if (aboutHistoriaImageInput) {
+    aboutHistoriaImageInput.addEventListener("change", () => {
+      readImageFile(aboutHistoriaImageInput, dataUrl => {
+        if (dataUrl === undefined) return;
+        currentAboutHistoriaImage = dataUrl;
+        currentAboutHistoriaImageFit = defaultFit();
+        aboutHistoriaImagePreview.innerHTML = dataUrl ? `<img src="${dataUrl}" alt="">` : "Vista previa de la imagen";
+        aboutHistoriaAdjuster.refresh();
+      });
+    });
+  }
+
+  function fillAboutForm() {
+    const about = getAbout();
+    document.getElementById("about-field-intro-title").value = about.introTitle || "";
+    document.getElementById("about-field-intro-text").value = about.introText || "";
+    currentAboutIntroImage = about.introImage || null;
+    currentAboutIntroImageFit = about.introImageFit ? { ...about.introImageFit } : defaultFit();
+    if (aboutIntroImagePreview) {
+      aboutIntroImagePreview.innerHTML = currentAboutIntroImage ? `<img src="${currentAboutIntroImage}" alt="">` : "Vista previa de la imagen";
+      if (aboutIntroAdjuster) aboutIntroAdjuster.refresh();
+    }
+
+    (about.stats || []).forEach((s, i) => {
+      const valueEl = document.getElementById("about-stat-value-" + i);
+      const labelEl = document.getElementById("about-stat-label-" + i);
+      if (valueEl) valueEl.value = s.value || "";
+      if (labelEl) labelEl.value = s.label || "";
+    });
+
+    document.getElementById("about-field-historia-title").value = about.historiaTitle || "";
+    document.getElementById("about-field-historia-text").value = about.historiaText || "";
+    currentAboutHistoriaImage = about.historiaImage || null;
+    currentAboutHistoriaImageFit = about.historiaImageFit ? { ...about.historiaImageFit } : defaultFit();
+    if (aboutHistoriaImagePreview) {
+      aboutHistoriaImagePreview.innerHTML = currentAboutHistoriaImage ? `<img src="${currentAboutHistoriaImage}" alt="">` : "Vista previa de la imagen";
+      if (aboutHistoriaAdjuster) aboutHistoriaAdjuster.refresh();
+    }
+
+    document.getElementById("about-field-mision").value = about.mision || "";
+    document.getElementById("about-field-vision").value = about.vision || "";
+    document.getElementById("about-field-proposito").value = about.proposito || "";
+    document.getElementById("about-field-valores").value = (about.valores || []).map(v => `${v.icon} | ${v.text}`).join("\n");
+  }
+
+  function collectAboutForm() {
+    const stats = [0, 1, 2, 3].map(i => ({
+      value: (document.getElementById("about-stat-value-" + i) || {}).value || "",
+      label: (document.getElementById("about-stat-label-" + i) || {}).value || ""
+    })).filter(s => s.value || s.label);
+
+    const valores = document.getElementById("about-field-valores").value
+      .split("\n")
+      .map(line => line.trim())
+      .filter(Boolean)
+      .map(line => {
+        const parts = line.split("|");
+        return { icon: (parts[0] || "").trim(), text: (parts.slice(1).join("|") || "").trim() };
+      });
+
+    return {
+      introTitle: document.getElementById("about-field-intro-title").value.trim(),
+      introText: document.getElementById("about-field-intro-text").value.trim(),
+      introImage: currentAboutIntroImage,
+      introImageFit: currentAboutIntroImageFit,
+      stats,
+      historiaTitle: document.getElementById("about-field-historia-title").value.trim(),
+      historiaText: document.getElementById("about-field-historia-text").value,
+      historiaImage: currentAboutHistoriaImage,
+      historiaImageFit: currentAboutHistoriaImageFit,
+      mision: document.getElementById("about-field-mision").value.trim(),
+      vision: document.getElementById("about-field-vision").value.trim(),
+      proposito: document.getElementById("about-field-proposito").value.trim(),
+      valores
+    };
+  }
+
+  function saveAboutForm() {
+    const data = collectAboutForm();
+    if (!saveAbout(data)) return;
+    alert("Cambios guardados. Revisa la página Nosotros para verlos.");
+  }
+
+  const saveAboutBtn = document.getElementById("save-about-btn");
+  const saveAboutBtnBottom = document.getElementById("save-about-btn-bottom");
+  if (saveAboutBtn) saveAboutBtn.addEventListener("click", saveAboutForm);
+  if (saveAboutBtnBottom) saveAboutBtnBottom.addEventListener("click", saveAboutForm);
+
   /* ================= INIT ================= */
   function renderAll() {
     populateCategorySelect(categorySelect);
@@ -1124,6 +1278,7 @@
     renderVideosTable();
     renderGalleryCategoryChips();
     renderGalleryTable();
+    fillAboutForm();
   }
 
   if (isLoggedIn()) showApp();

@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=23">
+<link rel="stylesheet" href="assets/styles.css?v=29">
 </head>
 <body>
 
@@ -31,6 +31,7 @@
   <aside class="admin-sidebar">
     <img src="assets/logo.svg" alt="RCB">
     <nav>
+      <a href="#" data-tab="nosotros">👥 Nosotros</a>
       <a href="#" class="active" data-tab="productos">📦 Productos</a>
       <a href="#" data-tab="categorias">🗂️ Categorías</a>
       <a href="#" data-tab="blog">📝 Blog</a>
@@ -48,6 +49,102 @@
       para que los cambios se vean igual en todos los dispositivos y visitantes se necesita
       conectar esta lógica a un servidor/base de datos real.
     </p>
+
+    <div class="admin-tab-panel" data-tab-panel="nosotros" style="display:none;">
+      <div class="admin-header">
+        <h1>Nosotros</h1>
+        <button type="button" class="btn btn-primary btn-sm" id="save-about-btn">Guardar cambios</button>
+      </div>
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:16px;">Edita el texto y las imágenes de la página <a href="nosotros.html" target="_blank">Nosotros</a>. Los cambios se reflejan al instante al guardar.</p>
+
+        <h2 style="font-size:1rem;margin-bottom:10px;">Introducción</h2>
+        <div class="form-row">
+          <label>Título principal</label>
+          <input type="text" id="about-field-intro-title">
+        </div>
+        <div class="form-row">
+          <label>Texto introductorio</label>
+          <textarea id="about-field-intro-text" rows="4"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Imagen principal (máx. 1.5 MB)</label>
+          <div class="admin-image-upload" id="about-intro-image-preview" style="max-width:420px;">Vista previa de la imagen</div>
+          <div class="img-adjust-toolbar" id="about-intro-image-toolbar" style="display:none;">
+            <button type="button" id="about-intro-zoom-out" title="Alejar">−</button>
+            <span class="img-adjust-hint">Arrastra para mover</span>
+            <button type="button" id="about-intro-zoom-in" title="Acercar">+</button>
+            <button type="button" id="about-intro-reset-fit" class="reset-btn">Restablecer posición</button>
+          </div>
+          <input type="file" id="about-field-intro-image" accept="image/*">
+        </div>
+
+        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+        <h2 style="font-size:1rem;margin-bottom:10px;">Estadísticas</h2>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
+          <input type="text" id="about-stat-value-0" placeholder="Ej: +5">
+          <input type="text" id="about-stat-label-0" placeholder="Ej: Categorías de productos">
+        </div>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
+          <input type="text" id="about-stat-value-1" placeholder="Ej: 100%">
+          <input type="text" id="about-stat-label-1" placeholder="Ej: Ecuador, cobertura nacional">
+        </div>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
+          <input type="text" id="about-stat-value-2" placeholder="Ej: +10">
+          <input type="text" id="about-stat-label-2" placeholder="Ej: Años de trayectoria">
+        </div>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 2fr;gap:12px;">
+          <input type="text" id="about-stat-value-3" placeholder="Ej: 4.8★">
+          <input type="text" id="about-stat-label-3" placeholder="Ej: Calificación de clientes">
+        </div>
+
+        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+        <h2 style="font-size:1rem;margin-bottom:10px;">Historia</h2>
+        <div class="form-row">
+          <label>Título</label>
+          <input type="text" id="about-field-historia-title">
+        </div>
+        <div class="form-row">
+          <label>Texto (deja una línea en blanco entre párrafos)</label>
+          <textarea id="about-field-historia-text" rows="8"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Imagen (máx. 1.5 MB)</label>
+          <div class="admin-image-upload" id="about-historia-image-preview" style="max-width:420px;">Vista previa de la imagen</div>
+          <div class="img-adjust-toolbar" id="about-historia-image-toolbar" style="display:none;">
+            <button type="button" id="about-historia-zoom-out" title="Alejar">−</button>
+            <span class="img-adjust-hint">Arrastra para mover</span>
+            <button type="button" id="about-historia-zoom-in" title="Acercar">+</button>
+            <button type="button" id="about-historia-reset-fit" class="reset-btn">Restablecer posición</button>
+          </div>
+          <input type="file" id="about-field-historia-image" accept="image/*">
+        </div>
+
+        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+        <h2 style="font-size:1rem;margin-bottom:10px;">Misión, Visión y Propósito</h2>
+        <div class="form-row">
+          <label>Misión</label>
+          <textarea id="about-field-mision" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Visión</label>
+          <textarea id="about-field-vision" rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <label>Propósito</label>
+          <textarea id="about-field-proposito" rows="3"></textarea>
+        </div>
+
+        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+        <h2 style="font-size:1rem;margin-bottom:6px;">Valores</h2>
+        <p style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Uno por línea, formato: emoji | texto. Ej: 🛡️ | Calidad y confiabilidad</p>
+        <div class="form-row">
+          <textarea id="about-field-valores" rows="7"></textarea>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="save-about-btn-bottom" style="width:100%;margin-top:6px;">Guardar cambios</button>
+      </div>
+    </div>
 
     <div class="admin-tab-panel" data-tab-panel="productos">
       <div class="admin-header">
@@ -168,6 +265,7 @@
                 <th>Categoría</th>
                 <th>Duración</th>
                 <th>Fecha</th>
+                <th>Inicio</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -449,6 +547,7 @@
 </div>
 
 <script src="assets/categories.js"></script>
+<script src="assets/about-data.js"></script>
 <script src="assets/posts.js"></script>
 <script src="assets/videos-data.js"></script>
 <script src="assets/gallery-data.js"></script>

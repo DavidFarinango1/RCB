@@ -1,4 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const homeFeaturedVideo = document.getElementById('home-featured-video');
+  if (homeFeaturedVideo) {
+    let videos = window.RCB_DEFAULT_VIDEOS || [];
+    const savedVideos = localStorage.getItem('rcb_videos');
+    if (savedVideos) { try { videos = JSON.parse(savedVideos); } catch (e) { /* usa los de por defecto */ } }
+    const featured = videos.find(v => v.home);
+    if (featured) {
+      const youtubeUrl = featured.youtubeId ? `https://www.youtube.com/watch?v=${featured.youtubeId}` : 'videos.html';
+      let thumb;
+      if (featured.image) {
+        const fit = featured.imageFit || { scale: 1, x: 0, y: 0 };
+        thumb = `<img src="${featured.image}" alt="${featured.title}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`;
+      } else if (featured.youtubeId) {
+        thumb = `<img src="https://img.youtube.com/vi/${featured.youtubeId}/hqdefault.jpg" alt="${featured.title}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`;
+      } else {
+        thumb = '';
+      }
+      homeFeaturedVideo.outerHTML = `
+        <a href="${youtubeUrl}" target="_blank" rel="noopener" class="video-embed" id="home-featured-video">
+          ${thumb}
+          <span class="play-btn">▶</span>
+          <span class="video-caption">${featured.title.toUpperCase()}</span>
+        </a>`;
+    }
+  }
+
   const homeGrid = document.getElementById('home-category-grid');
   if (homeGrid) {
     let categories = window.RCB_DEFAULT_CATEGORIES || [];
@@ -94,10 +120,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const headerSearchInput = document.querySelector('.topbar .search-box input');
   const headerSearchBtn = document.querySelector('.topbar .search-box button');
+  const headerSearchCategory = document.getElementById('header-search-category');
+
+  if (headerSearchCategory) {
+    let categories = window.RCB_DEFAULT_CATEGORIES || [];
+    const saved = localStorage.getItem('rcb_categories');
+    if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
+    headerSearchCategory.innerHTML = '<option value="">Todas las categorías</option>' +
+      categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    const paramsCat = new URLSearchParams(window.location.search).get('cat');
+    if (paramsCat) headerSearchCategory.value = paramsCat;
+  }
+
   if (headerSearchInput) {
     function runHeaderSearch() {
       const term = headerSearchInput.value.trim();
-      if (!term) return;
+      const cat = headerSearchCategory ? headerSearchCategory.value : '';
+      if (!term && !cat) return;
+
+      if (cat) {
+        const url = 'productos.html?cat=' + encodeURIComponent(cat) + (term ? '&q=' + encodeURIComponent(term) : '');
+        window.location.href = url;
+        return;
+      }
+
       const catalogSearchInput = document.getElementById('catalog-search');
       if (catalogSearchInput) {
         catalogSearchInput.value = term;

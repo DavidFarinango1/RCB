@@ -103,31 +103,10 @@
     reader.readAsDataURL(file);
   }
 
-  const MAX_PDF_BYTES = 3 * 1024 * 1024;
-  function readPdfFile(input, callback) {
-    const file = input.files && input.files[0];
-    if (!file) { callback(null); return; }
-    if (file.type !== "application/pdf") {
-      alert("El archivo debe ser un PDF.");
-      input.value = "";
-      callback(undefined);
-      return;
-    }
-    if (file.size > MAX_PDF_BYTES) {
-      alert("El PDF supera 3 MB. Elige uno más liviano.");
-      input.value = "";
-      callback(undefined);
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => callback({ data: reader.result, name: file.name });
-    reader.readAsDataURL(file);
-  }
-
   /* ---------- Ajustador de imagen (mover / zoom / restablecer) ---------- */
   function defaultFit() { return { scale: 1, x: 0, y: 0 }; }
   function clampFit(fit) {
-    fit.scale = Math.min(3, Math.max(1, fit.scale));
+    fit.scale = Math.min(3, Math.max(0.5, fit.scale));
     const bound = 40;
     fit.x = Math.min(bound, Math.max(-bound, fit.x));
     fit.y = Math.min(bound, Math.max(-bound, fit.y));
@@ -589,41 +568,53 @@
   const postImageInput = document.getElementById("post-field-image");
   const postImagePreview = document.getElementById("post-image-preview");
   const postImageToolbar = document.getElementById("post-image-toolbar");
-  const postPdfInput = document.getElementById("post-field-pdf");
-  const postPdfStatus = document.getElementById("post-pdf-status");
-  const postRemovePdfBtn = document.getElementById("post-remove-pdf-btn");
+  const postVideoInput = document.getElementById("post-field-video");
+  const postContentBlocksBox = document.getElementById("post-content-blocks");
+  const postAddContentBlockBtn = document.getElementById("post-add-content-block");
 
   let editingPostId = null;
   let currentPostImage = null;
   let currentPostImageFit = defaultFit();
-  let currentPostPdf = null;
-  let currentPostPdfName = "";
 
-  function refreshPdfStatus() {
-    postPdfStatus.textContent = currentPostPdf ? `📄 ${currentPostPdfName}` : "Ningún PDF adjunto.";
-    postRemovePdfBtn.style.display = currentPostPdf ? "inline-flex" : "none";
+  function contentToBlocks(content) {
+    const text = (content || "").trim();
+    if (!text) return [{ title: "", text: "" }];
+    const parts = text.split(/\n(?=\*\*.+?\*\*)/);
+    return parts.map(part => {
+      const m = part.match(/^\*\*(.+?)\*\*\n?([\s\S]*)$/);
+      return m ? { title: m[1].trim(), text: m[2].trim() } : { title: "", text: part.trim() };
+    });
   }
-  if (postPdfInput) {
-    postPdfInput.addEventListener("change", () => {
-      readPdfFile(postPdfInput, result => {
-        if (result === undefined) return;
-        if (result) {
-          currentPostPdf = result.data;
-          currentPostPdfName = result.name;
-        } else {
-          currentPostPdf = null;
-          currentPostPdfName = "";
-        }
-        refreshPdfStatus();
+  function renderContentBlocks(blocks) {
+    postContentBlocksBox.innerHTML = blocks.map((b, i) => `
+      <div class="content-block" data-block-index="${i}" style="border:1px solid var(--borde);border-radius:10px;padding:12px;margin-bottom:10px;">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+          <input type="text" class="block-title" placeholder="Título del bloque (opcional)" value="${(b.title || "").replace(/"/g, "&quot;")}" style="flex:1;">
+          <button type="button" class="btn btn-tertiary btn-sm block-remove" title="Eliminar bloque">✕</button>
+        </div>
+        <textarea class="block-text" placeholder="Descripción del bloque...">${b.text || ""}</textarea>
+      </div>
+    `).join("");
+    postContentBlocksBox.querySelectorAll(".block-remove").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const blocksNow = collectContentBlocks();
+        const idx = parseInt(btn.closest("[data-block-index]").dataset.blockIndex, 10);
+        blocksNow.splice(idx, 1);
+        renderContentBlocks(blocksNow.length ? blocksNow : [{ title: "", text: "" }]);
       });
     });
   }
-  if (postRemovePdfBtn) {
-    postRemovePdfBtn.addEventListener("click", () => {
-      currentPostPdf = null;
-      currentPostPdfName = "";
-      postPdfInput.value = "";
-      refreshPdfStatus();
+  function collectContentBlocks() {
+    return Array.from(postContentBlocksBox.querySelectorAll(".content-block")).map(el => ({
+      title: el.querySelector(".block-title").value,
+      text: el.querySelector(".block-text").value
+    }));
+  }
+  if (postAddContentBlockBtn) {
+    postAddContentBlockBtn.addEventListener("click", () => {
+      const blocks = collectContentBlocks();
+      blocks.push({ title: "", text: "" });
+      renderContentBlocks(blocks);
     });
   }
 
@@ -670,19 +661,14 @@
     postImagePreview.innerHTML = currentPostImage ? `<img src="${currentPostImage}" alt="">` : "Vista previa de la imagen";
     postImageInput.value = "";
     postAdjuster.refresh();
-    currentPostPdf = p ? (p.pdf || null) : null;
-    currentPostPdfName = p ? (p.pdfName || "") : "";
-    postPdfInput.value = "";
-    refreshPdfStatus();
+    postVideoInput.value = p ? (p.videoUrl || "") : "";
+    renderContentBlocks(p && p.contentBlocks && p.contentBlocks.length ? p.contentBlocks : contentToBlocks(p ? p.content : ""));
 
     postOverlay.classList.add("open");
   }
   function closePostForm() {
     postOverlay.classList.remove("open");
     postForm.reset();
-    currentPostPdf = null;
-    currentPostPdfName = "";
-    refreshPdfStatus();
   }
 
   function deletePost(id) {
@@ -708,8 +694,10 @@
         featured: document.getElementById("post-field-featured").checked,
         image: currentPostImage,
         imageFit: currentPostImageFit,
-        pdf: currentPostPdf,
-        pdfName: currentPostPdfName,
+        videoUrl: postVideoInput.value.trim(),
+        contentBlocks: collectContentBlocks()
+          .map(b => ({ title: b.title.trim(), text: b.text.trim() }))
+          .filter(b => b.title || b.text),
         icon: "📰"
       };
 
@@ -718,6 +706,10 @@
         if (idx > -1) list[idx] = post;
       } else {
         list.push(post);
+      }
+
+      if (post.featured) {
+        list.forEach(p => { if (p.id !== post.id) p.featured = false; });
       }
 
       if (!savePosts(list)) return;
@@ -732,6 +724,11 @@
   function renderPostsTable() {
     if (!postTableBody) return;
     const list = getPosts();
+    const featuredIds = list.filter(p => p.featured).map(p => p.id);
+    if (featuredIds.length > 1) {
+      list.forEach((p, i) => { if (p.featured && p.id !== featuredIds[featuredIds.length - 1]) p.featured = false; });
+      savePosts(list);
+    }
     postTableBody.innerHTML = list.map(p => {
       const fit = p.imageFit || defaultFit();
       const thumb = p.image ? `<img src="${p.image}" alt="" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📰");
@@ -1222,6 +1219,29 @@
     document.getElementById("about-field-vision").value = about.vision || "";
     document.getElementById("about-field-proposito").value = about.proposito || "";
     document.getElementById("about-field-valores").value = (about.valores || []).map(v => `${v.icon} | ${v.text}`).join("\n");
+
+    const settings = getSettings();
+    document.getElementById("settings-field-whatsapp").value = settings.whatsapp || "";
+    document.getElementById("settings-field-email").value = settings.email || "";
+    document.getElementById("settings-field-hours-weekday").value = settings.hoursWeekday || "";
+    document.getElementById("settings-field-hours-saturday").value = settings.hoursSaturday || "";
+  }
+
+  const KEY_SETTINGS = "rcb_settings";
+  function getSettings() {
+    const defaults = window.RCB_DEFAULT_SETTINGS || {};
+    const saved = localStorage.getItem(KEY_SETTINGS);
+    if (saved) { try { return { ...defaults, ...JSON.parse(saved) }; } catch (e) { /* ignore */ } }
+    return { ...defaults };
+  }
+  function saveSettings(data) { return save(KEY_SETTINGS, data); }
+  function collectSettingsForm() {
+    return {
+      whatsapp: document.getElementById("settings-field-whatsapp").value.trim(),
+      email: document.getElementById("settings-field-email").value.trim(),
+      hoursWeekday: document.getElementById("settings-field-hours-weekday").value.trim(),
+      hoursSaturday: document.getElementById("settings-field-hours-saturday").value.trim()
+    };
   }
 
   function collectAboutForm() {
@@ -1259,6 +1279,7 @@
   function saveAboutForm() {
     const data = collectAboutForm();
     if (!saveAbout(data)) return;
+    if (!saveSettings(collectSettingsForm())) return;
     alert("Cambios guardados. Revisa la página Nosotros para verlos.");
   }
 

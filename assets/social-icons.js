@@ -9,7 +9,7 @@
   };
 
   function apply() {
-    document.querySelectorAll(".social-row a[aria-label]").forEach(a => {
+    document.querySelectorAll(".social-row a[aria-label], .social-float-btn[aria-label]").forEach(a => {
       const icon = ICONS[a.getAttribute("aria-label")];
       if (icon) a.innerHTML = icon;
     });

@@ -6,7 +6,7 @@
 <title>Galería RCB | Productos, instalaciones y proyectos</title>
 <meta name="description" content="Galería de imágenes de productos, instalaciones y proyectos realizados con soluciones RCB.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=29">
+<link rel="stylesheet" href="assets/styles.css?v=39">
 </head>
 <body>
 
@@ -34,8 +34,7 @@
         <li><a href="productos.html">PRODUCTOS</a></li>
         <li><a href="blog.html">BLOG</a></li>
         <li><a href="videos.html">VIDEOS</a></li>
-        <li><a href="galeria.html" class="active">GALERÍA</a></li>
-        <li><a href="contacto.html">CONTACTOS</a></li>
+        <li><a href="contacto.html">CONTACTO</a></li>
       </ul>
       <a href="contacto.html" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
     </div>
@@ -63,7 +62,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="assets/logo.svg" alt="RCB">
+        <img src="imagen/logo-nuevo.png" alt="RCB" class="footer-brand-logo">
         <p><strong>Repuestos Casa Blanca</strong></p>
         <p>Protección que se nota, calidad que se queda.</p>
         <div class="social-row">
@@ -97,10 +96,10 @@
       <div>
         <h4>Atención al cliente</h4>
         <ul>
-          <li>💬 WhatsApp: 099 123 4567</li>
-          <li>✉️ ventas@rcb.com.ec</li>
-          <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
-          <li>🕐 Sábados: 9:00 - 13:00</li>
+          <li id="footer-whatsapp">💬 WhatsApp: 099 123 4567</li>
+          <li id="footer-email">✉️ ventas@rcb.com.ec</li>
+          <li id="footer-hours-weekday">🕐 Lunes a Viernes: 8:30 - 18:00</li>
+          <li id="footer-hours-saturday">🕐 Sábados: 9:00 - 13:00</li>
         </ul>
       </div>
     </div>
@@ -111,11 +110,19 @@
   </div>
 </footer>
 
-<a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+<div class="social-float-stack">
+  <a href="#" class="social-float-btn fb" aria-label="Facebook"></a>
+  <a href="#" class="social-float-btn ig" aria-label="Instagram"></a>
+  <a href="#" class="social-float-btn tiktok" aria-label="TikTok"></a>
+  <a href="#" class="social-float-btn yt" aria-label="YouTube"></a>
+  <a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+</div>
 
 <script src="assets/gallery-data.js"></script>
 <script src="assets/gallery-render.js"></script>
 <script src="assets/categories.js"></script>
+<script src="assets/settings-data.js"></script>
+<script src="assets/settings-render.js"></script>
 <script src="assets/social-icons.js"></script>
 <script src="assets/script.js"></script>
 </body>

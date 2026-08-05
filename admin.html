@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=29">
+<link rel="stylesheet" href="assets/styles.css?v=39">
 </head>
 <body>
 
@@ -36,7 +36,6 @@
       <a href="#" data-tab="categorias">🗂️ Categorías</a>
       <a href="#" data-tab="blog">📝 Blog</a>
       <a href="#" data-tab="videos">🎬 Videos</a>
-      <a href="#" data-tab="galeria">🖼️ Galería</a>
     </nav>
     <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
   </aside>
@@ -140,6 +139,28 @@
         <p style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Uno por línea, formato: emoji | texto. Ej: 🛡️ | Calidad y confiabilidad</p>
         <div class="form-row">
           <textarea id="about-field-valores" rows="7"></textarea>
+        </div>
+
+        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+        <h2 style="font-size:1rem;margin-bottom:6px;">Atención al cliente (footer)</h2>
+        <p style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Este texto aparece en el pie de página de todo el sitio.</p>
+        <div class="form-row">
+          <label>WhatsApp</label>
+          <input type="text" id="settings-field-whatsapp" placeholder="Ej: 099 123 4567">
+        </div>
+        <div class="form-row">
+          <label>Correo</label>
+          <input type="text" id="settings-field-email" placeholder="Ej: ventas@rcb.com.ec">
+        </div>
+        <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label>Horario entre semana</label>
+            <input type="text" id="settings-field-hours-weekday" placeholder="Ej: Lunes a Viernes: 8:30 - 18:00">
+          </div>
+          <div>
+            <label>Horario sábados</label>
+            <input type="text" id="settings-field-hours-saturday" placeholder="Ej: Sábados: 9:00 - 13:00">
+          </div>
         </div>
 
         <button type="button" class="btn btn-primary" id="save-about-btn-bottom" style="width:100%;margin-top:6px;">Guardar cambios</button>
@@ -270,40 +291,6 @@
               </tr>
             </thead>
             <tbody id="admin-video-table-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="admin-tab-panel" data-tab-panel="galeria" style="display:none;">
-      <div class="admin-header">
-        <h1>Galería</h1>
-        <button class="btn btn-primary btn-sm" id="add-gallery-item-btn">+ Agregar foto</button>
-      </div>
-
-      <div class="admin-panel" style="margin-bottom:20px;">
-        <h2 style="font-size:1rem;margin-bottom:4px;">Categorías de galería</h2>
-        <p style="font-size:0.82rem;color:#64748B;margin-bottom:12px;">Crea una nueva categoría para organizar las fotos. Aparece al instante como pestaña en <a href="galeria.html" target="_blank">el sitio público</a>.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
-          <input type="text" id="gallery-cat-name" placeholder="Ej: Proyectos" style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--borde);border-radius:8px;font-family:'Inter',sans-serif;">
-          <button type="button" class="btn btn-secondary btn-sm" id="add-gallery-category-btn">+ Agregar categoría</button>
-        </div>
-        <div class="admin-chip-grid" id="gallery-category-chip-grid"></div>
-      </div>
-
-      <div class="admin-panel">
-        <p style="font-size:0.85rem;color:#64748B;margin-bottom:6px;">Sube las fotos de la galería. Aparecen al instante en <a href="galeria.html" target="_blank">el sitio público</a>.</p>
-        <div style="overflow-x:auto;">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Descripción</th>
-                <th>Categoría</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="admin-gallery-table-body"></tbody>
           </table>
         </div>
       </div>
@@ -448,10 +435,14 @@
         </div>
       </div>
       <div class="form-row">
-        <label>Archivo PDF adjunto (opcional, máx. 3 MB)</label>
-        <p id="post-pdf-status" style="font-size:0.78rem;color:#64748B;margin-bottom:6px;">Ningún PDF adjunto.</p>
-        <input type="file" id="post-field-pdf" accept="application/pdf">
-        <button type="button" id="post-remove-pdf-btn" class="btn btn-tertiary btn-sm" style="margin-top:8px;display:none;">Quitar PDF</button>
+        <label>Enlace de video (YouTube, opcional)</label>
+        <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...">
+      </div>
+      <div class="form-row">
+        <label>Contenido completo del artículo</label>
+        <p style="font-size:0.78rem;color:#64748B;margin-bottom:6px;">Agrega uno o más bloques: un título (se muestra en negrita) y su descripción debajo.</p>
+        <div id="post-content-blocks"></div>
+        <button type="button" class="btn btn-tertiary btn-sm" id="post-add-content-block" style="margin-top:4px;">+ Agregar título</button>
       </div>
       <div class="form-row">
         <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Destacada (se muestra arriba de todo el blog)</label>
@@ -511,43 +502,9 @@
   </div>
 </div>
 
-<!-- FORMULARIO FOTO DE GALERÍA -->
-<div class="admin-form-overlay" id="gallery-form-overlay">
-  <div class="admin-form-box">
-    <h2 id="gallery-form-title">Agregar foto</h2>
-    <form id="gallery-form">
-      <div class="form-row">
-        <label>Imagen (máx. 1.5 MB)</label>
-        <div class="admin-image-upload" id="gallery-image-preview">Vista previa de la imagen</div>
-        <div class="img-adjust-toolbar" id="gallery-image-toolbar" style="display:none;">
-          <button type="button" id="gallery-zoom-out" title="Alejar">−</button>
-          <span class="img-adjust-hint">Arrastra para mover</span>
-          <button type="button" id="gallery-zoom-in" title="Acercar">+</button>
-          <button type="button" id="gallery-reset-fit" class="reset-btn">Restablecer posición</button>
-        </div>
-        <input type="file" id="gallery-field-image" accept="image/*">
-      </div>
-      <div class="form-row">
-        <label>Descripción</label>
-        <input type="text" id="gallery-field-caption" placeholder="Ej: Protector de voltaje RCB" required>
-      </div>
-      <div class="form-row">
-        <label>Categoría</label>
-        <select id="gallery-field-category"></select>
-      </div>
-      <div class="form-row">
-        <label><input type="checkbox" id="gallery-field-wide" style="width:auto;display:inline-block;margin-right:6px;">Destacar (ocupa 2 columnas)</label>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-tertiary" id="cancel-gallery-form-btn">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <script src="assets/categories.js"></script>
 <script src="assets/about-data.js"></script>
+<script src="assets/settings-data.js"></script>
 <script src="assets/posts.js"></script>
 <script src="assets/videos-data.js"></script>
 <script src="assets/gallery-data.js"></script>

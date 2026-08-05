@@ -6,7 +6,7 @@
 <title>Contactos | RCB - Repuestos Casa Blanca</title>
 <meta name="description" content="Contáctanos y solicita una cotización. Protectores de voltaje, cintas aislantes y repuestos para instalaciones eléctricas, refrigeración y climatización.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=29">
+<link rel="stylesheet" href="assets/styles.css?v=39">
 </head>
 <body>
 
@@ -34,8 +34,7 @@
         <li><a href="productos.html">PRODUCTOS</a></li>
         <li><a href="blog.html">BLOG</a></li>
         <li><a href="videos.html">VIDEOS</a></li>
-        <li><a href="galeria.html">GALERÍA</a></li>
-        <li><a href="contacto.html" class="active">CONTACTOS</a></li>
+        <li><a href="contacto.html" class="active">CONTACTO</a></li>
       </ul>
       <a href="contacto.html" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
     </div>
@@ -72,7 +71,7 @@
             <span class="ico">📍</span>
             <div><strong>Ubicación</strong><span>Ecuador — envíos a todo el país</span></div>
           </div>
-          <a href="https://wa.me/593991234567" class="btn btn-primary" style="width:100%;margin-top:10px;">💬 Hablar por WhatsApp</a>
+          <a href="https://wa.me/593991234567" class="btn btn-primary" style="width:100%;margin-top:10px;"><img src="assets/whatsapp.svg" alt="" style="width:18px;height:18px;vertical-align:-4px;margin-right:5px;"> Hablar por WhatsApp</a>
         </div>
 
         <div class="card" style="margin-top:20px;">
@@ -129,7 +128,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="assets/logo.svg" alt="RCB">
+        <img src="imagen/logo-nuevo.png" alt="RCB" class="footer-brand-logo">
         <p><strong>Repuestos Casa Blanca</strong></p>
         <p>Protección que se nota, calidad que se queda.</p>
         <div class="social-row">
@@ -164,10 +163,10 @@
       <div>
         <h4>Atención al cliente</h4>
         <ul>
-          <li>💬 WhatsApp: 099 123 4567</li>
-          <li>✉️ ventas@rcb.com.ec</li>
-          <li>🕐 Lunes a Viernes: 8:30 - 18:00</li>
-          <li>🕐 Sábados: 9:00 - 13:00</li>
+          <li id="footer-whatsapp">💬 WhatsApp: 099 123 4567</li>
+          <li id="footer-email">✉️ ventas@rcb.com.ec</li>
+          <li id="footer-hours-weekday">🕐 Lunes a Viernes: 8:30 - 18:00</li>
+          <li id="footer-hours-saturday">🕐 Sábados: 9:00 - 13:00</li>
         </ul>
       </div>
     </div>
@@ -178,7 +177,13 @@
   </div>
 </footer>
 
-<a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+<div class="social-float-stack">
+  <a href="#" class="social-float-btn fb" aria-label="Facebook"></a>
+  <a href="#" class="social-float-btn ig" aria-label="Instagram"></a>
+  <a href="#" class="social-float-btn tiktok" aria-label="TikTok"></a>
+  <a href="#" class="social-float-btn yt" aria-label="YouTube"></a>
+  <a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+</div>
 
 <script src="assets/categories.js"></script>
 <script>
@@ -214,6 +219,8 @@
     }
   });
 </script>
+<script src="assets/settings-data.js"></script>
+<script src="assets/settings-render.js"></script>
 <script src="assets/social-icons.js"></script>
 <script src="assets/script.js"></script>
 </body>

@@ -169,18 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.addEventListener('click', () => navbar.classList.toggle('nav-open'));
   }
 
-  const searchToggle = document.getElementById('mobile-search-toggle');
-  const topbar = document.querySelector('.topbar');
-  if (searchToggle && topbar) {
-    searchToggle.addEventListener('click', () => {
-      topbar.classList.toggle('search-open');
-      if (topbar.classList.contains('search-open')) {
-        const input = topbar.querySelector('.search-box input');
-        if (input) input.focus();
-      }
-    });
-  }
-
   const tabs = document.querySelectorAll('.tab-row .tab');
   const cards = document.querySelectorAll('[data-category]');
   tabs.forEach(tab => {

@@ -12,7 +12,11 @@
     "footer-whatsapp": "💬 WhatsApp: " + s.whatsapp,
     "footer-email": "✉️ " + s.email,
     "footer-hours-weekday": "🕐 " + s.hoursWeekday,
-    "footer-hours-saturday": "🕐 " + s.hoursSaturday
+    "footer-hours-saturday": "🕐 " + s.hoursSaturday,
+    "contact-whatsapp": s.whatsapp,
+    "contact-email": s.email,
+    "contact-hours-weekday": s.hoursWeekday,
+    "contact-hours-saturday": s.hoursSaturday
   };
   Object.keys(map).forEach(id => {
     const el = document.getElementById(id);

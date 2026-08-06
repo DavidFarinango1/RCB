@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=54">
+<link rel="stylesheet" href="assets/styles.css?v=67">
 </head>
 <body>
 
@@ -43,6 +43,7 @@
       <a href="#" data-tab="categorias">🗂️ Categorías <span class="nav-badge" id="nav-badge-categorias"></span></a>
       <a href="#" data-tab="blog">📝 Blog <span class="nav-badge" id="nav-badge-blog"></span></a>
       <a href="#" data-tab="videos">🎬 Videos <span class="nav-badge" id="nav-badge-videos"></span></a>
+      <a href="#" data-tab="atencion">☎️ Atención al cliente</a>
     </nav>
     <a href="index.html" target="_blank" class="admin-view-site-link">↗ Ver la web</a>
     <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
@@ -149,9 +150,17 @@
           <textarea id="about-field-valores" rows="7"></textarea>
         </div>
 
-        <hr class="adm-sep" style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
-        <h2 style="font-size:1rem;margin-bottom:6px;">Atención al cliente (footer)</h2>
-        <p style="font-size:0.8rem;color:#64748B;margin-bottom:10px;">Este texto aparece en el pie de página de todo el sitio.</p>
+        <button type="button" class="btn btn-primary" id="save-about-btn-bottom" style="width:100%;margin-top:6px;">Guardar cambios</button>
+      </div>
+    </div>
+
+    <div class="admin-tab-panel" data-tab-panel="atencion" style="display:none;">
+      <div class="admin-header">
+        <h1>Atención al cliente</h1>
+        <button type="button" class="btn btn-primary btn-sm" id="save-settings-btn">Guardar cambios</button>
+      </div>
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:16px;">Este texto aparece en el pie de página de todo el sitio.</p>
         <div class="form-row">
           <label>WhatsApp</label>
           <input type="text" id="settings-field-whatsapp" placeholder="Ej: 099 342 1505">
@@ -170,8 +179,6 @@
             <input type="text" id="settings-field-hours-saturday" placeholder="Ej: Sábados: 9:00 - 13:00">
           </div>
         </div>
-
-        <button type="button" class="btn btn-primary" id="save-about-btn-bottom" style="width:100%;margin-top:6px;">Guardar cambios</button>
       </div>
     </div>
 

@@ -6,7 +6,7 @@
 <title>RCB | Repuestos Casa Blanca - Protección que tu hogar necesita</title>
 <meta name="description" content="Protectores de voltaje, cintas aislantes y repuestos de calidad para instalaciones eléctricas, refrigeración y climatización.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=54">
+<link rel="stylesheet" href="assets/styles.css?v=67">
 </head>
 <body>
 
@@ -19,13 +19,12 @@
         <input type="text" placeholder="Buscar productos, categorías...">
         <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Buscar</button>
       </div>
-      <button type="button" class="mobile-search-toggle" id="mobile-search-toggle" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      <button class="mobile-toggle" aria-label="Abrir menú">☰</button>
     </div>
   </div>
 
   <nav class="navbar">
     <div class="container">
-      <button class="mobile-toggle" aria-label="Abrir menú">☰</button>
       <ul class="nav-links">
         <li><a href="index.html" class="active">INICIO</a></li>
         <li><a href="nosotros.html">NOSOTROS</a></li>
@@ -34,7 +33,7 @@
         <li><a href="videos.html">VIDEOS</a></li>
         <li><a href="contacto.html">CONTACTO</a></li>
       </ul>
-      <a href="contacto.html" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
+      <a href="contacto.html#cotizar" class="btn btn-primary">SOLICITAR COTIZACIÓN</a>
     </div>
   </nav>
 </header>
@@ -66,6 +65,9 @@
         </div>
       </div>
     </div>
+    <div class="social-float-stack">
+      <a href="https://wa.me/593993421505" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+    </div>
   </section>
 
   <!-- CATEGORÍAS -->
@@ -79,10 +81,10 @@
   <!-- PRODUCTOS NUEVOS -->
   <section class="section" style="padding-top:0;" id="home-new-section">
     <div class="container">
-      <div class="card-head" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:20px;">
+      <div class="card-head home-section-head">
         <span></span>
         <h2 class="section-title" style="margin:0;font-size:1.3rem;">PRODUCTOS NUEVOS</h2>
-        <a href="productos.html" style="justify-self:end;">Ver catálogo →</a>
+        <a href="productos.html">Ver catálogo →</a>
       </div>
       <div class="product-grid-catalog" id="home-new-grid"></div>
     </div>
@@ -91,10 +93,10 @@
   <!-- PRODUCTOS EN OFERTA -->
   <section class="section" style="padding-top:0;" id="home-offer-section">
     <div class="container">
-      <div class="card-head" style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-bottom:20px;">
+      <div class="card-head home-section-head">
         <span></span>
         <h2 class="section-title" style="margin:0;font-size:1.3rem;">PRODUCTOS EN OFERTA</h2>
-        <a href="productos.html" style="justify-self:end;">Ver catálogo →</a>
+        <a href="productos.html">Ver catálogo →</a>
       </div>
       <div class="product-grid-catalog" id="home-offer-grid"></div>
     </div>
@@ -216,10 +218,10 @@
         <p><strong>Repuestos Casa Blanca</strong></p>
         <p>Protección que se nota, calidad que se queda.</p>
         <div class="social-row">
-          <a href="#" aria-label="Facebook">📘</a>
+          <a href="https://www.facebook.com/profile.php?id=61592644390643" target="_blank" rel="noopener" aria-label="Facebook">📘</a>
           <a href="https://www.instagram.com/rcb_casablanca?igsh=MW91MGpnN2Y0YjdwMQ==" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
-          <a href="#" aria-label="YouTube">▶</a>
-          <a href="#" aria-label="TikTok">🎵</a>
+          <a href="https://youtube.com/@rcb-repuestoscasablanca?si=JuM60FZVtYOU7pC4" target="_blank" rel="noopener" aria-label="YouTube">▶</a>
+          <a href="https://www.tiktok.com/@rcb_casablanca" target="_blank" rel="noopener" aria-label="TikTok">🎵</a>
         </div>
       </div>
       <div>
@@ -258,10 +260,6 @@
     </div>
   </div>
 </footer>
-
-<div class="social-float-stack">
-  <a href="https://wa.me/593993421505" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
-</div>
 
 <script src="assets/categories.js"></script>
 <script src="assets/products.js"></script>

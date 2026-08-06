@@ -984,185 +984,6 @@
     renderVideosTable();
   }
 
-  /* ================= GALERÍA ================= */
-  const KEY_GALLERY_ITEMS = "rcb_gallery_items";
-  const KEY_GALLERY_CATEGORIES = "rcb_gallery_categories";
-  const getGalleryItems = () => load(KEY_GALLERY_ITEMS, (window.RCB_DEFAULT_GALLERY_ITEMS || []).slice());
-  const saveGalleryItems = list => save(KEY_GALLERY_ITEMS, list);
-  const getGalleryCategories = () => load(KEY_GALLERY_CATEGORIES, (window.RCB_DEFAULT_GALLERY_CATEGORIES || []).slice());
-  const saveGalleryCategories = list => save(KEY_GALLERY_CATEGORIES, list);
-  function galleryCategoryName(id) {
-    const c = getGalleryCategories().find(c => c.id === id);
-    return c ? c.name : "General";
-  }
-
-  const galleryCatNameInput = document.getElementById("gallery-cat-name");
-  const addGalleryCategoryBtn = document.getElementById("add-gallery-category-btn");
-  const galleryCatChipGrid = document.getElementById("gallery-category-chip-grid");
-
-  function renderGalleryCategoryChips() {
-    if (!galleryCatChipGrid) return;
-    const cats = getGalleryCategories();
-    const items = getGalleryItems();
-    galleryCatChipGrid.innerHTML = cats.map(c => {
-      const count = items.filter(i => i.category === c.id).length;
-      return `
-        <div class="admin-chip">
-          <div class="admin-chip-thumb">🖼️</div>
-          <div class="admin-chip-body"><strong>${c.name}</strong><span>${count} foto(s)</span></div>
-          <div class="admin-chip-actions">
-            <button data-gcat-del="${c.id}" style="border:none;background:#fff;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:0.72rem;color:#DC2626;">🗑</button>
-          </div>
-        </div>`;
-    }).join("") || `<p style="color:#94A3B8;font-size:0.85rem;">Aún no hay categorías de galería.</p>`;
-    galleryCatChipGrid.querySelectorAll("[data-gcat-del]").forEach(b => b.addEventListener("click", () => {
-      const id = b.dataset.gcatDel;
-      const used = getGalleryItems().some(i => i.category === id);
-      if (!confirm((used ? "Hay fotos usando esta categoría; quedarán sin categoría válida. " : "") + "¿Eliminar esta categoría de galería?")) return;
-      saveGalleryCategories(getGalleryCategories().filter(c => c.id !== id));
-      renderGalleryCategoryChips();
-      populateGalleryCategorySelect();
-      renderGalleryTable();
-    }));
-  }
-
-  if (addGalleryCategoryBtn) {
-    addGalleryCategoryBtn.addEventListener("click", () => {
-      const name = galleryCatNameInput.value.trim();
-      if (!name) return;
-      const list = getGalleryCategories();
-      const id = uniqueId(slugify(name) || ("gcat-" + Date.now()), list.map(c => c.id));
-      list.push({ id, name });
-      saveGalleryCategories(list);
-      galleryCatNameInput.value = "";
-      renderGalleryCategoryChips();
-      populateGalleryCategorySelect();
-    });
-  }
-
-  const galleryTableBody = document.getElementById("admin-gallery-table-body");
-  const galleryOverlay = document.getElementById("gallery-form-overlay");
-  const galleryForm = document.getElementById("gallery-form");
-  const galleryFormTitle = document.getElementById("gallery-form-title");
-  const galleryCategorySelect = document.getElementById("gallery-field-category");
-  const addGalleryItemBtn = document.getElementById("add-gallery-item-btn");
-  const cancelGalleryBtn = document.getElementById("cancel-gallery-form-btn");
-  const galleryImageInput = document.getElementById("gallery-field-image");
-  const galleryImagePreview = document.getElementById("gallery-image-preview");
-  const galleryImageToolbar = document.getElementById("gallery-image-toolbar");
-
-  let editingGalleryId = null;
-  let currentGalleryImage = null;
-  let currentGalleryImageFit = defaultFit();
-
-  const galleryAdjuster = setupImageAdjuster({
-    box: galleryImagePreview,
-    toolbar: galleryImageToolbar,
-    zoomInBtn: document.getElementById("gallery-zoom-in"),
-    zoomOutBtn: document.getElementById("gallery-zoom-out"),
-    resetBtn: document.getElementById("gallery-reset-fit"),
-    getFit: () => currentGalleryImageFit,
-    setFit: fit => { currentGalleryImageFit = fit; }
-  });
-
-  if (galleryImageInput) {
-    galleryImageInput.addEventListener("change", () => {
-      readImageFile(galleryImageInput, dataUrl => {
-        if (dataUrl === undefined) return;
-        currentGalleryImage = dataUrl;
-        currentGalleryImageFit = defaultFit();
-        galleryImagePreview.innerHTML = dataUrl ? `<img src="${dataUrl}" alt="">` : "Vista previa de la imagen";
-        galleryAdjuster.refresh();
-      });
-    });
-  }
-
-  function populateGalleryCategorySelect() {
-    galleryCategorySelect.innerHTML = getGalleryCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-  }
-
-  function openGalleryForm(id) {
-    editingGalleryId = id || null;
-    const item = id ? getGalleryItems().find(x => x.id === id) : null;
-
-    galleryFormTitle.textContent = item ? "Editar foto" : "Agregar foto";
-    populateGalleryCategorySelect();
-    document.getElementById("gallery-field-caption").value = item ? item.caption : "";
-    galleryCategorySelect.value = item ? item.category : (getGalleryCategories()[0] || {}).id || "";
-    document.getElementById("gallery-field-wide").checked = item ? !!item.wide : false;
-    currentGalleryImage = item ? (item.image || null) : null;
-    currentGalleryImageFit = item && item.imageFit ? { ...item.imageFit } : defaultFit();
-    galleryImagePreview.innerHTML = currentGalleryImage ? `<img src="${currentGalleryImage}" alt="">` : "Vista previa de la imagen";
-    galleryImageInput.value = "";
-    galleryAdjuster.refresh();
-
-    galleryOverlay.classList.add("open");
-  }
-  function closeGalleryForm() { galleryOverlay.classList.remove("open"); galleryForm.reset(); }
-
-  function deleteGalleryItem(id) {
-    if (!confirm("¿Eliminar esta foto de la galería?")) return;
-    saveGalleryItems(getGalleryItems().filter(i => i.id !== id));
-    renderGalleryTable();
-    renderGalleryCategoryChips();
-  }
-
-  if (galleryForm) {
-    galleryForm.addEventListener("submit", e => {
-      e.preventDefault();
-      const caption = document.getElementById("gallery-field-caption").value.trim();
-      if (!caption) return;
-      const list = getGalleryItems();
-
-      const item = {
-        id: editingGalleryId || uniqueId("gal-" + (slugify(caption) || Date.now()), list.map(i => i.id)),
-        caption,
-        category: galleryCategorySelect.value,
-        wide: document.getElementById("gallery-field-wide").checked,
-        image: currentGalleryImage,
-        imageFit: currentGalleryImageFit,
-        icon: "🖼️"
-      };
-
-      if (editingGalleryId) {
-        const idx = list.findIndex(i => i.id === editingGalleryId);
-        if (idx > -1) list[idx] = item;
-      } else {
-        list.push(item);
-      }
-
-      if (!saveGalleryItems(list)) return;
-      closeGalleryForm();
-      renderGalleryTable();
-      renderGalleryCategoryChips();
-    });
-  }
-
-  if (addGalleryItemBtn) addGalleryItemBtn.addEventListener("click", () => openGalleryForm(null));
-  if (cancelGalleryBtn) cancelGalleryBtn.addEventListener("click", closeGalleryForm);
-
-  function renderGalleryTable() {
-    if (!galleryTableBody) return;
-    const list = getGalleryItems();
-    galleryTableBody.innerHTML = list.map(item => {
-      const fit = item.imageFit || defaultFit();
-      const thumb = item.image ? `<img src="${item.image}" alt="" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (item.icon || "🖼️");
-      return `
-      <tr>
-        <td><div class="admin-thumb">${thumb}</div></td>
-        <td>${item.caption}</td>
-        <td>${galleryCategoryName(item.category)}</td>
-        <td>
-          <div class="row-actions">
-            <button data-gallery-edit="${item.id}">Editar</button>
-            <button data-gallery-del="${item.id}" class="del-btn">Eliminar</button>
-          </div>
-        </td>
-      </tr>`;
-    }).join("");
-    galleryTableBody.querySelectorAll("[data-gallery-edit]").forEach(b => b.addEventListener("click", () => openGalleryForm(b.dataset.galleryEdit)));
-    galleryTableBody.querySelectorAll("[data-gallery-del]").forEach(b => b.addEventListener("click", () => deleteGalleryItem(b.dataset.galleryDel)));
-  }
 
   /* ================= NOSOTROS ================= */
   const KEY_ABOUT = "rcb_about";
@@ -1317,16 +1138,29 @@
   }
 
   function saveAboutForm() {
-    const data = collectAboutForm();
-    if (!saveAbout(data)) return;
-    if (!saveSettings(collectSettingsForm())) return;
-    alert("Cambios guardados. Revisa la página Nosotros para verlos.");
+    try {
+      if (!saveAbout(collectAboutForm())) return;
+      alert("Cambios guardados. Revisa la página Nosotros para verlos.");
+    } catch (e) {
+      alert("No se pudo guardar: " + e.message);
+    }
+  }
+  function saveSettingsForm() {
+    try {
+      if (!saveSettings(collectSettingsForm())) return;
+      alert("Cambios guardados. Revisa el pie de página del sitio para verlos.");
+    } catch (e) {
+      alert("No se pudo guardar: " + e.message);
+    }
   }
 
   const saveAboutBtn = document.getElementById("save-about-btn");
   const saveAboutBtnBottom = document.getElementById("save-about-btn-bottom");
   if (saveAboutBtn) saveAboutBtn.addEventListener("click", saveAboutForm);
   if (saveAboutBtnBottom) saveAboutBtnBottom.addEventListener("click", saveAboutForm);
+
+  const saveSettingsBtn = document.getElementById("save-settings-btn");
+  if (saveSettingsBtn) saveSettingsBtn.addEventListener("click", saveSettingsForm);
 
   /* ================= INIT ================= */
   function renderAll() {
@@ -1337,8 +1171,6 @@
     renderPostsTable();
     renderVideoCategoryChips();
     renderVideosTable();
-    renderGalleryCategoryChips();
-    renderGalleryTable();
     fillAboutForm();
   }
 

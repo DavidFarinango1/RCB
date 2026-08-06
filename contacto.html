@@ -6,7 +6,7 @@
 <title>Contactos | RCB - Repuestos Casa Blanca</title>
 <meta name="description" content="Contáctanos y solicita una cotización. Protectores de voltaje, cintas aislantes y repuestos para instalaciones eléctricas, refrigeración y climatización.">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=39">
+<link rel="stylesheet" href="assets/styles.css?v=54">
 </head>
 <body>
 
@@ -19,9 +19,7 @@
         <input type="text" placeholder="Buscar productos, categorías...">
         <button aria-label="Buscar"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Buscar</button>
       </div>
-      <a href="admin.html" class="topbar-admin-link">
-        <span class="ico">👤</span> Administrador
-      </a>
+      <button type="button" class="mobile-search-toggle" id="mobile-search-toggle" aria-label="Buscar"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
     </div>
   </div>
 
@@ -57,7 +55,7 @@
           <h3 style="margin-bottom:16px;">Información de contacto</h3>
           <div class="contact-info-item">
             <span class="ico"><img src="assets/whatsapp.svg" alt="WhatsApp" style="width:22px;height:22px;"></span>
-            <div><strong>WhatsApp</strong><span>099 123 4567</span></div>
+            <div><strong>WhatsApp</strong><span>099 342 1505</span></div>
           </div>
           <div class="contact-info-item">
             <span class="ico">✉️</span>
@@ -71,14 +69,14 @@
             <span class="ico">📍</span>
             <div><strong>Ubicación</strong><span>Ecuador — envíos a todo el país</span></div>
           </div>
-          <a href="https://wa.me/593991234567" class="btn btn-primary" style="width:100%;margin-top:10px;"><img src="assets/whatsapp.svg" alt="" style="width:18px;height:18px;vertical-align:-4px;margin-right:5px;"> Hablar por WhatsApp</a>
+          <a href="https://wa.me/593993421505" class="btn btn-primary" style="width:100%;margin-top:10px;"><img src="assets/whatsapp.svg" alt="" style="width:18px;height:18px;vertical-align:-4px;margin-right:5px;"> Hablar por WhatsApp</a>
         </div>
 
         <div class="card" style="margin-top:20px;">
           <h3 style="margin-bottom:10px;">Síguenos</h3>
           <div class="social-row" style="margin-top:0;">
             <a href="#" aria-label="Facebook" style="background:var(--gris-fondo);color:var(--azul-principal);">📘</a>
-            <a href="#" aria-label="Instagram" style="background:var(--gris-fondo);color:var(--azul-principal);">📷</a>
+            <a href="https://www.instagram.com/rcb_casablanca?igsh=MW91MGpnN2Y0YjdwMQ==" target="_blank" rel="noopener" aria-label="Instagram" style="background:var(--gris-fondo);color:var(--azul-principal);">📷</a>
             <a href="#" aria-label="YouTube" style="background:var(--gris-fondo);color:var(--azul-principal);">▶</a>
             <a href="#" aria-label="TikTok" style="background:var(--gris-fondo);color:var(--azul-principal);">🎵</a>
           </div>
@@ -133,7 +131,7 @@
         <p>Protección que se nota, calidad que se queda.</p>
         <div class="social-row">
           <a href="#" aria-label="Facebook">📘</a>
-          <a href="#" aria-label="Instagram">📷</a>
+          <a href="https://www.instagram.com/rcb_casablanca?igsh=MW91MGpnN2Y0YjdwMQ==" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
           <a href="#" aria-label="YouTube">▶</a>
           <a href="#" aria-label="TikTok">🎵</a>
         </div>
@@ -163,7 +161,7 @@
       <div>
         <h4>Atención al cliente</h4>
         <ul>
-          <li id="footer-whatsapp">💬 WhatsApp: 099 123 4567</li>
+          <li id="footer-whatsapp">💬 WhatsApp: 099 342 1505</li>
           <li id="footer-email">✉️ ventas@rcb.com.ec</li>
           <li id="footer-hours-weekday">🕐 Lunes a Viernes: 8:30 - 18:00</li>
           <li id="footer-hours-saturday">🕐 Sábados: 9:00 - 13:00</li>
@@ -178,11 +176,7 @@
 </footer>
 
 <div class="social-float-stack">
-  <a href="#" class="social-float-btn fb" aria-label="Facebook"></a>
-  <a href="#" class="social-float-btn ig" aria-label="Instagram"></a>
-  <a href="#" class="social-float-btn tiktok" aria-label="TikTok"></a>
-  <a href="#" class="social-float-btn yt" aria-label="YouTube"></a>
-  <a href="https://wa.me/593991234567" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
+  <a href="https://wa.me/593993421505" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
 </div>
 
 <script src="assets/categories.js"></script>
@@ -214,7 +208,7 @@
         if (category) text += `\nCategoría de interés: ${category}`;
         text += `\n\nDetalle:\n${message}`;
 
-        window.open(`https://wa.me/593991234567?text=${encodeURIComponent(text)}`, '_blank');
+        window.open(`https://wa.me/593993421505?text=${encodeURIComponent(text)}`, '_blank');
       });
     }
   });

@@ -18,6 +18,16 @@
   const loginForm = document.getElementById("login-form");
   const loginError = document.getElementById("login-error");
   const logoutBtn = document.getElementById("logout-btn");
+  const loginPassToggle = document.getElementById("login-pass-toggle");
+  if (loginPassToggle) {
+    loginPassToggle.addEventListener("click", () => {
+      const passInput = document.getElementById("login-pass");
+      const showing = passInput.type === "text";
+      passInput.type = showing ? "password" : "text";
+      loginPassToggle.textContent = showing ? "👁️" : "🙈";
+      loginPassToggle.setAttribute("aria-label", showing ? "Mostrar contraseña" : "Ocultar contraseña");
+    });
+  }
 
   function isLoggedIn() { return sessionStorage.getItem(SESSION_KEY) === "true"; }
   function showApp() { loginBox.style.display = "none"; shell.classList.add("open"); renderAll(); }
@@ -42,6 +52,22 @@
   /* ---------- Pestañas del sidebar ---------- */
   const tabLinks = document.querySelectorAll("[data-tab]");
   const tabPanels = document.querySelectorAll("[data-tab-panel]");
+  const adminSidebar = document.getElementById("admin-sidebar");
+  const adminDrawerBackdrop = document.getElementById("admin-drawer-backdrop");
+  const adminMobileTitle = document.getElementById("admin-mobile-title");
+
+  function closeDrawer() {
+    if (adminSidebar) adminSidebar.classList.remove("open");
+    if (adminDrawerBackdrop) adminDrawerBackdrop.classList.remove("open");
+  }
+  function openDrawer() {
+    if (adminSidebar) adminSidebar.classList.add("open");
+    if (adminDrawerBackdrop) adminDrawerBackdrop.classList.add("open");
+  }
+  const adminMenuToggle = document.getElementById("admin-menu-toggle");
+  if (adminMenuToggle) adminMenuToggle.addEventListener("click", openDrawer);
+  if (adminDrawerBackdrop) adminDrawerBackdrop.addEventListener("click", closeDrawer);
+
   tabLinks.forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
@@ -51,8 +77,18 @@
       tabPanels.forEach(panel => {
         panel.style.display = panel.dataset.tabPanel === target ? "" : "none";
       });
+      if (adminMobileTitle) adminMobileTitle.textContent = link.textContent.trim().replace(/^\S+\s/, "").replace(/\s*\d+\s*$/, "");
+      closeDrawer();
     });
   });
+
+  function updateNavBadges() {
+    const setBadge = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
+    setBadge("nav-badge-productos", getProducts().length);
+    setBadge("nav-badge-categorias", getCategories().length);
+    setBadge("nav-badge-blog", getPosts().length);
+    setBadge("nav-badge-videos", getVideos().length);
+  }
 
   /* ---------- Almacenamiento ---------- */
   function load(key, fallback) {
@@ -276,6 +312,7 @@
   }
 
   function renderTable() {
+    updateNavBadges();
     const fullList = getProducts();
     renderStats(fullList);
     renderProductFilterPills();
@@ -481,6 +518,7 @@
   if (cancelCategoryBtn) cancelCategoryBtn.addEventListener("click", closeCategoryForm);
 
   function renderCategoryChips() {
+    updateNavBadges();
     if (!catChipGrid) return;
     const cats = getCategories();
     const products = getProducts();
@@ -722,6 +760,7 @@
   if (cancelPostBtn) cancelPostBtn.addEventListener("click", closePostForm);
 
   function renderPostsTable() {
+    updateNavBadges();
     if (!postTableBody) return;
     const list = getPosts();
     const featuredIds = list.filter(p => p.featured).map(p => p.id);
@@ -903,6 +942,7 @@
   if (cancelVideoBtn) cancelVideoBtn.addEventListener("click", closeVideoForm);
 
   function renderVideosTable() {
+    updateNavBadges();
     if (!videoTableBody) return;
     const list = getVideos();
     videoTableBody.innerHTML = list.map(v => {

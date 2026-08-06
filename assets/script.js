@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
             $${Number(p.price).toFixed(2)}
           </p>` : ''}
           <div class="prod-actions">
-            <a href="https://wa.me/593991234567?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary btn-sm">Cotizar</a>
+            <a href="https://wa.me/593993421505?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary btn-sm">Cotizar</a>
             <a href="productos.html?cat=${p.category}" class="btn btn-tertiary btn-sm">Ver más</a>
           </div>
         </div>
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let categories = window.RCB_DEFAULT_CATEGORIES || [];
     const saved = localStorage.getItem('rcb_categories');
     if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
-    headerSearchCategory.innerHTML = '<option value="">Todas las categorías</option>' +
+    headerSearchCategory.innerHTML = '<option value="">Categorías</option>' +
       categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     const paramsCat = new URLSearchParams(window.location.search).get('cat');
     if (paramsCat) headerSearchCategory.value = paramsCat;
@@ -167,6 +167,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const navbar = document.querySelector('.navbar');
   if (toggle && navbar) {
     toggle.addEventListener('click', () => navbar.classList.toggle('nav-open'));
+  }
+
+  const searchToggle = document.getElementById('mobile-search-toggle');
+  const topbar = document.querySelector('.topbar');
+  if (searchToggle && topbar) {
+    searchToggle.addEventListener('click', () => {
+      topbar.classList.toggle('search-open');
+      if (topbar.classList.contains('search-open')) {
+        const input = topbar.querySelector('.search-box input');
+        if (input) input.focus();
+      }
+    });
   }
 
   const tabs = document.querySelectorAll('.tab-row .tab');

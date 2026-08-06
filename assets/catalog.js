@@ -126,7 +126,7 @@
               ${money(p.price)}
             </p>` : ""}
             <div class="prod-actions">
-              <a href="https://wa.me/593991234567?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary btn-sm">Cotizar</a>
+              <a href="https://wa.me/593993421505?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary btn-sm">Cotizar</a>
               <button class="btn btn-tertiary btn-sm" data-detail="${p.id}">Ver detalles</button>
             </div>
           </div>
@@ -177,7 +177,7 @@
       </p>` : ""}
       <p style="margin:14px 0;color:#4B5563;">${p.description || ""}</p>
       <ul class="spec-list">${(p.specs || []).map(s => `<li>✔ ${s}</li>`).join("")}</ul>
-      <a href="https://wa.me/593991234567?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary" style="margin-top:16px;">💬 Cotizar por WhatsApp</a>
+      <a href="https://wa.me/593993421505?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary" style="margin-top:16px;">💬 Cotizar por WhatsApp</a>
     `;
     modal.classList.add("open");
   }

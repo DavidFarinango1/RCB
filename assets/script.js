@@ -1,9 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  if (window.RCB_DATA_READY) await window.RCB_DATA_READY;
+
   const homeFeaturedVideo = document.getElementById('home-featured-video');
   if (homeFeaturedVideo) {
-    let videos = window.RCB_DEFAULT_VIDEOS || [];
-    const savedVideos = localStorage.getItem('rcb_videos');
-    if (savedVideos) { try { videos = JSON.parse(savedVideos); } catch (e) { /* usa los de por defecto */ } }
+    const videos = window.RCB_DEFAULT_VIDEOS || [];
     const featured = videos.find(v => v.home);
     if (featured) {
       const youtubeUrl = featured.youtubeId ? `https://www.youtube.com/watch?v=${featured.youtubeId}` : 'videos.html';
@@ -27,15 +27,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const homeGrid = document.getElementById('home-category-grid');
   if (homeGrid) {
-    let categories = window.RCB_DEFAULT_CATEGORIES || [];
-    const saved = localStorage.getItem('rcb_categories');
-    if (saved) {
-      try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ }
-    }
+    const categories = window.RCB_DEFAULT_CATEGORIES || [];
     homeGrid.innerHTML = categories.map(c => {
       const fit = c.imageFit || { scale: 1, x: 0, y: 0 };
       const photo = c.image
-        ? `<img src="${c.image}" alt="${c.name}" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
+        ? `<img src="${c.image}" alt="${c.name}" loading="lazy" decoding="async" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
         : '<span style="font-size:2rem;">🗂️</span>';
       return `
       <div class="cat-card has-photo">
@@ -50,20 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getHomeProducts() {
-    let products = window.RCB_DEFAULT_PRODUCTS || [];
-    const saved = localStorage.getItem('rcb_products');
-    if (saved) {
-      try { products = JSON.parse(saved); } catch (e) { /* usa los de por defecto */ }
-    }
-    return products;
+    return window.RCB_DEFAULT_PRODUCTS || [];
   }
   function getHomeCategories() {
-    let categories = window.RCB_DEFAULT_CATEGORIES || [];
-    const saved = localStorage.getItem('rcb_categories');
-    if (saved) {
-      try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ }
-    }
-    return categories;
+    return window.RCB_DEFAULT_CATEGORIES || [];
   }
   function homeCategoryName(categories, id) {
     const c = categories.find(c => c.id === id);
@@ -72,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function homeProductCardHtml(p, categories) {
     const fit = p.imageFit || { scale: 1, x: 0, y: 0 };
     const thumb = p.image
-      ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
+      ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
       : (p.icon || '📦');
     const tag = p.label === 'oferta' ? '<span class="prod-tag tag-oferta">OFERTA</span>'
       : p.label === 'nuevo' ? '<span class="prod-tag tag-nuevo">NUEVO</span>' : '';
@@ -123,9 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerSearchCategory = document.getElementById('header-search-category');
 
   if (headerSearchCategory) {
-    let categories = window.RCB_DEFAULT_CATEGORIES || [];
-    const saved = localStorage.getItem('rcb_categories');
-    if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
+    const categories = window.RCB_DEFAULT_CATEGORIES || [];
     headerSearchCategory.innerHTML = '<option value="">Categorías</option>' +
       categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     const paramsCat = new URLSearchParams(window.location.search).get('cat');

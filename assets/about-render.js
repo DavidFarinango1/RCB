@@ -2,10 +2,9 @@
    assets/about-data.js, o de lo que haya guardado el panel administrador.
    Se usa tanto en nosotros.html (página completa) como en index.html
    (resumen "Sobre RCB"). */
-(function () {
+(async function () {
+  await window.RCB_DATA_READY;
   function getAbout() {
-    const saved = localStorage.getItem("rcb_about");
-    if (saved) { try { return { ...window.RCB_DEFAULT_ABOUT, ...JSON.parse(saved) }; } catch (e) { /* usa el de por defecto */ } }
     return window.RCB_DEFAULT_ABOUT || {};
   }
   function fitStyle(fit) {

@@ -1,17 +1,11 @@
-/* Panel administrador — lógica 100% client-side (localStorage).
-   ADVERTENCIA: esto es una demo funcional para gestionar el catálogo desde
-   el navegador. NO es un backend real: las credenciales están en este
-   archivo (visibles en el código fuente) y los datos se guardan solo en el
-   navegador de quien los edita. Para que los cambios se vean para todos los
-   visitantes del sitio hace falta un backend real (ej. Firebase) y una base
-   de datos compartida. */
+/* Panel administrador. Los datos se guardan en una base de datos MySQL real
+   a través de backend/api.php — los cambios se ven para todos los visitantes,
+   en cualquier dispositivo. El inicio de sesión también lo valida el servidor. */
 (function () {
   const KEY_PRODUCTS = "rcb_products";
   const KEY_CATEGORIES = "rcb_categories";
   const SESSION_KEY = "rcb_admin_session";
-  const ADMIN_USER = "admin";
-  const ADMIN_PASS = "rcb2026";
-  const MAX_IMAGE_BYTES = 1.5 * 1024 * 1024;
+  const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
   const loginBox = document.getElementById("admin-login");
   const shell = document.getElementById("admin-shell");
@@ -33,21 +27,40 @@
   function showApp() { loginBox.style.display = "none"; shell.classList.add("open"); renderAll(); }
   function showLogin() { shell.classList.remove("open"); loginBox.style.display = "flex"; }
 
+  /* ---------- Datos: caché en memoria respaldado por backend/api.php (MySQL) ---------- */
+  const CACHE = {};
+  const RESOURCE_KEYS = ["products", "categories", "posts", "blog_categories", "videos", "video_categories", "about", "settings"];
+  async function bootstrapCache() {
+    await Promise.all(RESOURCE_KEYS.map(async resource => {
+      try {
+        CACHE["rcb_" + resource] = await RCB_API.get(resource);
+      } catch (e) {
+        console.error("No se pudo cargar '" + resource + "' del servidor:", e);
+      }
+    }));
+  }
+
   if (loginForm) {
-    loginForm.addEventListener("submit", e => {
+    loginForm.addEventListener("submit", async e => {
       e.preventDefault();
       const user = document.getElementById("login-user").value.trim();
       const pass = document.getElementById("login-pass").value;
-      if (user === ADMIN_USER && pass === ADMIN_PASS) {
+      try {
+        await RCB_API.login(user, pass);
         sessionStorage.setItem(SESSION_KEY, "true");
         loginError.style.display = "none";
+        await bootstrapCache();
         showApp();
-      } else {
+      } catch (err) {
         loginError.style.display = "block";
       }
     });
   }
-  if (logoutBtn) logoutBtn.addEventListener("click", () => { sessionStorage.removeItem(SESSION_KEY); showLogin(); });
+  if (logoutBtn) logoutBtn.addEventListener("click", () => {
+    RCB_API.logout().catch(() => {});
+    sessionStorage.removeItem(SESSION_KEY);
+    showLogin();
+  });
 
   /* ---------- Pestañas del sidebar ---------- */
   const tabLinks = document.querySelectorAll("[data-tab]");
@@ -90,20 +103,22 @@
     setBadge("nav-badge-videos", getVideos().length);
   }
 
-  /* ---------- Almacenamiento ---------- */
+  /* ---------- Almacenamiento (caché en memoria + backend/api.php) ---------- */
   function load(key, fallback) {
-    const saved = localStorage.getItem(key);
-    if (saved) { try { return JSON.parse(saved); } catch (e) { /* ignore */ } }
-    return fallback;
+    const cached = CACHE[key];
+    if (cached === undefined || cached === null) return fallback;
+    /* Una lista vacía en el servidor = "sin datos": se muestran los de ejemplo,
+       igual que hacen las páginas públicas. Al guardar, pasan a ser reales. */
+    if (Array.isArray(cached) && cached.length === 0) return fallback;
+    return cached;
   }
   function save(key, value) {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-      return true;
-    } catch (e) {
-      alert("No se pudo guardar: el almacenamiento de este navegador está lleno (localStorage). Esto pasa cuando ya hay muchas imágenes/PDFs guardados. Elimina algún producto/imagen/PDF pesado, o usa \"Restaurar catálogo original\" para liberar espacio, e inténtalo de nuevo.");
-      return false;
-    }
+    CACHE[key] = value;
+    const resource = key.replace(/^rcb_/, "");
+    RCB_API.save(resource, value).catch(e => {
+      alert("No se pudo guardar en el servidor: " + e.message);
+    });
+    return true;
   }
 
   const getProducts = () => load(KEY_PRODUCTS, (window.RCB_DEFAULT_PRODUCTS || []).slice());
@@ -125,18 +140,24 @@
     while (existingIds.includes(id)) { id = base + "-" + n; n++; }
     return id;
   }
+  /* Sube la imagen al servidor y entrega su URL (ya no base64: las imágenes
+     se guardan como archivos reales y las páginas cargan mucho más rápido). */
   function readImageFile(input, callback) {
     const file = input.files && input.files[0];
     if (!file) { callback(null); return; }
     if (file.size > MAX_IMAGE_BYTES) {
-      alert("La imagen supera 1.5 MB. Elige una más liviana.");
+      alert("La imagen supera 8 MB. Elige una más liviana.");
       input.value = "";
       callback(undefined);
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => callback(reader.result);
-    reader.readAsDataURL(file);
+    RCB_API.uploadImage(file)
+      .then(url => callback(url))
+      .catch(err => {
+        alert(err.message || "No se pudo subir la imagen.");
+        input.value = "";
+        callback(undefined);
+      });
   }
 
   /* ---------- Ajustador de imagen (mover / zoom / restablecer) ---------- */
@@ -215,7 +236,6 @@
   const formTitle = document.getElementById("form-title");
   const addBtn = document.getElementById("add-product-btn");
   const cancelBtn = document.getElementById("cancel-form-btn");
-  const resetBtn = document.getElementById("reset-catalog-btn");
   const categorySelect = document.getElementById("field-category");
   const productImageInput = document.getElementById("field-image");
   const productImagePreview = document.getElementById("product-image-preview");
@@ -422,14 +442,6 @@
 
   if (addBtn) addBtn.addEventListener("click", () => openForm(null));
   if (cancelBtn) cancelBtn.addEventListener("click", closeForm);
-  if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      if (!confirm("Esto restaurará el catálogo de productos original y se perderán los cambios guardados en este navegador. ¿Continuar?")) return;
-      localStorage.removeItem(KEY_PRODUCTS);
-      renderTable();
-      renderCategoryChips();
-    });
-  }
 
   /* ================= CATEGORÍAS ================= */
   const catOverlay = document.getElementById("category-form-overlay");
@@ -989,9 +1001,7 @@
   const KEY_ABOUT = "rcb_about";
   function getAbout() {
     const defaults = window.RCB_DEFAULT_ABOUT || {};
-    const saved = localStorage.getItem(KEY_ABOUT);
-    if (saved) { try { return { ...defaults, ...JSON.parse(saved) }; } catch (e) { /* ignore */ } }
-    return { ...defaults };
+    return { ...defaults, ...load(KEY_ABOUT, {}) };
   }
   function saveAbout(data) { return save(KEY_ABOUT, data); }
 
@@ -1091,9 +1101,7 @@
   const KEY_SETTINGS = "rcb_settings";
   function getSettings() {
     const defaults = window.RCB_DEFAULT_SETTINGS || {};
-    const saved = localStorage.getItem(KEY_SETTINGS);
-    if (saved) { try { return { ...defaults, ...JSON.parse(saved) }; } catch (e) { /* ignore */ } }
-    return { ...defaults };
+    return { ...defaults, ...load(KEY_SETTINGS, {}) };
   }
   function saveSettings(data) { return save(KEY_SETTINGS, data); }
   function collectSettingsForm() {
@@ -1174,5 +1182,5 @@
     fillAboutForm();
   }
 
-  if (isLoggedIn()) showApp();
+  if (isLoggedIn()) { bootstrapCache().then(showApp); }
 })();

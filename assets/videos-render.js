@@ -1,13 +1,8 @@
 /* Renderiza videos.html a partir de assets/videos-data.js,
    o de lo que haya guardado el panel administrador en localStorage. */
-(function () {
-  function load(key, fallback) {
-    const saved = localStorage.getItem(key);
-    if (saved) { try { return JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
-    return fallback;
-  }
-  const getCategories = () => load("rcb_video_categories", window.RCB_DEFAULT_VIDEO_CATEGORIES || []);
-  const getVideos = () => load("rcb_videos", window.RCB_DEFAULT_VIDEOS || []);
+(async function () {
+  const getCategories = () => window.RCB_DEFAULT_VIDEO_CATEGORIES || [];
+  const getVideos = () => window.RCB_DEFAULT_VIDEOS || [];
   function categoryName(id) {
     const c = getCategories().find(c => c.id === id);
     return c ? c.name : "General";
@@ -21,16 +16,17 @@
   }
   function thumbHtml(v) {
     if (v.image) {
-      return `<img src="${v.image}" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;${fitStyle(v.imageFit)}">`;
+      return `<img src="${v.image}" alt="${v.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;${fitStyle(v.imageFit)}">`;
     }
     if (v.youtubeId) {
-      return `<img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="${v.title}" style="width:100%;height:100%;object-fit:cover;">`;
+      return `<img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="${v.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;">`;
     }
     return v.icon || "🎬";
   }
 
   const grid = document.getElementById("video-grid");
   if (!grid) return; // no estamos en videos.html
+  await window.RCB_DATA_READY;
 
   const allVideos = getVideos();
   let filter = "todos";

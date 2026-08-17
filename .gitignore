@@ -1,2 +1,5 @@
 .claude/
 .firebase/
+
+# Credenciales reales de la base de datos (nunca subir a GitHub)
+backend/config.php

@@ -1,16 +1,12 @@
 /* Renderiza blog.html a partir de los datos de assets/posts.js,
    o de los que haya guardado el panel administrador en localStorage. */
-(function () {
+(async function () {
   const PAGE_SIZE = 6;
 
   function getPosts() {
-    const saved = localStorage.getItem("rcb_posts");
-    if (saved) { try { return JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
     return window.RCB_DEFAULT_POSTS || [];
   }
   function getCategories() {
-    const saved = localStorage.getItem("rcb_blog_categories");
-    if (saved) { try { return JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
     return window.RCB_BLOG_CATEGORIES || [];
   }
   function categoryName(id) {
@@ -23,7 +19,7 @@
   }
   function thumbHtml(p, extraStyle) {
     return p.image
-      ? `<img src="${p.image}" alt="${p.title}" style="width:100%;height:100%;object-fit:cover;${fitStyle(p.imageFit)}${extraStyle || ""}">`
+      ? `<img src="${p.image}" alt="${p.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;${fitStyle(p.imageFit)}${extraStyle || ""}">`
       : (p.icon || "📰");
   }
   function extractYoutubeId(url) {
@@ -59,6 +55,7 @@
 
   const grid = document.getElementById("blog-post-grid");
   if (!grid) return; // no estamos en blog.html
+  await window.RCB_DATA_READY;
 
   const allPosts = getPosts();
   const featured = allPosts.find(p => p.featured) || allPosts[0];

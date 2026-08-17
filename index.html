@@ -202,7 +202,7 @@
             <label>Cuéntanos qué necesitas *</label>
             <textarea id="home-quote-message" rows="4" required placeholder="Ej: Necesito 10 protectores de voltaje de 220V para un proyecto residencial."></textarea>
           </div>
-          <button type="submit" class="btn btn-primary" style="width:100%;">💬 Enviar solicitud por WhatsApp</button>
+          <button type="submit" class="btn btn-primary" style="width:100%;">💬 Enviar</button>
         </form>
       </div>
     </div>
@@ -261,6 +261,8 @@
   </div>
 </footer>
 
+<script src="assets/api-client.js"></script>
+<script src="assets/public-data.js"></script>
 <script src="assets/categories.js"></script>
 <script src="assets/products.js"></script>
 <script src="assets/videos-data.js"></script>
@@ -270,12 +272,11 @@
 <script src="assets/settings-render.js"></script>
 <script src="assets/social-icons.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (window.RCB_DATA_READY) await window.RCB_DATA_READY;
     const select = document.getElementById('home-quote-category');
     if (select) {
-      let categories = window.RCB_DEFAULT_CATEGORIES || [];
-      const saved = localStorage.getItem('rcb_categories');
-      if (saved) { try { categories = JSON.parse(saved); } catch (e) { /* usa las de por defecto */ } }
+      const categories = window.RCB_DEFAULT_CATEGORIES || [];
       select.innerHTML = '<option value="">Selecciona una categoría (opcional)</option>' +
         categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
     }
@@ -291,13 +292,23 @@
         const category = document.getElementById('home-quote-category').value;
         const message = document.getElementById('home-quote-message').value.trim();
 
-        let text = `Hola, quiero solicitar una cotización.\n\nNombre: ${name}\nTeléfono: ${phone}`;
-        if (email) text += `\nCorreo: ${email}`;
-        if (company) text += `\nEmpresa: ${company}`;
-        if (category) text += `\nCategoría de interés: ${category}`;
-        text += `\n\nDetalle:\n${message}`;
-
-        window.open(`https://wa.me/593993421505?text=${encodeURIComponent(text)}`, '_blank');
+        fetch('backend/send-quote.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, email, company, category, message })
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.ok) {
+              alert('¡Gracias! Tu solicitud fue enviada. Te contactaremos pronto.');
+              form.reset();
+            } else {
+              alert('No se pudo enviar la solicitud. Intenta de nuevo o escríbenos por WhatsApp.');
+            }
+          })
+          .catch(() => {
+            alert('No se pudo enviar la solicitud. Revisa tu conexión e intenta de nuevo.');
+          });
       });
     }
   });

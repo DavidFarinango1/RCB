@@ -1,21 +1,13 @@
 /* Lógica del catálogo (productos.html).
    Lee productos y categorías desde localStorage si el admin los editó,
    si no, usa los datos por defecto de products.js / categories.js */
-(function () {
-  const KEY_PRODUCTS = "rcb_products";
-  const KEY_CATEGORIES = "rcb_categories";
-  const KEY_SUBCATEGORIES = "rcb_subcategories";
+(async function () {
+  await window.RCB_DATA_READY;
   const PAGE_SIZE = 9;
 
-  function load(key, fallback) {
-    const saved = localStorage.getItem(key);
-    if (saved) { try { return JSON.parse(saved); } catch (e) { /* ignore */ } }
-    return fallback;
-  }
-
-  const getProducts = () => load(KEY_PRODUCTS, window.RCB_DEFAULT_PRODUCTS || []);
-  const getCategories = () => load(KEY_CATEGORIES, window.RCB_DEFAULT_CATEGORIES || []);
-  const getSubcategories = () => load(KEY_SUBCATEGORIES, window.RCB_DEFAULT_SUBCATEGORIES || []);
+  const getProducts = () => window.RCB_DEFAULT_PRODUCTS || [];
+  const getCategories = () => window.RCB_DEFAULT_CATEGORIES || [];
+  const getSubcategories = () => window.RCB_DEFAULT_SUBCATEGORIES || [];
 
   function categoryName(id) {
     const c = getCategories().find(c => c.id === id);
@@ -111,7 +103,7 @@
       if (emptyState) emptyState.style.display = "none";
       grid.innerHTML = pageItems.map(p => {
         const fit = p.imageFit || { scale: 1, x: 0, y: 0 };
-        const thumb = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📦");
+        const thumb = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📦");
         const tag = p.label === "oferta" ? '<span class="prod-tag tag-oferta">OFERTA</span>'
           : p.label === "nuevo" ? '<span class="prod-tag tag-nuevo">NUEVO</span>' : "";
         return `

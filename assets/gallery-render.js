@@ -48,7 +48,7 @@
     if (emptyState) emptyState.style.display = "none";
     grid.innerHTML = list.map(item => {
       const photo = item.image
-        ? `<img src="${item.image}" alt="${item.caption}" style="${fitStyle(item.imageFit)}">`
+        ? `<img src="${item.image}" alt="${item.caption}" loading="lazy" decoding="async" style="${fitStyle(item.imageFit)}">`
         : (item.icon || "🖼️");
       return `
         <div class="gallery-item">

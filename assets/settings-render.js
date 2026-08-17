@@ -1,9 +1,8 @@
 /* Aplica los datos de "Atención al cliente" (footer) guardados desde el
    panel administrador, o los valores por defecto de settings-data.js. */
-(function () {
+(async function () {
+  await window.RCB_DATA_READY;
   function getSettings() {
-    const saved = localStorage.getItem("rcb_settings");
-    if (saved) { try { return { ...window.RCB_DEFAULT_SETTINGS, ...JSON.parse(saved) }; } catch (e) { /* usa los de por defecto */ } }
     return window.RCB_DEFAULT_SETTINGS || {};
   }
 

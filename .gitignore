@@ -3,3 +3,7 @@
 
 # Credenciales reales de la base de datos (nunca subir a GitHub)
 backend/config.php
+
+# Imagenes subidas desde el panel: viven en el servidor, no en el repositorio
+backend/uploads/*
+!backend/uploads/.htaccess

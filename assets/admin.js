@@ -29,7 +29,7 @@
 
   /* ---------- Datos: caché en memoria respaldado por backend/api.php (MySQL) ---------- */
   const CACHE = {};
-  const RESOURCE_KEYS = ["products", "categories", "posts", "blog_categories", "videos", "video_categories", "about", "settings"];
+  const RESOURCE_KEYS = ["products", "categories", "posts", "blog_categories", "videos", "video_categories", "about", "settings", "sections"];
   async function bootstrapCache() {
     await Promise.all(RESOURCE_KEYS.map(async resource => {
       try {
@@ -1170,6 +1170,284 @@
   const saveSettingsBtn = document.getElementById("save-settings-btn");
   if (saveSettingsBtn) saveSettingsBtn.addEventListener("click", saveSettingsForm);
 
+  /* ================= SECCIONES (banners del sitio) ================= */
+  /* Permite cambiar título, texto e imagen de fondo del encabezado de
+     Inicio, Productos, Blog, Videos y Contacto. */
+  const KEY_SECTIONS = "rcb_sections";
+  const SECTION_LIST = [
+    /* medida = tamaño recomendado de la imagen para que entre sin recortes
+       (es la proporción real del banner de esa página). */
+    { id: "inicio", label: "Inicio", page: "index.html", medida: "1600 × 620 px" },
+    { id: "productos", label: "Productos", page: "productos.html", medida: "1600 × 320 px" },
+    { id: "blog", label: "Blog", page: "blog.html", medida: "1600 × 320 px" },
+    { id: "videos", label: "Videos", page: "videos.html", medida: "1600 × 320 px" },
+    { id: "contacto", label: "Contacto", page: "contacto.html", medida: "1600 × 320 px" }
+  ];
+
+  function getSections() {
+    const defaults = window.RCB_DEFAULT_SECTIONS || {};
+    const saved = load(KEY_SECTIONS, {}) || {};
+    const out = {};
+    SECTION_LIST.forEach(s => {
+      out[s.id] = { ...(defaults[s.id] || {}), ...(saved[s.id] || {}) };
+    });
+    return out;
+  }
+  function saveSections(data) { return save(KEY_SECTIONS, data); }
+
+  /* Estado en memoria mientras se edita (la imagen ya viene subida como URL). */
+  let sectionsDraft = null;
+  const sectionEditorsBox = document.getElementById("section-editors");
+  const sectionPicker = document.getElementById("section-picker");
+
+  function sectionEditorHtml(s, data) {
+    const esInicio = s.id === "inicio";
+    const val = v => String(v == null ? "" : v).replace(/"/g, "&quot;");
+    const pos = data.imagePos || "center center";
+    const opt = (v, txt) => `<option value="${v}"${pos === v ? " selected" : ""}>${txt}</option>`;
+
+    const features = esInicio ? `
+      <hr style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
+      <h2 style="font-size:1rem;margin-bottom:4px;">Destacados del banner</h2>
+      <p style="font-size:0.78rem;color:#64748B;margin-bottom:10px;">Los tres textos cortos que aparecen sobre la imagen de Inicio.</p>
+      ${[0, 1, 2].map(i => {
+        const f = (data.features || [])[i] || {};
+        return `<div class="form-row" style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px;">
+          <input type="text" data-sec-feature-title="${i}" placeholder="Ej: CALIDAD GARANTIZADA" value="${val(f.title)}">
+          <input type="text" data-sec-feature-text="${i}" placeholder="Ej: Productos probados y certificados" value="${val(f.text)}">
+        </div>`;
+      }).join("")}` : "";
+
+    return `
+      <div class="section-editor" data-section-editor="${s.id}" style="display:none;">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:16px;">
+          Banner de la página <a href="${s.page}" target="_blank">${s.label}</a>.
+        </p>
+
+        <div class="section-preview-wrap">
+          <div class="section-preview-label">
+            <span>Vista previa</span>
+            <em>Se actualiza mientras escribes. Nada se publica hasta que pulses “Guardar cambios”.</em>
+          </div>
+          <div class="section-preview ${esInicio ? "is-hero" : "is-page"}" data-sec-banner>
+            <div class="section-preview-inner">
+              <h3 data-prev-title></h3>
+              <p data-prev-subtitle></p>
+              ${esInicio ? '<div class="section-preview-features" data-prev-features></div>' : ""}
+            </div>
+          </div>
+          <div class="section-preview-state" data-sec-state></div>
+        </div>
+        <div class="form-row">
+          <label>Título</label>
+          <textarea data-sec-title rows="2" placeholder="Título del banner">${val(data.title).replace(/&quot;/g, '"')}</textarea>
+          <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">Puedes usar Enter para partir el título en dos líneas.</p>
+        </div>
+        ${esInicio ? `
+        <div class="form-row">
+          <label>Palabra destacada en azul (opcional)</label>
+          <input type="text" data-sec-accent placeholder="Ej: tu hogar" value="${val(data.accent)}">
+          <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">Debe ser una parte exacta del título de arriba.</p>
+        </div>` : ""}
+        <div class="form-row">
+          <label>Texto debajo del título</label>
+          <textarea data-sec-subtitle rows="3">${val(data.subtitle).replace(/&quot;/g, '"')}</textarea>
+        </div>
+        <div class="form-row">
+          <label>Imagen de fondo (máx. 8 MB)</label>
+          <input type="file" data-sec-image accept="image/*">
+          <p class="section-size-hint">
+            📐 Medida recomendada: <strong>${s.medida}</strong> (horizontal).
+            Una imagen cuadrada se recorta arriba y abajo, porque el banner es mucho más ancho que alto.
+          </p>
+        </div>
+        <div class="form-row">
+          <label>Posición de la imagen</label>
+          <select data-sec-pos>
+            ${opt("center left", "Izquierda")}
+            ${opt("center center", "Centro")}
+            ${opt("center right", "Derecha")}
+          </select>
+          <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">Sirve para que no se corte lo importante de la foto.</p>
+        </div>
+        <div class="form-row">
+          <label>Oscurecer la imagen: <span data-sec-overlay-val>${Number(data.overlay) || 0}%</span></label>
+          <input type="range" data-sec-overlay min="0" max="100" step="5" value="${Number(data.overlay) || 0}" style="width:100%;max-width:520px;">
+          <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">Súbelo si la imagen es muy cargada y el texto no se lee bien. En 0% la imagen se ve tal cual.</p>
+        </div>
+        <div class="form-row">
+          <label>Degradado azul lateral: <span data-sec-tint-val>${data.tint == null ? 100 : Number(data.tint)}%</span></label>
+          <input type="range" data-sec-tint min="0" max="100" step="5" value="${data.tint == null ? 100 : Number(data.tint)}" style="width:100%;max-width:520px;">
+          <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">Es el azul que cubre el lado izquierdo. Bájalo para que la imagen se vea también ahí; súbelo si el título no se lee. 100% es el diseño original.</p>
+        </div>
+        ${features}
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-primary btn-sm" id="save-sections-btn-${s.id}">Guardar cambios</button>
+          <button type="button" class="btn btn-tertiary btn-sm" data-sec-discard>Descartar cambios</button>
+        </div>
+      </div>`;
+  }
+
+  /* Lee lo que hay ahora mismo en el formulario de una sección (sin guardarlo). */
+  function readSectionForm(id) {
+    const box = sectionEditorsBox.querySelector(`[data-section-editor="${id}"]`);
+    if (!box) return null;
+    const pick = sel => box.querySelector(sel);
+    const data = {
+      title: (pick("[data-sec-title]") || {}).value || "",
+      subtitle: (pick("[data-sec-subtitle]") || {}).value || "",
+      imagePos: (pick("[data-sec-pos]") || {}).value || "center center",
+      overlay: Number((pick("[data-sec-overlay]") || {}).value || 0),
+      tint: pick("[data-sec-tint]") ? Number(pick("[data-sec-tint]").value) : 100,
+      image: (sectionsDraft[id] || {}).image || ""
+    };
+    const accent = pick("[data-sec-accent]");
+    if (accent) data.accent = accent.value.trim();
+    if (id === "inicio") {
+      data.features = [0, 1, 2].map(i => ({
+        title: (box.querySelector(`[data-sec-feature-title="${i}"]`) || {}).value || "",
+        text: (box.querySelector(`[data-sec-feature-text="${i}"]`) || {}).value || ""
+      })).filter(f => f.title || f.text);
+    }
+    return data;
+  }
+
+  /* Pinta la vista previa con lo que el usuario está escribiendo, usando el
+     mismo armado de título que la web real (window.RCB_SECTION_TITLE_HTML). */
+  function updateSectionPreview(id) {
+    const box = sectionEditorsBox.querySelector(`[data-section-editor="${id}"]`);
+    if (!box) return;
+    const data = readSectionForm(id);
+    if (!data) return;
+
+    const banner = box.querySelector("[data-sec-banner]");
+    if (banner) {
+      banner.style.setProperty("--section-img", window.RCB_SECTION_IMAGE_CSS
+        ? window.RCB_SECTION_IMAGE_CSS(data.image)
+        : "none");
+      banner.style.setProperty("--section-pos", data.imagePos);
+      banner.style.setProperty("--section-veil", (Number(data.overlay) || 0) / 100 * 0.9);
+      banner.style.setProperty("--section-tint", (data.tint == null ? 100 : Number(data.tint)) / 100);
+    }
+    const overlayVal = box.querySelector("[data-sec-overlay-val]");
+    if (overlayVal) overlayVal.textContent = (Number(data.overlay) || 0) + "%";
+    const tintVal = box.querySelector("[data-sec-tint-val]");
+    if (tintVal) tintVal.textContent = (data.tint == null ? 100 : Number(data.tint)) + "%";
+    const title = box.querySelector("[data-prev-title]");
+    if (title) {
+      title.innerHTML = window.RCB_SECTION_TITLE_HTML
+        ? window.RCB_SECTION_TITLE_HTML(data.title, data.accent)
+        : (data.title || "");
+    }
+    const subtitle = box.querySelector("[data-prev-subtitle]");
+    if (subtitle) subtitle.textContent = data.subtitle || "";
+
+    const feats = box.querySelector("[data-prev-features]");
+    if (feats) {
+      feats.innerHTML = (data.features || [])
+        .map(f => `<span><strong>${escapeHtml(f.title)}</strong>${escapeHtml(f.text)}</span>`)
+        .join("");
+    }
+
+    /* Avisa si hay cambios sin guardar comparando con lo que está en la base. */
+    const state = box.querySelector("[data-sec-state]");
+    if (state) {
+      const saved = getSections()[id] || {};
+      const sucio = JSON.stringify({ ...saved, ...data }) !== JSON.stringify(saved);
+      state.textContent = sucio ? "● Tienes cambios sin guardar en esta sección." : "";
+      state.classList.toggle("is-dirty", sucio);
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function showSectionEditor(id) {
+    if (!sectionEditorsBox) return;
+    sectionEditorsBox.querySelectorAll("[data-section-editor]").forEach(el => {
+      el.style.display = el.dataset.sectionEditor === id ? "" : "none";
+    });
+    if (sectionPicker) {
+      sectionPicker.querySelectorAll("[data-section-tab]").forEach(b => {
+        b.classList.toggle("active", b.dataset.sectionTab === id);
+      });
+    }
+  }
+
+  function renderSectionsEditor() {
+    if (!sectionEditorsBox) return;
+    sectionsDraft = getSections();
+    sectionEditorsBox.innerHTML = SECTION_LIST
+      .map(s => sectionEditorHtml(s, sectionsDraft[s.id] || {}))
+      .join("");
+
+    SECTION_LIST.forEach(s => {
+      const box = sectionEditorsBox.querySelector(`[data-section-editor="${s.id}"]`);
+      if (!box) return;
+      const input = box.querySelector("[data-sec-image]");
+      if (input) {
+        input.addEventListener("change", () => {
+          readImageFile(input, url => {
+            if (url === undefined) return;
+            sectionsDraft[s.id].image = url;
+            updateSectionPreview(s.id);
+          });
+        });
+      }
+
+      /* Cualquier tecla o cambio en el formulario repinta la vista previa. */
+      box.addEventListener("input", () => updateSectionPreview(s.id));
+      box.addEventListener("change", () => updateSectionPreview(s.id));
+
+      const discard = box.querySelector("[data-sec-discard]");
+      if (discard) {
+        discard.addEventListener("click", () => {
+          if (!confirm("¿Descartar los cambios sin guardar de esta sección?")) return;
+          renderSectionsEditor();
+          showSectionEditor(s.id);
+        });
+      }
+
+      const btn = document.getElementById("save-sections-btn-" + s.id);
+      if (btn) btn.addEventListener("click", saveSectionsForm);
+
+      updateSectionPreview(s.id);
+    });
+
+    showSectionEditor(SECTION_LIST[0].id);
+  }
+
+  function collectSectionsForm() {
+    const out = {};
+    SECTION_LIST.forEach(s => {
+      const data = readSectionForm(s.id);
+      if (data) out[s.id] = data;
+    });
+    return out;
+  }
+
+  function saveSectionsForm() {
+    try {
+      if (!saveSections(collectSectionsForm())) return;
+      /* Ya guardado: se repinta el aviso de "cambios sin guardar". */
+      SECTION_LIST.forEach(s => updateSectionPreview(s.id));
+      alert("Cambios guardados. Abre la página de la sección para verlos.");
+    } catch (e) {
+      alert("No se pudo guardar: " + e.message);
+    }
+  }
+
+  if (sectionPicker) {
+    sectionPicker.addEventListener("click", e => {
+      const btn = e.target.closest("[data-section-tab]");
+      if (btn) showSectionEditor(btn.dataset.sectionTab);
+    });
+  }
+  const saveSectionsBtn = document.getElementById("save-sections-btn");
+  if (saveSectionsBtn) saveSectionsBtn.addEventListener("click", saveSectionsForm);
+
   /* ================= INIT ================= */
   function renderAll() {
     populateCategorySelect(categorySelect);
@@ -1180,6 +1458,7 @@
     renderVideoCategoryChips();
     renderVideosTable();
     fillAboutForm();
+    renderSectionsEditor();
   }
 
   if (isLoggedIn()) { bootstrapCache().then(showApp); }

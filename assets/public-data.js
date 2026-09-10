@@ -8,7 +8,7 @@ window.RCB_DATA_READY = (async function () {
   try {
     const [
       products, categories, posts, blogCategories,
-      videos, videoCategories, about, settings
+      videos, videoCategories, about, settings, sections
     ] = await Promise.all([
       RCB_API.get("products"),
       RCB_API.get("categories"),
@@ -17,7 +17,8 @@ window.RCB_DATA_READY = (async function () {
       RCB_API.get("videos"),
       RCB_API.get("video_categories"),
       RCB_API.get("about"),
-      RCB_API.get("settings")
+      RCB_API.get("settings"),
+      RCB_API.get("sections")
     ]);
     if (products && products.length) window.RCB_DEFAULT_PRODUCTS = products;
     if (categories && categories.length) window.RCB_DEFAULT_CATEGORIES = categories;
@@ -27,6 +28,15 @@ window.RCB_DATA_READY = (async function () {
     if (videoCategories && videoCategories.length) window.RCB_DEFAULT_VIDEO_CATEGORIES = videoCategories;
     if (about && Object.keys(about).length) window.RCB_DEFAULT_ABOUT = about;
     if (settings && Object.keys(settings).length) window.RCB_DEFAULT_SETTINGS = settings;
+    /* Los banners se mezclan sección por sección: si el administrador todavía no
+       editó "Videos", esa sección conserva su contenido por defecto. */
+    if (sections && Object.keys(sections).length) {
+      const base = window.RCB_DEFAULT_SECTIONS || {};
+      Object.keys(sections).forEach(key => {
+        base[key] = Object.assign({}, base[key], sections[key]);
+      });
+      window.RCB_DEFAULT_SECTIONS = base;
+    }
   } catch (e) {
     console.error("No se pudo conectar con el servidor, se muestra el contenido de respaldo:", e);
   }

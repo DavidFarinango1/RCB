@@ -228,9 +228,16 @@ img { max-width: 100%; display: block; }
 /* ---------- Hero (Home) ---------- */
 .hero {
   position: relative;
+  /* Capa 2 (--section-veil): oscurecido parejo y regulable desde el panel,
+     para que el texto se lea sobre imágenes muy cargadas. 0 = sin efecto. */
   background:
-    linear-gradient(90deg, var(--azul-oscuro) 0%, rgba(0,26,102,0.88) 30%, rgba(0,26,102,0.35) 60%, rgba(0,26,102,0.05) 85%),
-    url('../imagen/imagen1.png') no-repeat center right / cover;
+    linear-gradient(90deg,
+      rgba(0,26,102, calc(1 * var(--section-tint, 1))) 0%,
+      rgba(0,26,102, calc(0.88 * var(--section-tint, 1))) 30%,
+      rgba(0,26,102, calc(0.35 * var(--section-tint, 1))) 60%,
+      rgba(0,26,102, calc(0.05 * var(--section-tint, 1))) 85%),
+    linear-gradient(0deg, rgba(0,26,102,var(--section-veil, 0)) 0%, rgba(0,26,102,var(--section-veil, 0)) 100%),
+    var(--section-img, url('../imagen/imagen1.png')) no-repeat var(--section-pos, center right) / cover;
   color: var(--blanco);
   padding: 60px 0;
   min-height: 480px;
@@ -538,8 +545,13 @@ footer.site-footer {
 /* ---------- Page header (Blog / Videos) ---------- */
 .page-header {
   background:
-    linear-gradient(90deg, var(--azul-oscuro) 0%, rgba(0,26,102,0.9) 35%, rgba(0,26,102,0.55) 65%, rgba(0,26,102,0.25) 100%),
-    url('../imagen/imagen9.png') no-repeat center center / cover;
+    linear-gradient(90deg,
+      rgba(0,26,102, calc(1 * var(--section-tint, 1))) 0%,
+      rgba(0,26,102, calc(0.9 * var(--section-tint, 1))) 35%,
+      rgba(0,26,102, calc(0.55 * var(--section-tint, 1))) 65%,
+      rgba(0,26,102, calc(0.25 * var(--section-tint, 1))) 100%),
+    linear-gradient(0deg, rgba(0,26,102,var(--section-veil, 0)) 0%, rgba(0,26,102,var(--section-veil, 0)) 100%),
+    var(--section-img, url('../imagen/imagen9.png')) no-repeat var(--section-pos, center center) / cover;
   color: var(--blanco);
   padding: 46px 0 60px;
 }
@@ -1514,4 +1526,145 @@ footer.site-footer {
 .nav-open .nav-links a:hover {
   color: var(--azul-brillante);
   border-bottom-color: var(--azul-brillante);
+}
+
+/* ---------- Panel admin: selector y vista previa de secciones ---------- */
+.section-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--borde);
+  padding-bottom: 14px;
+}
+.section-picker .btn {
+  background: var(--gris-fondo);
+  color: var(--texto-oscuro);
+  border: 1px solid var(--borde);
+}
+.section-picker .btn.active {
+  background: var(--azul-brillante);
+  border-color: var(--azul-brillante);
+  color: var(--blanco);
+}
+
+.section-preview-wrap { margin-bottom: 22px; }
+.section-preview-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.section-preview-label span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--texto-oscuro);
+}
+.section-preview-label em {
+  font-style: normal;
+  font-size: 0.76rem;
+  color: #64748B;
+}
+/* Mismos degradados que el sitio real, para que la previa no mienta. */
+.section-preview {
+  border: 1px solid var(--borde);
+  border-radius: var(--radius);
+  overflow: hidden;
+  color: var(--blanco);
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  background-color: var(--azul-oscuro);
+  /* La proporción imita la del banner real (Inicio 2.59:1, resto 4.96:1) para
+     que el recorte de la imagen que se ve aquí sea el mismo que en la web. */
+}
+.section-preview.is-hero { aspect-ratio: 2.59; min-height: 240px; }
+.section-preview.is-page { aspect-ratio: 4.96; min-height: 170px; }
+.section-preview.is-hero {
+  background-image:
+    linear-gradient(90deg,
+      rgba(0,26,102, calc(1 * var(--section-tint, 1))) 0%,
+      rgba(0,26,102, calc(0.88 * var(--section-tint, 1))) 30%,
+      rgba(0,26,102, calc(0.35 * var(--section-tint, 1))) 60%,
+      rgba(0,26,102, calc(0.05 * var(--section-tint, 1))) 85%),
+    linear-gradient(0deg, rgba(0,26,102,var(--section-veil, 0)) 0%, rgba(0,26,102,var(--section-veil, 0)) 100%),
+    var(--section-img, none);
+  background-repeat: no-repeat;
+  background-position: center, center, var(--section-pos, center right);
+  background-size: cover, cover, cover;
+}
+.section-preview.is-page {
+  background-image:
+    linear-gradient(90deg,
+      rgba(0,26,102, calc(1 * var(--section-tint, 1))) 0%,
+      rgba(0,26,102, calc(0.9 * var(--section-tint, 1))) 35%,
+      rgba(0,26,102, calc(0.55 * var(--section-tint, 1))) 65%,
+      rgba(0,26,102, calc(0.25 * var(--section-tint, 1))) 100%),
+    linear-gradient(0deg, rgba(0,26,102,var(--section-veil, 0)) 0%, rgba(0,26,102,var(--section-veil, 0)) 100%),
+    var(--section-img, none);
+  background-repeat: no-repeat;
+  background-position: center, center, var(--section-pos, center center);
+  background-size: cover, cover, cover;
+}
+.section-preview-inner { max-width: 58%; }
+.section-preview.is-page .section-preview-inner { max-width: 70%; }
+.section-preview h3 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--blanco);
+}
+.section-preview h3 .accent { color: #4D94FF; }
+.section-preview p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.85);
+}
+.section-preview-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+.section-preview-features span {
+  display: block;
+  max-width: 150px;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  color: rgba(255,255,255,0.8);
+}
+.section-preview-features strong {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--blanco);
+  margin-bottom: 2px;
+}
+.section-preview-state {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  min-height: 20px;
+  color: transparent;
+}
+.section-preview-state.is-dirty { color: #B45309; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .section-preview-inner,
+  .section-preview.is-page .section-preview-inner { max-width: 100%; }
+  .section-preview h3 { font-size: 1.2rem; }
+}
+
+.section-size-hint {
+  font-size: 0.78rem;
+  color: var(--azul-principal);
+  background: var(--terciario-hover);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-top: 8px;
+  line-height: 1.45;
+  max-width: 520px;
 }

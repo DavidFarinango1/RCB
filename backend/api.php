@@ -9,7 +9,7 @@ require_once __DIR__ . '/config.php';
 header('Content-Type: application/json; charset=utf-8');
 
 $ARRAY_RESOURCES = ['products', 'categories', 'blog_categories', 'posts', 'video_categories', 'videos'];
-$OBJECT_RESOURCES = ['about', 'settings'];
+$OBJECT_RESOURCES = ['about', 'settings', 'sections'];
 $ALL_RESOURCES = array_merge($ARRAY_RESOURCES, $OBJECT_RESOURCES);
 
 function json_input() {

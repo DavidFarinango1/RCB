@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=67">
+<link rel="stylesheet" href="assets/styles.css?v=71">
 </head>
 <body>
 
@@ -38,6 +38,7 @@
   <aside class="admin-sidebar" id="admin-sidebar">
     <img src="assets/logo.svg" alt="RCB">
     <nav>
+      <a href="#" data-tab="secciones">🖼️ Secciones</a>
       <a href="#" data-tab="nosotros">👥 Nosotros</a>
       <a href="#" class="active" data-tab="productos">📦 Productos <span class="nav-badge" id="nav-badge-productos"></span></a>
       <a href="#" data-tab="categorias">🗂️ Categorías <span class="nav-badge" id="nav-badge-categorias"></span></a>
@@ -55,6 +56,29 @@
       ✅ Los cambios que hagas aquí se guardan en la base de datos del servidor y se ven
       igual para todos los visitantes, en cualquier dispositivo.
     </p>
+
+    <div class="admin-tab-panel" data-tab-panel="secciones" style="display:none;">
+      <div class="admin-header">
+        <h1>Secciones</h1>
+        <button type="button" class="btn btn-primary btn-sm" id="save-sections-btn">Guardar cambios</button>
+      </div>
+      <div class="admin-panel">
+        <p style="font-size:0.85rem;color:#64748B;margin-bottom:16px;">
+          Edita el título, el texto y la imagen de fondo del banner de cada sección del sitio.
+          Elige la sección en las pestañas de abajo y pulsa <strong>Guardar cambios</strong>.
+        </p>
+
+        <div class="section-picker" id="section-picker">
+          <button type="button" class="btn btn-sm active" data-section-tab="inicio">Inicio</button>
+          <button type="button" class="btn btn-sm" data-section-tab="productos">Productos</button>
+          <button type="button" class="btn btn-sm" data-section-tab="blog">Blog</button>
+          <button type="button" class="btn btn-sm" data-section-tab="videos">Videos</button>
+          <button type="button" class="btn btn-sm" data-section-tab="contacto">Contacto</button>
+        </div>
+
+        <div id="section-editors"></div>
+      </div>
+    </div>
 
     <div class="admin-tab-panel" data-tab-panel="nosotros" style="display:none;">
       <div class="admin-header">
@@ -516,6 +540,7 @@
 
 <script src="assets/categories.js"></script>
 <script src="assets/about-data.js"></script>
+<script src="assets/sections-data.js"></script>
 <script src="assets/settings-data.js"></script>
 <script src="assets/posts.js"></script>
 <script src="assets/videos-data.js"></script>

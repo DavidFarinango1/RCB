@@ -640,6 +640,28 @@
         : { type: "text", title: "", text: part.trim() };
     });
   }
+  /* ---------- Fechas ----------
+     El calendario trabaja con 2024-05-20, pero en el artículo se muestra
+     "20 mayo, 2024", que es como están guardadas las entradas existentes.
+     Se guardan las dos: la legible para mostrar y la ISO para el calendario. */
+  const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio",
+    "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+  function isoALegible(iso) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso || "").trim());
+    if (!m) return "";
+    return Number(m[3]) + " " + MESES[Number(m[2]) - 1] + ", " + m[1];
+  }
+  function legibleAIso(texto) {
+    const t = String(texto || "").trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t;
+    const m = /^(\d{1,2})\s+([a-záéíóúñ]+),?\s+(\d{4})$/i.exec(t);
+    if (!m) return "";
+    const mes = MESES.indexOf(m[2].toLowerCase());
+    if (mes === -1) return "";
+    return m[3] + "-" + String(mes + 1).padStart(2, "0") + "-" + String(m[1]).padStart(2, "0");
+  }
+
   /* ---------- Bloques del artículo ----------
      El cuerpo del artículo es una lista de bloques que se pueden ordenar.
      Tipos: texto (subtítulo + párrafos), imagen, video y lista.
@@ -667,32 +689,56 @@
 
     if (tipo === "image") {
       return `
-        <div class="bloque-previa" data-bloque-previa>${
-          b.url ? `<img src="${attr(b.url)}" alt="">` : "Sin imagen todavía"
-        }</div>
-        <input type="file" class="bloque-imagen-archivo" accept="image/*">
-        <input type="text" class="bloque-pie" placeholder="Pie de foto (opcional)" value="${attr(b.caption)}" style="margin-top:8px;">`;
+        <div class="form-row">
+          <label>Imagen</label>
+          <div class="bloque-previa" data-bloque-previa>${
+            b.url ? `<img src="${attr(b.url)}" alt="">` : "Aún no has elegido una imagen"
+          }</div>
+          <input type="file" class="bloque-imagen-archivo" accept="image/*">
+        </div>
+        <div class="form-row">
+          <label>Pie de foto (opcional)</label>
+          <input type="text" class="bloque-pie" placeholder="Ej: Las dos versiones, una junto a la otra" value="${attr(b.caption)}">
+          <p class="bloque-ayuda">Se muestra debajo de la imagen, en letra pequeña y cursiva.</p>
+        </div>`;
     }
     if (tipo === "video") {
       return `
-        <input type="text" class="bloque-video-url" placeholder="Pega el enlace de YouTube o Vimeo" value="${attr(b.url)}">
-        <p class="bloque-aviso" data-bloque-aviso></p>
-        <div class="bloque-previa-video" data-bloque-previa></div>`;
+        <div class="form-row">
+          <label>Enlace del video</label>
+          <input type="text" class="bloque-video-url" placeholder="https://www.youtube.com/watch?v=...  o  https://vimeo.com/..." value="${attr(b.url)}">
+          <p class="bloque-aviso" data-bloque-aviso></p>
+          <p class="bloque-ayuda">El video se reproduce aquí mismo, en este punto del artículo. El visitante no sale de la página.</p>
+        </div>
+        <div class="form-row bloque-previa-video" data-bloque-previa></div>`;
     }
     if (tipo === "list") {
       const items = (b.items && b.items.length ? b.items : [""]).join("\n");
       return `
-        <select class="bloque-lista-estilo" style="max-width:220px;margin-bottom:8px;">
-          <option value="bullet"${(b.style || "bullet") === "bullet" ? " selected" : ""}>Con viñetas</option>
-          <option value="number"${b.style === "number" ? " selected" : ""}>Numerada</option>
-        </select>
-        <textarea class="bloque-lista-items" rows="4" placeholder="Un elemento por línea">${txt(items)}</textarea>
-        <p class="bloque-ayuda">Escribe un elemento por línea.</p>`;
+        <div class="form-row">
+          <label>Tipo de lista</label>
+          <select class="bloque-lista-estilo" style="max-width:240px;">
+            <option value="bullet"${(b.style || "bullet") === "bullet" ? " selected" : ""}>Con viñetas (•)</option>
+            <option value="number"${b.style === "number" ? " selected" : ""}>Numerada (1, 2, 3)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Elementos</label>
+          <textarea class="bloque-lista-items" rows="4" placeholder="Limpia la tubería&#10;Solapa cada vuelta&#10;Cierra el extremo">${txt(items)}</textarea>
+          <p class="bloque-ayuda">Un elemento por línea. Cada línea será un punto de la lista.</p>
+        </div>`;
     }
     return `
-      <input type="text" class="bloque-titulo" placeholder="Subtítulo (opcional)" value="${attr(b.title)}">
-      <textarea class="bloque-texto" rows="5" placeholder="Texto del artículo...">${txt(b.text)}</textarea>
-      <p class="bloque-ayuda">Deja una línea en blanco para separar párrafos.</p>`;
+      <div class="form-row">
+        <label>Subtítulo (opcional)</label>
+        <input type="text" class="bloque-titulo" placeholder="Ej: ¿Cuál conviene en cada caso?" value="${attr(b.title)}">
+        <p class="bloque-ayuda">Sale <strong>en negrita y más grande</strong>, separando esta parte del artículo. Déjalo vacío si solo quieres texto.</p>
+      </div>
+      <div class="form-row">
+        <label>Texto</label>
+        <textarea class="bloque-texto" rows="6" placeholder="Escribe aquí el contenido de esta parte...">${txt(b.text)}</textarea>
+        <p class="bloque-ayuda">Deja una línea en blanco entre párrafos para que se separen.</p>
+      </div>`;
   }
 
   function renderContentBlocks(blocks) {
@@ -846,6 +892,115 @@
     postCategorySelect.innerHTML = getBlogCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join("");
   }
 
+  /* Confirma en el momento si el enlace del video de portada sirve, y lo
+     muestra, para no descubrirlo recién al publicar el artículo. */
+  function revisarVideoPortada() {
+    const aviso = document.getElementById("post-video-aviso");
+    const previa = document.getElementById("post-video-previa");
+    if (!aviso || !previa || !postVideoInput) return;
+    const url = postVideoInput.value.trim();
+    const embed = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(url) : null;
+
+    if (!url) {
+      aviso.textContent = "";
+      aviso.className = "bloque-aviso";
+      previa.innerHTML = "";
+      return;
+    }
+    if (embed) {
+      aviso.textContent = "✓ Video de " + window.RCB_EMBED_SERVICIO(url) + " verificado. Se reproducirá dentro del artículo.";
+      aviso.className = "bloque-aviso es-ok";
+      previa.innerHTML = `<iframe src="${embed}" frameborder="0" allowfullscreen></iframe>`;
+    } else {
+      aviso.textContent = "✕ No reconocemos este enlace. Debe ser de YouTube o Vimeo.";
+      aviso.className = "bloque-aviso es-error";
+      previa.innerHTML = "";
+    }
+  }
+  if (postVideoInput) postVideoInput.addEventListener("input", revisarVideoPortada);
+
+  /* ---------- Vista previa del artículo ----------
+     Dibuja lo que hay ahora en el formulario, sin guardar nada, con las mismas
+     clases de estilo que usa articulo.php. Sirve para ver cómo quedará antes
+     de publicarlo. */
+  function bloquePreviaHtml(b) {
+    const esc = s => String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const tipo = b.type || "text";
+
+    if (tipo === "image") {
+      if (!b.url) return "";
+      return `<figure class="art-figura"><img src="${esc(b.url)}" alt="">${
+        b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ""}</figure>`;
+    }
+    if (tipo === "video") {
+      const embed = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(b.url) : null;
+      if (!embed) return "";
+      return `<div class="art-video"><iframe src="${embed}" frameborder="0" allowfullscreen></iframe></div>`;
+    }
+    if (tipo === "list") {
+      const items = (b.items || []).filter(Boolean);
+      if (!items.length) return "";
+      const tag = b.style === "number" ? "ol" : "ul";
+      return `<${tag} class="art-lista">${items.map(i => `<li>${esc(i)}</li>`).join("")}</${tag}>`;
+    }
+    if (!b.title && !b.text) return "";
+    const parrafos = String(b.text || "").trim().split(/\n\s*\n/)
+      .map(p => p.trim()).filter(Boolean)
+      .map(p => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+    return `<div class="art-bloque">${b.title ? `<h2>${esc(b.title)}</h2>` : ""}${parrafos}</div>`;
+  }
+
+  function abrirPreviaPost() {
+    const esc = s => String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const caja = document.getElementById("previa-post");
+    const cuerpo = document.getElementById("previa-post-cuerpo");
+    if (!caja || !cuerpo) return;
+
+    const titulo = document.getElementById("post-field-title").value.trim();
+    const resumen = document.getElementById("post-field-excerpt").value.trim();
+    const fecha = isoALegible(document.getElementById("post-field-date").value);
+    const lectura = document.getElementById("post-field-readtime").value.trim();
+    const estado = document.getElementById("post-field-status").value;
+    const catNombre = (getBlogCategories().find(c => c.id === postCategorySelect.value) || {}).name || "";
+
+    const embedPortada = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(postVideoInput.value) : null;
+    const portada = embedPortada
+      ? `<div class="art-video art-portada"><iframe src="${embedPortada}" frameborder="0" allowfullscreen></iframe></div>`
+      : (currentPostImage ? `<div class="art-portada"><img src="${esc(currentPostImage)}" alt=""></div>` : "");
+
+    let interior = collectContentBlocks().map(bloquePreviaHtml).join("");
+    if (!interior) interior = '<p class="art-sin-cuerpo">Este artículo todavía no tiene contenido.</p>';
+
+    cuerpo.innerHTML = `
+      ${estado === "privado" ? '<p class="previa-privado">🔒 Este blog está en <strong>privado</strong>: así se vería, pero todavía no es visible para el público.</p>' : ""}
+      <div class="art-container">
+        <header class="art-cabecera">
+          ${catNombre ? `<span class="art-categoria">${esc(catNombre)}</span>` : ""}
+          <h1>${esc(titulo) || "(sin título)"}</h1>
+          <div class="art-meta">
+            ${fecha ? `<span>📅 ${esc(fecha)}</span>` : ""}
+            ${lectura ? `<span>⏱ ${esc(lectura)}</span>` : ""}
+          </div>
+          ${resumen ? `<p class="art-entradilla">${esc(resumen)}</p>` : ""}
+        </header>
+        ${portada}
+        <div class="art-cuerpo">${interior}</div>
+      </div>`;
+
+    caja.classList.add("open");
+  }
+
+  ["previsualizar-post-btn", "previsualizar-post-btn-2"].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.addEventListener("click", abrirPreviaPost);
+  });
+  const previaCerrar = document.getElementById("previa-post-cerrar");
+  if (previaCerrar) previaCerrar.addEventListener("click", () => {
+    document.getElementById("previa-post").classList.remove("open");
+  });
+
   function openPostForm(id) {
     editingPostId = id || null;
     const p = id ? getPosts().find(x => x.id === id) : null;
@@ -855,7 +1010,11 @@
     document.getElementById("post-field-title").value = p ? p.title : "";
     postCategorySelect.value = p ? p.category : (getBlogCategories()[0] || {}).id || "";
     document.getElementById("post-field-excerpt").value = p ? p.excerpt : "";
-    document.getElementById("post-field-date").value = p ? p.date : "";
+    document.getElementById("post-field-date").value = p
+      ? (p.dateISO || legibleAIso(p.date) || "")
+      : new Date().toISOString().slice(0, 10);
+    document.getElementById("post-field-status").value =
+      p && p.status === "privado" ? "privado" : "publicado";
     document.getElementById("post-field-readtime").value = p ? (p.readTime || "") : "";
     document.getElementById("post-field-featured").checked = p ? !!p.featured : false;
     currentPostImage = p ? (p.image || null) : null;
@@ -864,6 +1023,7 @@
     postImageInput.value = "";
     postAdjuster.refresh();
     postVideoInput.value = p ? (p.videoUrl || "") : "";
+    revisarVideoPortada();
     renderContentBlocks(p && p.contentBlocks && p.contentBlocks.length ? p.contentBlocks : contentToBlocks(p ? p.content : ""));
 
     /* El editor es una vista de la propia página, no una ventana flotante:
@@ -899,7 +1059,12 @@
         title,
         category: postCategorySelect.value,
         excerpt: document.getElementById("post-field-excerpt").value.trim(),
-        date: document.getElementById("post-field-date").value.trim(),
+        /* Se guarda la fecha legible (la que se muestra) y la ISO (la del
+           calendario), para no perder ninguna de las dos. */
+        date: isoALegible(document.getElementById("post-field-date").value) ||
+              document.getElementById("post-field-date").value.trim(),
+        dateISO: document.getElementById("post-field-date").value.trim(),
+        status: document.getElementById("post-field-status").value === "privado" ? "privado" : "publicado",
         readTime: document.getElementById("post-field-readtime").value.trim() || "5 min de lectura",
         featured: document.getElementById("post-field-featured").checked,
         image: currentPostImage,
@@ -955,6 +1120,9 @@
         <td>${p.title}</td>
         <td>${blogCategoryName(p.category)}</td>
         <td>${p.date}</td>
+        <td>${p.status === "privado"
+          ? '<span class="estado-privado">🔒 Privado</span>'
+          : '<span class="estado-publicado">● Publicado</span>'}</td>
         <td>${p.featured ? "⭐ Sí" : "—"}</td>
         <td>
           <div class="row-actions">

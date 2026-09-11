@@ -4,7 +4,8 @@
   const PAGE_SIZE = 6;
 
   function getPosts() {
-    return window.RCB_DEFAULT_POSTS || [];
+    /* Los blogs en privado se guardan pero no se muestran en la web. */
+    return (window.RCB_DEFAULT_POSTS || []).filter(p => p.status !== "privado");
   }
   function getCategories() {
     return window.RCB_BLOG_CATEGORIES || [];

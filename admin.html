@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=73">
+<link rel="stylesheet" href="assets/styles.css?v=74">
 </head>
 <body>
 
@@ -286,6 +286,7 @@
                 <th>Título</th>
                 <th>Categoría</th>
                 <th>Fecha</th>
+                <th>Estado</th>
                 <th>Destacada</th>
                 <th>Acciones</th>
               </tr>
@@ -299,6 +300,7 @@
   <div class="blog-editor-barra">
     <button type="button" class="btn btn-tertiary btn-sm" id="volver-post-form-btn">← Volver a la lista</button>
     <h2 id="post-form-title">Nuevo blog</h2>
+    <button type="button" class="btn btn-tertiary btn-sm" id="previsualizar-post-btn">👁 Vista previa</button>
     <button type="submit" form="post-form" class="btn btn-primary btn-sm">Guardar blog</button>
   </div>
 
@@ -334,8 +336,8 @@
       <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div>
           <label>Fecha</label>
-          <input type="text" id="post-field-date" placeholder="Ej: 20 mayo, 2024" required>
-          <p class="campo-ayuda">Se escribe tal cual, como texto.</p>
+          <input type="date" id="post-field-date" required>
+          <p class="campo-ayuda">Elige la fecha en el calendario. En el artículo se mostrará como <strong>20 mayo, 2024</strong>.</p>
         </div>
         <div>
           <label>Tiempo de lectura</label>
@@ -345,8 +347,20 @@
       </div>
 
       <div class="form-row">
+        <label>Estado</label>
+        <select id="post-field-status">
+          <option value="publicado">Publicado — visible para todo el público</option>
+          <option value="privado">Privado — guardado, pero nadie lo ve todavía</option>
+        </select>
+        <p class="campo-ayuda">
+          En <strong>Privado</strong> el blog se guarda pero no aparece en la web: nadie puede verlo ni
+          llegar a él por enlace. Puedes volver a ponerlo en Publicado cuando quieras.
+        </p>
+      </div>
+
+      <div class="form-row">
         <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Marcar como destacado</label>
-        <p class="campo-ayuda">El artículo destacado se muestra en grande arriba de todo el blog. Solo uno a la vez.</p>
+        <p class="campo-ayuda">El artículo destacado se muestra en grande arriba de todo el blog. Solo uno a la vez. No aplica si está en privado.</p>
       </div>
     </div>
 
@@ -373,6 +387,8 @@
       <div class="form-row">
         <label>Video de portada (opcional)</label>
         <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...  o  https://vimeo.com/...">
+        <p class="bloque-aviso" id="post-video-aviso"></p>
+        <div class="form-row bloque-previa-video" id="post-video-previa"></div>
         <p class="campo-ayuda">
           Pega el enlace de <strong>YouTube o Vimeo</strong> y el video se reproduce dentro del artículo,
           arriba del todo. Si solo quieres el video en mitad del texto, déjalo vacío y usa un
@@ -411,9 +427,21 @@
 
     <div class="form-actions blog-editor-acciones">
       <button type="button" class="btn btn-tertiary" id="cancel-post-form-btn">Cancelar</button>
+      <button type="button" class="btn btn-tertiary" id="previsualizar-post-btn-2">👁 Vista previa</button>
       <button type="submit" class="btn btn-primary">Guardar blog</button>
     </div>
   </form>
+</div>
+
+<!-- Vista previa del artículo, tal como se verá en la web -->
+<div class="previa-post" id="previa-post">
+  <div class="previa-post-caja">
+    <div class="previa-post-barra">
+      <span>Vista previa — así se verá el artículo</span>
+      <button type="button" class="btn btn-tertiary btn-sm" id="previa-post-cerrar">✕ Cerrar</button>
+    </div>
+    <div class="previa-post-cuerpo" id="previa-post-cuerpo"></div>
+  </div>
 </div>
     </div>
 

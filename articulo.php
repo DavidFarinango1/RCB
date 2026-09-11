@@ -31,6 +31,12 @@ try {
   $errorBase = true;
 }
 
+/* Los blogs marcados como privados no se muestran ni se pueden abrir por
+   enlace directo: para el público es como si no existieran. */
+$posts = array_values(array_filter($posts, function ($p) {
+  return ($p['status'] ?? 'publicado') !== 'privado';
+}));
+
 $post = null;
 foreach ($posts as $p) {
   if (($p['id'] ?? '') === $id) { $post = $p; break; }
@@ -85,7 +91,7 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
 <meta name="twitter:description" content="<?= rcb_e($descripcion) ?>">
 
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=73">
+<link rel="stylesheet" href="assets/styles.css?v=74">
 </head>
 <body>
 

@@ -2040,3 +2040,50 @@ ol.art-lista { list-style: decimal; }
   font-size: 0.85rem;
   margin-bottom: 18px;
 }
+
+/* ---------- Artículo destacado, mostrado ya abierto en el blog ---------- */
+.destacado-abierto {
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+  border-radius: var(--radius);
+  padding: 28px 32px 32px;
+  margin-bottom: 34px;
+  box-shadow: var(--shadow);
+}
+.destacado-abierto .badge {
+  display: inline-block;
+  background: var(--azul-brillante);
+  color: var(--blanco);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.destacado-abierto h2 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--azul-oscuro);
+  margin-bottom: 10px;
+}
+.destacado-meta {
+  font-size: 0.85rem;
+  color: #64748B;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--borde);
+  margin-bottom: 14px;
+}
+.destacado-abierto .art-portada { margin: 20px 0 24px; }
+.destacado-abierto .art-cuerpo { font-size: 1rem; line-height: 1.72; color: #374151; }
+.destacado-pie {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--borde);
+}
+
+@media (max-width: 700px) {
+  .destacado-abierto { padding: 20px 18px 24px; }
+  .destacado-abierto h2 { font-size: 1.35rem; }
+}

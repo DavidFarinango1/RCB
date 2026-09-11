@@ -42,19 +42,35 @@
   const state = { category: "todos", search: "", page: 1 };
 
   /* ---------- Destacado ---------- */
+  /* El artículo destacado se muestra ya abierto: el visitante lo lee sin tener
+     que hacer clic. El enlace de abajo lleva a su página propia, que es la que
+     se comparte y la que indexa Google. */
   const featuredContainer = document.getElementById("featured-post-container");
   if (featuredContainer && featured) {
+    const embedPortada = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(featured.videoUrl) : null;
+    const portada = embedPortada
+      ? `<div class="art-video art-portada"><iframe src="${embedPortada}" title="${featured.title}" loading="lazy" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+      : (featured.image ? `<div class="art-portada"><img src="${featured.image}" alt="${featured.title}"></div>` : "");
+
+    let cuerpo = window.RCB_BLOQUES_HTML
+      ? window.RCB_BLOQUES_HTML(window.RCB_BLOQUES(featured))
+      : "";
+    if (!cuerpo) cuerpo = `<p class="art-sin-cuerpo">Este artículo todavía no tiene contenido.</p>`;
+
     featuredContainer.innerHTML = `
-      <article class="featured-post">
-        <div class="thumb">${thumbHtml(featured)}</div>
-        <div class="body">
-          <span class="badge">DESTACADO</span>
-          <h2>${featured.title}</h2>
-          <p>${featured.excerpt}</p>
-          <div class="post-meta" style="margin-bottom:14px;">📅 ${featured.date} &nbsp;·&nbsp; ${categoryName(featured.category)}</div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a class="btn btn-primary btn-sm" href="${postUrl(featured.id)}">Leer artículo →</a>
-          </div>
+      <article class="destacado-abierto">
+        <span class="badge">DESTACADO</span>
+        <h2>${featured.title}</h2>
+        <div class="post-meta destacado-meta">
+          📅 ${featured.date}
+          ${featured.readTime ? `&nbsp;·&nbsp; ⏱ ${featured.readTime}` : ""}
+          &nbsp;·&nbsp; ${categoryName(featured.category)}
+        </div>
+        ${featured.excerpt ? `<p class="art-entradilla">${featured.excerpt}</p>` : ""}
+        ${portada}
+        <div class="art-cuerpo">${cuerpo}</div>
+        <div class="destacado-pie">
+          <a class="btn btn-primary btn-sm" href="${postUrl(featured.id)}">Abrir en su propia página →</a>
         </div>
       </article>`;
   }

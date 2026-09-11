@@ -91,7 +91,7 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
 <meta name="twitter:description" content="<?= rcb_e($descripcion) ?>">
 
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=74">
+<link rel="stylesheet" href="assets/styles.css?v=75">
 </head>
 <body>
 

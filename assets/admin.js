@@ -923,34 +923,6 @@
      Dibuja lo que hay ahora en el formulario, sin guardar nada, con las mismas
      clases de estilo que usa articulo.php. Sirve para ver cómo quedará antes
      de publicarlo. */
-  function bloquePreviaHtml(b) {
-    const esc = s => String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    const tipo = b.type || "text";
-
-    if (tipo === "image") {
-      if (!b.url) return "";
-      return `<figure class="art-figura"><img src="${esc(b.url)}" alt="">${
-        b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ""}</figure>`;
-    }
-    if (tipo === "video") {
-      const embed = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(b.url) : null;
-      if (!embed) return "";
-      return `<div class="art-video"><iframe src="${embed}" frameborder="0" allowfullscreen></iframe></div>`;
-    }
-    if (tipo === "list") {
-      const items = (b.items || []).filter(Boolean);
-      if (!items.length) return "";
-      const tag = b.style === "number" ? "ol" : "ul";
-      return `<${tag} class="art-lista">${items.map(i => `<li>${esc(i)}</li>`).join("")}</${tag}>`;
-    }
-    if (!b.title && !b.text) return "";
-    const parrafos = String(b.text || "").trim().split(/\n\s*\n/)
-      .map(p => p.trim()).filter(Boolean)
-      .map(p => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
-    return `<div class="art-bloque">${b.title ? `<h2>${esc(b.title)}</h2>` : ""}${parrafos}</div>`;
-  }
-
   function abrirPreviaPost() {
     const esc = s => String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -970,7 +942,9 @@
       ? `<div class="art-video art-portada"><iframe src="${embedPortada}" frameborder="0" allowfullscreen></iframe></div>`
       : (currentPostImage ? `<div class="art-portada"><img src="${esc(currentPostImage)}" alt=""></div>` : "");
 
-    let interior = collectContentBlocks().map(bloquePreviaHtml).join("");
+    let interior = window.RCB_BLOQUES_HTML
+      ? window.RCB_BLOQUES_HTML(collectContentBlocks())
+      : "";
     if (!interior) interior = '<p class="art-sin-cuerpo">Este artículo todavía no tiene contenido.</p>';
 
     cuerpo.innerHTML = `

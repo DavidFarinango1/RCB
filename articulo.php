@@ -85,7 +85,7 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
 <meta name="twitter:description" content="<?= rcb_e($descripcion) ?>">
 
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=72">
+<link rel="stylesheet" href="assets/styles.css?v=73">
 </head>
 <body>
 
@@ -181,11 +181,12 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
       <div class="art-compartir">
         <span>Compartir:</span>
         <a href="https://api.whatsapp.com/send?text=<?= rawurlencode(($post['title'] ?? '') . ' ' . $urlActual) ?>"
-           target="_blank" rel="noopener" class="art-compartir-btn art-wa">WhatsApp</a>
-        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= rawurlencode($urlActual) ?>"
-           target="_blank" rel="noopener" class="art-compartir-btn art-fb">Facebook</a>
-        <a href="https://twitter.com/intent/tweet?url=<?= rawurlencode($urlActual) ?>&text=<?= rawurlencode($post['title'] ?? '') ?>"
-           target="_blank" rel="noopener" class="art-compartir-btn art-x">X</a>
+           target="_blank" rel="noopener" class="art-compartir-btn art-wa">
+          <img src="assets/whatsapp.svg" alt="" width="16" height="16"> WhatsApp
+        </a>
+        <button type="button" class="art-compartir-btn art-copiar" id="copiar-enlace"
+                data-url="<?= rcb_e($urlActual) ?>">🔗 Copiar enlace</button>
+        <span class="art-copiado" id="copiado-aviso" hidden>✓ Enlace copiado</span>
       </div>
 
     </div>
@@ -287,5 +288,6 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
 <script src="assets/categories.js"></script>
 <script src="assets/social-icons.js"></script>
 <script src="assets/script.js"></script>
+<script src="assets/copiar-enlace.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=72">
+<link rel="stylesheet" href="assets/styles.css?v=73">
 </head>
 <body>
 
@@ -261,9 +261,10 @@
     </div>
 
     <div class="admin-tab-panel" data-tab-panel="blog" style="display:none;">
+      <div id="blog-listado">
       <div class="admin-header">
         <h1>Blog</h1>
-        <button class="btn btn-primary btn-sm" id="add-post-btn">+ Agregar entrada</button>
+        <button class="btn btn-primary btn-sm" id="add-post-btn">+ Nuevo blog</button>
       </div>
       <div class="admin-panel" style="margin-bottom:20px;">
         <h2 style="font-size:1rem;margin-bottom:4px;">Categorías de blog</h2>
@@ -293,6 +294,127 @@
           </table>
         </div>
       </div>
+      </div><!-- /blog-listado -->
+      <div class="blog-editor" id="post-form-overlay">
+  <div class="blog-editor-barra">
+    <button type="button" class="btn btn-tertiary btn-sm" id="volver-post-form-btn">← Volver a la lista</button>
+    <h2 id="post-form-title">Nuevo blog</h2>
+    <button type="submit" form="post-form" class="btn btn-primary btn-sm">Guardar blog</button>
+  </div>
+
+  <p class="blog-editor-intro">
+    Un blog se arma en dos partes: arriba los <strong>datos de la ficha</strong> (lo que se ve en el
+    listado del blog) y abajo el <strong>contenido</strong> (lo que se lee al entrar al artículo).
+  </p>
+
+  <form id="post-form">
+
+    <div class="admin-panel blog-editor-seccion">
+      <h3 class="blog-editor-titulo">1. Ficha del blog</h3>
+      <p class="blog-editor-nota">Esto es lo que ve el visitante en la tarjeta del listado, antes de entrar.</p>
+
+      <div class="form-row">
+        <label>Título</label>
+        <input type="text" id="post-field-title" required>
+        <p class="campo-ayuda">Es el titular grande del artículo y el texto del enlace en el listado.</p>
+      </div>
+
+      <div class="form-row">
+        <label>Resumen</label>
+        <textarea id="post-field-excerpt" placeholder="Dos o tres líneas que inviten a leer el artículo" required></textarea>
+        <p class="campo-ayuda">Aparece bajo el título, en la tarjeta del listado y en la vista previa al compartir por WhatsApp.</p>
+      </div>
+
+      <div class="form-row">
+        <label>Categoría</label>
+        <select id="post-field-category"></select>
+        <p class="campo-ayuda">Agrupa el artículo en las pestañas del blog y decide qué otros artículos se sugieren al final.</p>
+      </div>
+
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <label>Fecha</label>
+          <input type="text" id="post-field-date" placeholder="Ej: 20 mayo, 2024" required>
+          <p class="campo-ayuda">Se escribe tal cual, como texto.</p>
+        </div>
+        <div>
+          <label>Tiempo de lectura</label>
+          <input type="text" id="post-field-readtime" placeholder="Ej: 5 min de lectura">
+          <p class="campo-ayuda">Opcional. Se muestra junto a la fecha.</p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Marcar como destacado</label>
+        <p class="campo-ayuda">El artículo destacado se muestra en grande arriba de todo el blog. Solo uno a la vez.</p>
+      </div>
+    </div>
+
+    <div class="admin-panel blog-editor-seccion">
+      <h3 class="blog-editor-titulo">2. Portada</h3>
+      <p class="blog-editor-nota">
+        Es lo primero que se ve al abrir el artículo, y la miniatura que aparece al compartir el enlace.
+        <strong>Si pones un video de portada, el video reemplaza a la imagen.</strong>
+      </p>
+
+      <div class="form-row">
+        <label>Imagen de portada</label>
+        <div class="admin-image-upload" id="post-image-preview" style="max-width:460px;aspect-ratio:16/9;">Vista previa de la imagen</div>
+        <div class="img-adjust-toolbar" id="post-image-toolbar" style="display:none;">
+          <button type="button" id="post-zoom-out" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" id="post-zoom-in" title="Acercar">+</button>
+          <button type="button" id="post-reset-fit" class="reset-btn">Restablecer posición</button>
+        </div>
+        <input type="file" id="post-field-image" accept="image/*">
+        <p class="campo-ayuda">📐 Medida recomendada: <strong>1200 × 675 px</strong> (horizontal). También se usa como miniatura en el listado.</p>
+      </div>
+
+      <div class="form-row">
+        <label>Video de portada (opcional)</label>
+        <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...  o  https://vimeo.com/...">
+        <p class="campo-ayuda">
+          Pega el enlace de <strong>YouTube o Vimeo</strong> y el video se reproduce dentro del artículo,
+          arriba del todo. Si solo quieres el video en mitad del texto, déjalo vacío y usa un
+          <strong>bloque de Video</strong> más abajo.
+        </p>
+      </div>
+    </div>
+
+    <div class="admin-panel blog-editor-seccion">
+      <h3 class="blog-editor-titulo">3. Contenido del artículo</h3>
+      <p class="blog-editor-nota">
+        El cuerpo se arma con bloques, uno debajo de otro. Elige el tipo abajo y pulsa
+        <strong>Agregar bloque</strong>. Con las flechas <strong>↑ ↓</strong> cambias el orden y con
+        <strong>✕</strong> eliminas un bloque.
+      </p>
+
+      <ul class="blog-editor-tipos">
+        <li><strong>Subtítulo y texto</strong> — el subtítulo sale en <strong>negrita y más grande</strong>, y debajo va el párrafo. Puedes dejar el subtítulo vacío si solo quieres texto.</li>
+        <li><strong>Imagen</strong> — una foto entre los párrafos, con pie de foto opcional debajo.</li>
+        <li><strong>Video</strong> — se reproduce dentro del artículo, en el punto exacto donde coloques el bloque.</li>
+        <li><strong>Lista</strong> — con viñetas o numerada, para pasos o enumeraciones.</li>
+      </ul>
+
+      <div id="post-content-blocks"></div>
+
+      <div class="bloque-agregar">
+        <select id="post-block-type">
+          <option value="text">Subtítulo y texto</option>
+          <option value="image">Imagen</option>
+          <option value="video">Video (YouTube o Vimeo)</option>
+          <option value="list">Lista</option>
+        </select>
+        <button type="button" class="btn btn-tertiary btn-sm" id="post-add-content-block">+ Agregar bloque</button>
+      </div>
+    </div>
+
+    <div class="form-actions blog-editor-acciones">
+      <button type="button" class="btn btn-tertiary" id="cancel-post-form-btn">Cancelar</button>
+      <button type="submit" class="btn btn-primary">Guardar blog</button>
+    </div>
+  </form>
+</div>
     </div>
 
     <div class="admin-tab-panel" data-tab-panel="videos" style="display:none;">
@@ -433,71 +555,7 @@
 </div>
 
 <!-- FORMULARIO ENTRADA DE BLOG -->
-<div class="admin-form-overlay" id="post-form-overlay">
-  <div class="admin-form-box">
-    <h2 id="post-form-title">Agregar entrada</h2>
-    <form id="post-form">
-      <div class="form-row">
-        <label>Imagen de portada (máx. 1.5 MB)</label>
-        <div class="admin-image-upload" id="post-image-preview">Vista previa de la imagen</div>
-        <div class="img-adjust-toolbar" id="post-image-toolbar" style="display:none;">
-          <button type="button" id="post-zoom-out" title="Alejar">−</button>
-          <span class="img-adjust-hint">Arrastra para mover</span>
-          <button type="button" id="post-zoom-in" title="Acercar">+</button>
-          <button type="button" id="post-reset-fit" class="reset-btn">Restablecer posición</button>
-        </div>
-        <input type="file" id="post-field-image" accept="image/*">
-      </div>
-      <div class="form-row">
-        <label>Título</label>
-        <input type="text" id="post-field-title" required>
-      </div>
-      <div class="form-row">
-        <label>Categoría</label>
-        <select id="post-field-category"></select>
-      </div>
-      <div class="form-row">
-        <label>Resumen</label>
-        <textarea id="post-field-excerpt" placeholder="Resumen breve que se muestra en la tarjeta del artículo" required></textarea>
-      </div>
-      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div>
-          <label>Fecha</label>
-          <input type="text" id="post-field-date" placeholder="Ej: 20 mayo, 2024" required>
-        </div>
-        <div>
-          <label>Tiempo de lectura</label>
-          <input type="text" id="post-field-readtime" placeholder="Ej: 5 min de lectura">
-        </div>
-      </div>
-      <div class="form-row">
-        <label>Video de portada (YouTube o Vimeo, opcional)</label>
-        <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...  o  https://vimeo.com/...">
-      </div>
-      <div class="form-row">
-        <label>Contenido completo del artículo</label>
-        <p style="font-size:0.78rem;color:#64748B;margin-bottom:6px;">Agrega uno o más bloques: un título (se muestra en negrita) y su descripción debajo.</p>
-        <div id="post-content-blocks"></div>
-        <div class="bloque-agregar">
-          <select id="post-block-type">
-            <option value="text">Subtítulo y texto</option>
-            <option value="image">Imagen</option>
-            <option value="video">Video (YouTube o Vimeo)</option>
-            <option value="list">Lista</option>
-          </select>
-          <button type="button" class="btn btn-tertiary btn-sm" id="post-add-content-block">+ Agregar bloque</button>
-        </div>
-      </div>
-      <div class="form-row">
-        <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Destacada (se muestra arriba de todo el blog)</label>
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-tertiary" id="cancel-post-form-btn">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
+
 
 <!-- FORMULARIO VIDEO -->
 <div class="admin-form-overlay" id="video-form-overlay">

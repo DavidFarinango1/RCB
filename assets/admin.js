@@ -615,6 +615,7 @@
   const postCategorySelect = document.getElementById("post-field-category");
   const addPostBtn = document.getElementById("add-post-btn");
   const cancelPostBtn = document.getElementById("cancel-post-form-btn");
+  const volverPostBtn = document.getElementById("volver-post-form-btn");
   const postImageInput = document.getElementById("post-field-image");
   const postImagePreview = document.getElementById("post-image-preview");
   const postImageToolbar = document.getElementById("post-image-toolbar");
@@ -849,7 +850,7 @@
     editingPostId = id || null;
     const p = id ? getPosts().find(x => x.id === id) : null;
 
-    postFormTitle.textContent = p ? "Editar entrada" : "Agregar entrada";
+    postFormTitle.textContent = p ? "Editar blog" : "Nuevo blog";
     populatePostCategorySelect();
     document.getElementById("post-field-title").value = p ? p.title : "";
     postCategorySelect.value = p ? p.category : (getBlogCategories()[0] || {}).id || "";
@@ -865,11 +866,19 @@
     postVideoInput.value = p ? (p.videoUrl || "") : "";
     renderContentBlocks(p && p.contentBlocks && p.contentBlocks.length ? p.contentBlocks : contentToBlocks(p ? p.content : ""));
 
+    /* El editor es una vista de la propia página, no una ventana flotante:
+       se oculta el listado para trabajar con todo el ancho disponible. */
+    const listado = document.getElementById("blog-listado");
+    if (listado) listado.style.display = "none";
     postOverlay.classList.add("open");
+    window.scrollTo({ top: 0, behavior: "auto" });
   }
   function closePostForm() {
     postOverlay.classList.remove("open");
+    const listado = document.getElementById("blog-listado");
+    if (listado) listado.style.display = "";
     postForm.reset();
+    window.scrollTo({ top: 0, behavior: "auto" });
   }
 
   function deletePost(id) {
@@ -896,9 +905,14 @@
         image: currentPostImage,
         imageFit: currentPostImageFit,
         videoUrl: postVideoInput.value.trim(),
-        contentBlocks: collectContentBlocks()
-          .map(b => ({ title: b.title.trim(), text: b.text.trim() }))
-          .filter(b => b.title || b.text),
+        /* Cada tipo de bloque guarda campos distintos: aplastarlos todos a
+           título + texto borraría las imágenes, los videos y las listas. */
+        contentBlocks: collectContentBlocks().filter(b => {
+          if (b.type === "image") return !!b.url;
+          if (b.type === "video") return !!b.url;
+          if (b.type === "list") return b.items && b.items.length > 0;
+          return (b.title || "").trim() || (b.text || "").trim();
+        }),
         icon: "📰"
       };
 
@@ -921,6 +935,7 @@
 
   if (addPostBtn) addPostBtn.addEventListener("click", () => openPostForm(null));
   if (cancelPostBtn) cancelPostBtn.addEventListener("click", closePostForm);
+  if (volverPostBtn) volverPostBtn.addEventListener("click", closePostForm);
 
   function renderPostsTable() {
     updateNavBadges();

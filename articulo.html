@@ -3,8 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catálogo de Productos | RCB - Repuestos Casa Blanca</title>
-<meta name="description" content="Catálogo completo de RCB: protectores de voltaje, cintas aislantes, repuestos para refrigeración, materiales eléctricos y herramientas.">
+<title>Artículo | Blog RCB</title>
+<!-- Esta es la versión para la DEMOSTRACIÓN en Firebase, donde no hay PHP.
+     En el sitio real el artículo lo arma articulo.php en el servidor, que es
+     lo que permite las vistas previas al compartir y que Google lo indexe.
+     Por eso aquí se pide a los buscadores que no la indexen. -->
+<meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/styles.css?v=76">
 </head>
@@ -28,8 +32,8 @@
       <ul class="nav-links">
         <li><a href="index.html">INICIO</a></li>
         <li><a href="nosotros.html">NOSOTROS</a></li>
-        <li><a href="productos.html" class="active">PRODUCTOS</a></li>
-        <li><a href="blog.html">BLOG</a></li>
+        <li><a href="productos.html">PRODUCTOS</a></li>
+        <li><a href="blog.html" class="active">BLOG</a></li>
         <li><a href="videos.html">VIDEOS</a></li>
         <li><a href="contacto.html">CONTACTO</a></li>
       </ul>
@@ -38,50 +42,8 @@
   </nav>
 </header>
 
-<main>
-  <section class="page-header" data-section="productos">
-    <div class="container">
-      <h1>Catálogo de Productos</h1>
-      <p>Protectores de voltaje, cintas aislantes, repuestos para refrigeración, materiales eléctricos y herramientas.</p>
-      <div class="breadcrumb"><a href="index.html">Inicio</a> &nbsp;›&nbsp; Productos</div>
-    </div>
-  </section>
-
-  <div class="container">
-    <div class="catalog-layout">
-      <aside class="catalog-sidebar">
-        <div class="card">
-          <h3 style="margin-bottom:12px;">Categorías</h3>
-          <ul id="category-list"></ul>
-        </div>
-        <div class="card help-card">
-          <h3>¿No encuentras lo que buscas?</h3>
-          <p>Escríbenos y te ayudamos a encontrar el repuesto exacto que necesitas.</p>
-          <a href="https://wa.me/593993421505" class="btn btn-primary btn-sm"><img src="assets/whatsapp.svg" alt="" style="width:18px;height:18px;vertical-align:-4px;margin-right:5px;"> Hablar por WhatsApp</a>
-        </div>
-      </aside>
-
-      <div class="catalog-content">
-        <div class="catalog-toolbar">
-          <input type="text" id="catalog-search" class="catalog-search" placeholder="Buscar por nombre o SKU...">
-          <select id="sort-select">
-            <option value="relevancia">Ordenar por: Relevancia</option>
-            <option value="precio-asc">Precio: menor a mayor</option>
-            <option value="precio-desc">Precio: mayor a menor</option>
-            <option value="nombre">Nombre A-Z</option>
-          </select>
-          <span id="results-count"></span>
-        </div>
-
-        <div id="product-grid" class="product-grid-catalog"></div>
-        <div id="empty-state" class="empty-state">
-          <p style="font-size:2rem;">🔍</p>
-          <p>No encontramos productos con ese criterio. Intenta con otra búsqueda o categoría.</p>
-        </div>
-        <div id="pagination" class="pagination" style="margin-top:24px;"></div>
-      </div>
-    </div>
-  </div>
+<main id="articulo-main">
+  <div class="container"><div class="art-vacio"><p>Cargando artículo...</p></div></div>
 </main>
 
 <footer class="site-footer">
@@ -90,7 +52,7 @@
       <div class="footer-brand">
         <img src="imagen/logo-nuevo.png" alt="RCB" class="footer-brand-logo">
         <p><strong>Repuestos Casa Blanca</strong></p>
-        <p>Protección que se nota, calidad que se queda.</p>
+        <p>Productos de calidad para instalaciones seguras, eficientes y duraderas.</p>
         <div class="social-row">
           <a href="https://www.facebook.com/profile.php?id=61592644390643" target="_blank" rel="noopener" aria-label="Facebook">📘</a>
           <a href="https://www.instagram.com/rcb_casablanca?igsh=MW91MGpnN2Y0YjdwMQ==" target="_blank" rel="noopener" aria-label="Instagram">📷</a>
@@ -102,20 +64,20 @@
         <h4>Enlaces rápidos</h4>
         <ul>
           <li><a href="index.html">Inicio</a></li>
-          <li><a href="nosotros.html">Nosotros</a></li>
-          <li><a href="productos.html">Productos</a></li>
+          <li><a href="index.html#productos">Productos</a></li>
           <li><a href="blog.html">Blog</a></li>
           <li><a href="videos.html">Videos</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
         </ul>
       </div>
       <div>
         <h4>Categorías</h4>
         <ul>
-          <li><a href="productos.html?cat=voltaje">Protectores de voltaje</a></li>
-          <li><a href="productos.html?cat=cintas">Cintas aislantes</a></li>
-          <li><a href="productos.html?cat=refrigeracion">Repuestos para refrigeración</a></li>
-          <li><a href="productos.html?cat=electricos">Materiales eléctricos</a></li>
-          <li><a href="productos.html?cat=herramientas">Herramientas y accesorios</a></li>
+          <li><a href="#">Protectores de voltaje</a></li>
+          <li><a href="#">Cintas aislantes</a></li>
+          <li><a href="#">Repuestos para refrigeración</a></li>
+          <li><a href="#">Materiales eléctricos</a></li>
+          <li><a href="#">Herramientas y accesorios</a></li>
         </ul>
       </div>
       <div>
@@ -139,25 +101,18 @@
   <a href="https://wa.me/593993421505" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
 </div>
 
-<!-- Modal de detalle de producto -->
-<div class="modal-overlay" id="product-modal">
-  <div class="modal-box">
-    <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
-    <div id="modal-body"></div>
-  </div>
-</div>
-
 <script src="assets/api-client.js"></script>
 <script src="assets/demo-mode.js"></script>
 <script src="assets/public-data.js"></script>
-<script src="assets/sections-data.js"></script>
-<script src="assets/sections-render.js"></script>
+<script src="assets/posts.js"></script>
 <script src="assets/categories.js"></script>
-<script src="assets/products.js"></script>
-<script src="assets/catalog.js"></script>
+<script src="assets/media-embed.js"></script>
+<script src="assets/blog-bloques.js"></script>
 <script src="assets/settings-data.js"></script>
 <script src="assets/settings-render.js"></script>
 <script src="assets/social-icons.js"></script>
+<script src="assets/articulo-render.js"></script>
 <script src="assets/script.js"></script>
+<script src="assets/copiar-enlace.js"></script>
 </body>
 </html>

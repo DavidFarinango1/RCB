@@ -27,7 +27,9 @@
      en una ventana emergente; ahora es una página real, con su propia URL, que
      se puede compartir y que Google puede indexar. */
   function postUrl(id) {
-    return "articulo.php?post=" + encodeURIComponent(id);
+    /* En la demostración (Firebase) no hay PHP: se usa la versión estática. */
+    const pagina = window.RCB_DEMO ? "articulo.html" : "articulo.php";
+    return pagina + "?post=" + encodeURIComponent(id);
   }
 
 

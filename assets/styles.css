@@ -2087,3 +2087,44 @@ ol.art-lista { list-style: decimal; }
   .destacado-abierto { padding: 20px 18px 24px; }
   .destacado-abierto h2 { font-size: 1.35rem; }
 }
+
+/* ---------- Aviso de la versión de demostración (solo en Firebase) ---------- */
+.demo-aviso {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3000;
+  background: #92400E;
+  color: #FFF7ED;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  padding: 11px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  box-shadow: 0 -2px 14px rgba(0,0,0,0.2);
+}
+.demo-aviso strong { color: #FEF3C7; }
+.demo-aviso-reset {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: #FFF7ED;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.demo-aviso-reset:hover { background: rgba(255,255,255,0.28); }
+body.con-demo-aviso { padding-bottom: 62px; }
+body.con-demo-aviso .social-float-stack { bottom: 78px; }
+
+@media (max-width: 700px) {
+  .demo-aviso { font-size: 0.78rem; padding: 9px 12px; }
+  body.con-demo-aviso { padding-bottom: 86px; }
+}

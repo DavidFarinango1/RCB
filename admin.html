@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=71">
+<link rel="stylesheet" href="assets/styles.css?v=72">
 </head>
 <body>
 
@@ -471,14 +471,22 @@
         </div>
       </div>
       <div class="form-row">
-        <label>Enlace de video (YouTube, opcional)</label>
-        <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...">
+        <label>Video de portada (YouTube o Vimeo, opcional)</label>
+        <input type="text" id="post-field-video" placeholder="https://www.youtube.com/watch?v=...  o  https://vimeo.com/...">
       </div>
       <div class="form-row">
         <label>Contenido completo del artículo</label>
         <p style="font-size:0.78rem;color:#64748B;margin-bottom:6px;">Agrega uno o más bloques: un título (se muestra en negrita) y su descripción debajo.</p>
         <div id="post-content-blocks"></div>
-        <button type="button" class="btn btn-tertiary btn-sm" id="post-add-content-block" style="margin-top:4px;">+ Agregar título</button>
+        <div class="bloque-agregar">
+          <select id="post-block-type">
+            <option value="text">Subtítulo y texto</option>
+            <option value="image">Imagen</option>
+            <option value="video">Video (YouTube o Vimeo)</option>
+            <option value="list">Lista</option>
+          </select>
+          <button type="button" class="btn btn-tertiary btn-sm" id="post-add-content-block">+ Agregar bloque</button>
+        </div>
       </div>
       <div class="form-row">
         <label><input type="checkbox" id="post-field-featured" style="width:auto;display:inline-block;margin-right:6px;">Destacada (se muestra arriba de todo el blog)</label>
@@ -546,6 +554,7 @@
 <script src="assets/videos-data.js"></script>
 <script src="assets/gallery-data.js"></script>
 <script src="assets/products.js"></script>
+<script src="assets/media-embed.js"></script>
 <script src="assets/api-client.js"></script>
 <script src="assets/admin.js"></script>
 </body>

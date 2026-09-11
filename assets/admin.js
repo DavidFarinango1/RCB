@@ -626,44 +626,195 @@
   let currentPostImage = null;
   let currentPostImageFit = defaultFit();
 
+  /* Artículos viejos guardaban el cuerpo como un texto con subtítulos
+     marcados **así**. Se convierten a bloques para no perder nada. */
   function contentToBlocks(content) {
     const text = (content || "").trim();
-    if (!text) return [{ title: "", text: "" }];
+    if (!text) return [{ type: "text", title: "", text: "" }];
     const parts = text.split(/\n(?=\*\*.+?\*\*)/);
     return parts.map(part => {
       const m = part.match(/^\*\*(.+?)\*\*\n?([\s\S]*)$/);
-      return m ? { title: m[1].trim(), text: m[2].trim() } : { title: "", text: part.trim() };
+      return m
+        ? { type: "text", title: m[1].trim(), text: m[2].trim() }
+        : { type: "text", title: "", text: part.trim() };
     });
   }
+  /* ---------- Bloques del artículo ----------
+     El cuerpo del artículo es una lista de bloques que se pueden ordenar.
+     Tipos: texto (subtítulo + párrafos), imagen, video y lista.
+     Los bloques antiguos no tienen "type": se tratan como texto. */
+  const BLOQUE_ETIQUETA = {
+    text: "Subtítulo y texto",
+    image: "Imagen",
+    video: "Video",
+    list: "Lista"
+  };
+  function tipoBloque(b) {
+    return BLOQUE_ETIQUETA[b && b.type] ? b.type : "text";
+  }
+  function bloqueVacio(tipo) {
+    if (tipo === "image") return { type: "image", url: "", caption: "" };
+    if (tipo === "video") return { type: "video", url: "" };
+    if (tipo === "list") return { type: "list", style: "bullet", items: [""] };
+    return { type: "text", title: "", text: "" };
+  }
+
+  function cuerpoBloqueHtml(b, i) {
+    const tipo = tipoBloque(b);
+    const attr = v => String(v == null ? "" : v).replace(/"/g, "&quot;");
+    const txt = v => String(v == null ? "" : v);
+
+    if (tipo === "image") {
+      return `
+        <div class="bloque-previa" data-bloque-previa>${
+          b.url ? `<img src="${attr(b.url)}" alt="">` : "Sin imagen todavía"
+        }</div>
+        <input type="file" class="bloque-imagen-archivo" accept="image/*">
+        <input type="text" class="bloque-pie" placeholder="Pie de foto (opcional)" value="${attr(b.caption)}" style="margin-top:8px;">`;
+    }
+    if (tipo === "video") {
+      return `
+        <input type="text" class="bloque-video-url" placeholder="Pega el enlace de YouTube o Vimeo" value="${attr(b.url)}">
+        <p class="bloque-aviso" data-bloque-aviso></p>
+        <div class="bloque-previa-video" data-bloque-previa></div>`;
+    }
+    if (tipo === "list") {
+      const items = (b.items && b.items.length ? b.items : [""]).join("\n");
+      return `
+        <select class="bloque-lista-estilo" style="max-width:220px;margin-bottom:8px;">
+          <option value="bullet"${(b.style || "bullet") === "bullet" ? " selected" : ""}>Con viñetas</option>
+          <option value="number"${b.style === "number" ? " selected" : ""}>Numerada</option>
+        </select>
+        <textarea class="bloque-lista-items" rows="4" placeholder="Un elemento por línea">${txt(items)}</textarea>
+        <p class="bloque-ayuda">Escribe un elemento por línea.</p>`;
+    }
+    return `
+      <input type="text" class="bloque-titulo" placeholder="Subtítulo (opcional)" value="${attr(b.title)}">
+      <textarea class="bloque-texto" rows="5" placeholder="Texto del artículo...">${txt(b.text)}</textarea>
+      <p class="bloque-ayuda">Deja una línea en blanco para separar párrafos.</p>`;
+  }
+
   function renderContentBlocks(blocks) {
-    postContentBlocksBox.innerHTML = blocks.map((b, i) => `
-      <div class="content-block" data-block-index="${i}" style="border:1px solid var(--borde);border-radius:10px;padding:12px;margin-bottom:10px;">
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
-          <input type="text" class="block-title" placeholder="Título del bloque (opcional)" value="${(b.title || "").replace(/"/g, "&quot;")}" style="flex:1;">
-          <button type="button" class="btn btn-tertiary btn-sm block-remove" title="Eliminar bloque">✕</button>
+    postContentBlocksBox.innerHTML = blocks.map((b, i) => {
+      const tipo = tipoBloque(b);
+      return `
+      <div class="content-block" data-block-index="${i}" data-block-type="${tipo}">
+        <div class="bloque-cabecera">
+          <span class="bloque-tipo">${BLOQUE_ETIQUETA[tipo]}</span>
+          <span class="bloque-acciones">
+            <button type="button" class="btn btn-tertiary btn-sm bloque-subir" title="Subir">↑</button>
+            <button type="button" class="btn btn-tertiary btn-sm bloque-bajar" title="Bajar">↓</button>
+            <button type="button" class="btn btn-tertiary btn-sm block-remove" title="Eliminar bloque">✕</button>
+          </span>
         </div>
-        <textarea class="block-text" placeholder="Descripción del bloque...">${b.text || ""}</textarea>
-      </div>
-    `).join("");
+        ${cuerpoBloqueHtml(b, i)}
+      </div>`;
+    }).join("");
+
+    const indiceDe = btn => parseInt(btn.closest("[data-block-index]").dataset.blockIndex, 10);
+
     postContentBlocksBox.querySelectorAll(".block-remove").forEach(btn => {
       btn.addEventListener("click", () => {
-        const blocksNow = collectContentBlocks();
-        const idx = parseInt(btn.closest("[data-block-index]").dataset.blockIndex, 10);
-        blocksNow.splice(idx, 1);
-        renderContentBlocks(blocksNow.length ? blocksNow : [{ title: "", text: "" }]);
+        const lista = collectContentBlocks();
+        lista.splice(indiceDe(btn), 1);
+        renderContentBlocks(lista.length ? lista : [bloqueVacio("text")]);
       });
     });
+    postContentBlocksBox.querySelectorAll(".bloque-subir").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lista = collectContentBlocks();
+        const i = indiceDe(btn);
+        if (i === 0) return;
+        [lista[i - 1], lista[i]] = [lista[i], lista[i - 1]];
+        renderContentBlocks(lista);
+      });
+    });
+    postContentBlocksBox.querySelectorAll(".bloque-bajar").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const lista = collectContentBlocks();
+        const i = indiceDe(btn);
+        if (i >= lista.length - 1) return;
+        [lista[i], lista[i + 1]] = [lista[i + 1], lista[i]];
+        renderContentBlocks(lista);
+      });
+    });
+
+    /* Imagen de un bloque: se sube al servidor y se guarda su dirección. */
+    postContentBlocksBox.querySelectorAll(".bloque-imagen-archivo").forEach(input => {
+      input.addEventListener("change", () => {
+        const caja = input.closest("[data-block-index]");
+        readImageFile(input, url => {
+          if (url === undefined) return;
+          caja.dataset.blockImage = url || "";
+          const previa = caja.querySelector("[data-bloque-previa]");
+          if (previa) previa.innerHTML = url ? `<img src="${url}" alt="">` : "Sin imagen todavía";
+        });
+      });
+    });
+
+    /* Video: se avisa en el momento si el enlace sirve, y se muestra. */
+    postContentBlocksBox.querySelectorAll(".bloque-video-url").forEach(input => {
+      const refrescar = () => {
+        const caja = input.closest("[data-block-index]");
+        const aviso = caja.querySelector("[data-bloque-aviso]");
+        const previa = caja.querySelector("[data-bloque-previa]");
+        const url = input.value.trim();
+        const embed = window.RCB_EMBED_URL ? window.RCB_EMBED_URL(url) : null;
+        if (!url) {
+          aviso.textContent = "";
+          aviso.className = "bloque-aviso";
+          previa.innerHTML = "";
+          return;
+        }
+        if (embed) {
+          const servicio = window.RCB_EMBED_SERVICIO(url);
+          aviso.textContent = "✓ Video de " + servicio + " detectado. Se reproducirá dentro del artículo.";
+          aviso.className = "bloque-aviso es-ok";
+          previa.innerHTML = `<iframe src="${embed}" frameborder="0" allowfullscreen></iframe>`;
+        } else {
+          aviso.textContent = "✕ No reconocemos este enlace. Debe ser de YouTube o Vimeo.";
+          aviso.className = "bloque-aviso es-error";
+          previa.innerHTML = "";
+        }
+      };
+      input.addEventListener("input", refrescar);
+      refrescar();
+    });
+
+    /* Recuerda las imágenes ya subidas al reordenar o redibujar. */
+    postContentBlocksBox.querySelectorAll("[data-block-index]").forEach((caja, i) => {
+      if (blocks[i] && blocks[i].type === "image") caja.dataset.blockImage = blocks[i].url || "";
+    });
   }
+
   function collectContentBlocks() {
-    return Array.from(postContentBlocksBox.querySelectorAll(".content-block")).map(el => ({
-      title: el.querySelector(".block-title").value,
-      text: el.querySelector(".block-text").value
-    }));
+    return Array.from(postContentBlocksBox.querySelectorAll(".content-block")).map(el => {
+      const tipo = el.dataset.blockType || "text";
+      const val = sel => { const n = el.querySelector(sel); return n ? n.value : ""; };
+
+      if (tipo === "image") {
+        return { type: "image", url: el.dataset.blockImage || "", caption: val(".bloque-pie") };
+      }
+      if (tipo === "video") {
+        return { type: "video", url: val(".bloque-video-url").trim() };
+      }
+      if (tipo === "list") {
+        return {
+          type: "list",
+          style: val(".bloque-lista-estilo") || "bullet",
+          items: val(".bloque-lista-items").split("\n").map(s => s.trim()).filter(Boolean)
+        };
+      }
+      return { type: "text", title: val(".bloque-titulo"), text: val(".bloque-texto") };
+    });
   }
+
   if (postAddContentBlockBtn) {
     postAddContentBlockBtn.addEventListener("click", () => {
+      const tipoSel = document.getElementById("post-block-type");
+      const tipo = tipoSel ? tipoSel.value : "text";
       const blocks = collectContentBlocks();
-      blocks.push({ title: "", text: "" });
+      blocks.push(bloqueVacio(tipo));
       renderContentBlocks(blocks);
     });
   }

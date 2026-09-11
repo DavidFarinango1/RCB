@@ -22,36 +22,13 @@
       ? `<img src="${p.image}" alt="${p.title}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;${fitStyle(p.imageFit)}${extraStyle || ""}">`
       : (p.icon || "📰");
   }
-  function extractYoutubeId(url) {
-    if (!url) return null;
-    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
-    return m ? m[1] : null;
+  /* Dirección de la página propia de cada artículo. Antes el artículo se abría
+     en una ventana emergente; ahora es una página real, con su propia URL, que
+     se puede compartir y que Google puede indexar. */
+  function postUrl(id) {
+    return "articulo.php?post=" + encodeURIComponent(id);
   }
-  function escapeHtml(str) {
-    return (str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
-  function legacyContentToBlocks(content) {
-    const text = (content || "").trim();
-    if (!text) return [];
-    const parts = text.split(/\n(?=\*\*.+?\*\*)/);
-    return parts.map(part => {
-      const m = part.match(/^\*\*(.+?)\*\*\n?([\s\S]*)$/);
-      return m ? { title: m[1].trim(), text: m[2].trim() } : { title: "", text: part.trim() };
-    });
-  }
-  function contentBlocksHtml(p) {
-    let blocks = p.contentBlocks && p.contentBlocks.length ? p.contentBlocks : legacyContentToBlocks(p.content);
-    if (!blocks.length) blocks = [{ title: "", text: p.excerpt || "" }];
-    return blocks.map(b => `
-      <div class="post-block">
-        ${b.title ? `<h3 class="post-block-title">${escapeHtml(b.title)}</h3>` : ""}
-        ${b.text ? `<p class="post-block-text">${escapeHtml(b.text)}</p>` : ""}
-      </div>
-    `).join("");
-  }
+
 
   const grid = document.getElementById("blog-post-grid");
   if (!grid) return; // no estamos en blog.html
@@ -75,7 +52,7 @@
           <p>${featured.excerpt}</p>
           <div class="post-meta" style="margin-bottom:14px;">📅 ${featured.date} &nbsp;·&nbsp; ${categoryName(featured.category)}</div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button type="button" class="btn btn-primary btn-sm" data-post-open="${featured.id}">Leer artículo →</button>
+            <a class="btn btn-primary btn-sm" href="${postUrl(featured.id)}">Leer artículo →</a>
           </div>
         </div>
       </article>`;
@@ -140,7 +117,7 @@
     } else {
       if (emptyState) emptyState.style.display = "none";
       grid.innerHTML = pageItems.map(p => `
-        <article class="post-card" data-category="${p.category}" data-post-open="${p.id}" style="cursor:pointer;">
+        <a class="post-card" data-category="${p.category}" href="${postUrl(p.id)}">
           <div class="thumb">${thumbHtml(p)}</div>
           <div class="body">
             <span class="cat">${categoryName(p.category)}</span>
@@ -148,44 +125,12 @@
             <p>${p.excerpt}</p>
             <div class="post-meta">${p.date} · ${p.readTime}</div>
           </div>
-        </article>
+        </a>
       `).join("");
     }
     renderPagination(totalPages);
-    bindPostOpeners();
   }
 
-  /* ---------- Modal de artículo (se abre dentro de la página) ---------- */
-  const postModal = document.getElementById("post-modal");
-  const postModalBody = document.getElementById("post-modal-body");
-  function openPostModal(id) {
-    const p = allPosts.find(x => x.id === id);
-    if (!p || !postModal || !postModalBody) return;
-    const youtubeId = extractYoutubeId(p.videoUrl);
-    const mediaHtml = youtubeId
-      ? `<div class="post-modal-video"><iframe src="https://www.youtube.com/embed/${youtubeId}" title="${p.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
-      : (p.image ? `<div class="post-modal-thumb">${thumbHtml(p, "object-fit:contain;height:auto;max-height:220px;")}</div>` : "");
-    postModalBody.innerHTML = `
-      ${mediaHtml}
-      <span class="cat">${categoryName(p.category)}</span>
-      <h2>${p.title}</h2>
-      <div class="post-meta" style="margin:8px 0 16px;">📅 ${p.date} &nbsp;·&nbsp; ${p.readTime || ""}</div>
-      ${contentBlocksHtml(p)}
-    `;
-    postModal.classList.add("open");
-  }
-  function bindPostOpeners() {
-    document.querySelectorAll("[data-post-open]").forEach(el => {
-      el.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-        openPostModal(el.dataset.postOpen);
-      });
-    });
-  }
-  const postModalClose = document.getElementById("post-modal-close");
-  if (postModalClose) postModalClose.addEventListener("click", () => postModal.classList.remove("open"));
-  if (postModal) postModal.addEventListener("click", e => { if (e.target === postModal) postModal.classList.remove("open"); });
 
   function renderPagination(totalPages) {
     if (!pagination) return;
@@ -253,12 +198,11 @@
   const popularList = document.getElementById("blog-popular-list");
   if (popularList) {
     popularList.innerHTML = allPosts.slice(0, 5).map(p => `
-      <div class="popular-item" data-post-open="${p.id}">
+      <a class="popular-item" href="${postUrl(p.id)}">
         <div class="thumb">${thumbHtml(p)}</div>
         <div><h5>${p.title}</h5><span>${p.date}</span></div>
-      </div>
+      </a>
     `).join("");
-    bindPostOpeners();
   }
 
   renderTabs();

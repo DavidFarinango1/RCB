@@ -237,37 +237,79 @@
   const addBtn = document.getElementById("add-product-btn");
   const cancelBtn = document.getElementById("cancel-form-btn");
   const categorySelect = document.getElementById("field-category");
-  const productImageInput = document.getElementById("field-image");
-  const productImagePreview = document.getElementById("product-image-preview");
-  const productImageToolbar = document.getElementById("product-image-toolbar");
+  const productImagenesBox = document.getElementById("product-imagenes");
 
   let editingId = null;
-  let currentProductImage = null;
-  let currentProductImageFit = defaultFit();
+  /* Hasta 3 imágenes por producto. La primera es la que se ve en el catálogo
+     y en el inicio; las otras dos son miniaturas dentro de la ficha. */
+  const MAX_IMAGENES = window.RCB_MAX_IMAGENES_PRODUCTO || 3;
+  let imagenesProducto = [];
+  const ajustadoresImagen = [];
 
-  const productAdjuster = setupImageAdjuster({
-    box: productImagePreview,
-    toolbar: productImageToolbar,
-    zoomInBtn: document.getElementById("product-zoom-in"),
-    zoomOutBtn: document.getElementById("product-zoom-out"),
-    resetBtn: document.getElementById("product-reset-fit"),
-    getFit: () => currentProductImageFit,
-    setFit: fit => { currentProductImageFit = fit; }
-  });
+  function renderImagenesProducto() {
+    if (!productImagenesBox) return;
+    ajustadoresImagen.length = 0;
+
+    productImagenesBox.innerHTML = Array.from({ length: MAX_IMAGENES }, (_, i) => {
+      const im = imagenesProducto[i];
+      return `
+      <div class="prod-imagen-slot" data-slot="${i}">
+        <div class="prod-imagen-cabecera">
+          <span class="prod-imagen-etiqueta">${i === 0 ? "Imagen principal" : "Imagen " + (i + 1)}</span>
+          ${im ? `<button type="button" class="btn btn-tertiary btn-sm prod-imagen-quitar" title="Quitar">✕</button>` : ""}
+        </div>
+        <div class="admin-image-upload prod-imagen-previa" data-previa="${i}">${
+          im ? `<img src="${im.url}" alt="">` : (i === 0 ? "Sube la imagen principal" : "Opcional")
+        }</div>
+        <div class="img-adjust-toolbar" data-toolbar="${i}" style="display:${im ? "" : "none"};">
+          <button type="button" data-zoom-out="${i}" title="Alejar">−</button>
+          <span class="img-adjust-hint">Arrastra para mover</span>
+          <button type="button" data-zoom-in="${i}" title="Acercar">+</button>
+          <button type="button" data-reset-fit="${i}" class="reset-btn">Restablecer</button>
+        </div>
+        <input type="file" data-archivo="${i}" accept="image/*">
+      </div>`;
+    }).join("");
+
+    for (let i = 0; i < MAX_IMAGENES; i++) {
+      const previa = productImagenesBox.querySelector(`[data-previa="${i}"]`);
+      const ajustador = setupImageAdjuster({
+        box: previa,
+        toolbar: productImagenesBox.querySelector(`[data-toolbar="${i}"]`),
+        zoomInBtn: productImagenesBox.querySelector(`[data-zoom-in="${i}"]`),
+        zoomOutBtn: productImagenesBox.querySelector(`[data-zoom-out="${i}"]`),
+        resetBtn: productImagenesBox.querySelector(`[data-reset-fit="${i}"]`),
+        getFit: () => (imagenesProducto[i] ? imagenesProducto[i].fit : defaultFit()),
+        setFit: fit => { if (imagenesProducto[i]) imagenesProducto[i].fit = fit; }
+      });
+      ajustadoresImagen[i] = ajustador;
+      if (ajustador) ajustador.refresh();
+
+      const input = productImagenesBox.querySelector(`[data-archivo="${i}"]`);
+      if (input) {
+        input.addEventListener("change", () => {
+          readImageFile(input, url => {
+            if (url === undefined) return;
+            if (!url) return;
+            imagenesProducto[i] = { url: url, fit: defaultFit() };
+            renderImagenesProducto();
+          });
+        });
+      }
+
+      const quitar = productImagenesBox.querySelector(`[data-slot="${i}"] .prod-imagen-quitar`);
+      if (quitar) {
+        quitar.addEventListener("click", () => {
+          /* Se quita el hueco para que no queden espacios vacíos en medio. */
+          imagenesProducto.splice(i, 1);
+          renderImagenesProducto();
+        });
+      }
+    }
+  }
 
   function populateCategorySelect(selectEl) {
     selectEl.innerHTML = getCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join("");
-  }
-  if (productImageInput) {
-    productImageInput.addEventListener("change", () => {
-      readImageFile(productImageInput, dataUrl => {
-        if (dataUrl === undefined) return;
-        currentProductImage = dataUrl;
-        currentProductImageFit = defaultFit();
-        productImagePreview.innerHTML = dataUrl ? `<img src="${dataUrl}" alt="">` : "Vista previa de la imagen";
-        productAdjuster.refresh();
-      });
-    });
   }
 
   function renderStats(list) {
@@ -387,11 +429,12 @@
     document.getElementById("field-stock").checked = p ? !!p.stock : true;
     document.getElementById("field-description").value = p ? p.description : "";
     document.getElementById("field-specs").value = p ? (p.specs || []).join("\n") : "";
-    currentProductImage = p ? (p.image || null) : null;
-    currentProductImageFit = p && p.imageFit ? { ...p.imageFit } : defaultFit();
-    productImagePreview.innerHTML = currentProductImage ? `<img src="${currentProductImage}" alt="">` : "Vista previa de la imagen";
-    productImageInput.value = "";
-    productAdjuster.refresh();
+    /* Entiende los dos formatos: los productos antiguos traen una sola imagen
+       en "image", los nuevos traen hasta tres en "images". */
+    imagenesProducto = window.RCB_IMAGENES_PRODUCTO
+      ? window.RCB_IMAGENES_PRODUCTO(p).map(im => ({ url: im.url, fit: { ...im.fit } }))
+      : [];
+    renderImagenesProducto();
 
     formOverlay.classList.add("open");
   }
@@ -414,8 +457,12 @@
         price: parseFloat(document.getElementById("field-price").value) || 0,
         oldPrice: document.getElementById("field-oldprice").value ? parseFloat(document.getElementById("field-oldprice").value) : null,
         label: document.getElementById("field-label").value || "",
-        image: currentProductImage,
-        imageFit: currentProductImageFit,
+        /* Se guardan las hasta 3 imágenes, y además la primera se deja en
+           "image" como siempre: es la que leen la tarjeta del catálogo, la del
+           inicio y la tabla del panel, que así no necesitan cambiar. */
+        images: imagenesProducto.map(im => ({ url: im.url, fit: im.fit })),
+        image: imagenesProducto.length ? imagenesProducto[0].url : null,
+        imageFit: imagenesProducto.length ? imagenesProducto[0].fit : defaultFit(),
         stock: document.getElementById("field-stock").checked,
         description: document.getElementById("field-description").value.trim(),
         specs: document.getElementById("field-specs").value.split("\n").map(s => s.trim()).filter(Boolean)

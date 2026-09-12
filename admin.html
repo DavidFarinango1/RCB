@@ -6,7 +6,7 @@
 <title>Panel Administrador | RCB</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=76">
+<link rel="stylesheet" href="assets/styles.css?v=77">
 </head>
 <body>
 
@@ -491,15 +491,13 @@
     <h2 id="form-title">Agregar producto</h2>
     <form id="product-form">
       <div class="form-row">
-        <label>Imagen del producto (máx. 1.5 MB)</label>
-        <div class="admin-image-upload" id="product-image-preview">Vista previa de la imagen</div>
-        <div class="img-adjust-toolbar" id="product-image-toolbar" style="display:none;">
-          <button type="button" id="product-zoom-out" title="Alejar">−</button>
-          <span class="img-adjust-hint">Arrastra para mover</span>
-          <button type="button" id="product-zoom-in" title="Acercar">+</button>
-          <button type="button" id="product-reset-fit" class="reset-btn">Restablecer posición</button>
-        </div>
-        <input type="file" id="field-image" accept="image/*">
+        <label>Imágenes del producto</label>
+        <p class="campo-ayuda" style="margin-top:0;margin-bottom:10px;">
+          Puedes subir hasta <strong>3 imágenes</strong>. La <strong>primera</strong> es la que se ve en el
+          catálogo y en el inicio; las otras dos aparecen como miniaturas dentro de la ficha del producto.
+          📐 Medida recomendada: <strong>1000 × 1000 px</strong> (cuadrada).
+        </p>
+        <div class="prod-imagenes" id="product-imagenes"></div>
       </div>
       <div class="form-row">
         <label>SKU (código único)</label>
@@ -642,6 +640,7 @@
 <script src="assets/products.js"></script>
 <script src="assets/media-embed.js"></script>
 <script src="assets/blog-bloques.js"></script>
+<script src="assets/product-images.js"></script>
 <script src="assets/api-client.js"></script>
 <script src="assets/demo-mode.js"></script>
 <script src="assets/admin.js"></script>

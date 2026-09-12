@@ -155,11 +155,35 @@
     const p = state.all.find(x => x.id === id);
     if (!p) return;
     const modal = document.getElementById("product-modal");
-    const modalFit = p.imageFit || { scale: 1, x: 0, y: 0 };
-    const thumb = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:10px;transform:translate(${modalFit.x}%, ${modalFit.y}%) scale(${modalFit.scale});">` : (p.icon || "📦");
+    /* Galería: hasta 3 imágenes. Con una sola no se muestran las miniaturas,
+       para que la ficha se vea igual que antes. */
+    const imagenes = window.RCB_IMAGENES_PRODUCTO ? window.RCB_IMAGENES_PRODUCTO(p) : [];
+    const encuadre = window.RCB_ESTILO_ENCUADRE || (() => "");
+
+    let galeria;
+    if (!imagenes.length) {
+      galeria = `<div class="modal-thumb">${p.icon || "📦"}</div>`;
+    } else {
+      galeria = `
+        <div class="prod-galeria">
+          <div class="modal-thumb prod-galeria-principal">
+            <img id="prod-galeria-img" src="${imagenes[0].url}" alt="${p.name}"
+                 style="width:100%;height:100%;object-fit:cover;border-radius:10px;${encuadre(imagenes[0].fit)}">
+          </div>
+          ${imagenes.length > 1 ? `
+          <div class="prod-galeria-miniaturas">
+            ${imagenes.map((im, i) => `
+              <button type="button" class="prod-galeria-mini${i === 0 ? " activa" : ""}"
+                      data-galeria="${i}" aria-label="Ver imagen ${i + 1} de ${imagenes.length}">
+                <img src="${im.url}" alt="" loading="lazy" style="${encuadre(im.fit)}">
+              </button>`).join("")}
+          </div>` : ""}
+        </div>`;
+    }
+
     const sub = subcategoryName(p.subcategory);
     document.getElementById("modal-body").innerHTML = `
-      <div class="modal-thumb">${thumb}</div>
+      ${galeria}
       <span class="cat">${categoryName(p.category)}${sub ? " · " + sub : ""}</span>
       <h2>${p.name}</h2>
       <p class="prod-sku">SKU: ${p.id}</p>
@@ -171,6 +195,20 @@
       <ul class="spec-list">${(p.specs || []).map(s => `<li>✔ ${s}</li>`).join("")}</ul>
       <a href="https://wa.me/593993421505?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary" style="margin-top:16px;">💬 Cotizar por WhatsApp</a>
     `;
+
+    /* Cambiar de imagen al pulsar una miniatura. */
+    const principal = document.getElementById("prod-galeria-img");
+    document.querySelectorAll("[data-galeria]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const im = imagenes[Number(btn.dataset.galeria)];
+        if (!im || !principal) return;
+        principal.src = im.url;
+        principal.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:10px;" + encuadre(im.fit);
+        document.querySelectorAll("[data-galeria]").forEach(b => b.classList.remove("activa"));
+        btn.classList.add("activa");
+      });
+    });
+
     modal.classList.add("open");
   }
 

@@ -86,11 +86,31 @@
     return copia;
   }
 
+  /* Los productos reales solo tienen una imagen cada uno, así que en la
+     demostración se le ponen tres al primero para que se vea la galería. */
+  function conTresImagenes(productos) {
+    const copia = JSON.parse(JSON.stringify(productos || []));
+    const p = copia[0];
+    if (!p || (p.images && p.images.length > 1)) return copia;
+    const fit = { scale: 1, x: 0, y: 0 };
+    p.images = [
+      { url: p.image || "imagen/imagen2.png", fit: p.imageFit || fit },
+      { url: "imagen/imagen5.png", fit: fit },
+      { url: "imagen/imagen7.png", fit: fit }
+    ];
+    p.image = p.images[0].url;
+    return copia;
+  }
+
   window.RCB_API = {
     get: function (recurso) {
       return paginaLista.then(function () {
         const guardado = leer(recurso);
         if (guardado !== undefined) return guardado;
+        if (recurso === "products") {
+          const conGaleria = conTresImagenes(window.RCB_DEFAULT_PRODUCTS);
+          if (conGaleria.length) return conGaleria;
+        }
         if (recurso === "posts") {
           const conCuerpo = conEjemplo(window.RCB_DEFAULT_POSTS);
           if (conCuerpo.length) return conCuerpo;

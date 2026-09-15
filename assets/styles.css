@@ -2179,8 +2179,94 @@ body.con-demo-aviso .social-float-stack { bottom: 78px; }
   color: var(--azul-principal);
 }
 .prod-imagen-cabecera .btn { padding: 3px 9px; font-size: 0.78rem; }
-.prod-imagen-previa {
-  aspect-ratio: 1 / 1;
-  margin-bottom: 8px;
-}
+.prod-imagen-previa { margin-bottom: 8px; }
 .prod-imagen-slot input[type="file"] { width: 100%; font-size: 0.78rem; }
+
+/* ================= Productos: imágenes completas y videos ================= */
+/* Las fotos de producto se muestran enteras, sin recorte. El fondo blanco hace
+   que el espacio sobrante se funda con las fotos, que suelen tener fondo claro. */
+.prod-thumb { background: var(--blanco); }
+.prod-img-completa {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Ficha del producto un poco más ancha, para que la foto se aprecie. */
+#product-modal .modal-box { max-width: 560px; }
+
+/* Imagen principal de la ficha: entera y con buen tamaño. Antes medía 120 px
+   de alto y recortaba la foto. */
+.modal-thumb.prod-galeria-principal {
+  height: auto;
+  aspect-ratio: 4 / 3;
+  max-height: 55vh;
+  background: var(--blanco);
+  border: 1px solid var(--borde);
+}
+.modal-thumb.prod-galeria-principal img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.prod-galeria-mini { background: var(--blanco); }
+.prod-galeria-mini img { object-fit: contain; }
+
+/* Videos del producto */
+.prod-videos {
+  margin: 18px 0 6px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borde);
+}
+.prod-videos-titulo {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+  margin-bottom: 12px;
+}
+.prod-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.prod-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* TikTok y Shorts son verticales: se muestran de pie, centrados. */
+.prod-video-vertical {
+  aspect-ratio: 9 / 16;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* En el blog, un video de TikTok también se muestra de pie. */
+.art-video:has(iframe[src*="tiktok.com"]) {
+  aspect-ratio: 9 / 16;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- Panel admin: vista previa de imágenes y video del producto ---------- */
+/* Misma proporción (4:3) y mismo modo (foto completa) que la tarjeta y la ficha
+   de la web, para que mover y acercar se vean aquí igual que los verá el cliente. */
+.prod-imagen-previa { aspect-ratio: 4 / 3; background: var(--blanco); }
+.prod-imagen-previa img { width: 100%; height: 100%; object-fit: contain !important; }
+#field-video-previa iframe {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 9 / 16;
+  border: 0;
+  border-radius: 8px;
+}

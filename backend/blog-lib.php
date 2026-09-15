@@ -3,16 +3,22 @@
    Vive aparte de articulo.php para poder reutilizarse y revisarse sin ruido. */
 
 /* Convierte un enlace de video en la dirección incrustable, para que el video
-   se reproduzca dentro de la página. Espejo de assets/media-embed.js. */
+   se reproduzca dentro de la página. Espejo de assets/media-embed.js.
+   Acepta YouTube, Vimeo y TikTok. Solo ENLACES: un código de inserción pegado
+   (<blockquote ...>) se rechaza, para que no se publique un video por error. */
 function rcb_embed_url($url) {
   $u = trim((string)$url);
   if ($u === '') return null;
+  if (!preg_match('~^(https?://)?([a-z0-9-]+\.)*(youtube\.com|youtu\.be|vimeo\.com|tiktok\.com)/~i', $u)) return null;
 
-  if (preg_match('~(?:youtube\.com/(?:watch\?v=|embed/|shorts/|live/)|youtu\.be/)([\w-]{11})~', $u, $m)) {
+  if (preg_match('~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([\w-]{11})~', $u, $m)) {
     return 'https://www.youtube.com/embed/' . $m[1];
   }
-  if (preg_match('~vimeo\.com/(?:[^/]+/)*(\d{6,})~', $u, $m)) {
+  if (preg_match('~vimeo\.com/(?:[^/?#]+/)*(\d{6,})~', $u, $m)) {
     return 'https://player.vimeo.com/video/' . $m[1];
+  }
+  if (preg_match('~tiktok\.com/(?:@[^/?#]+/video|embed(?:/v2)?|player/v1|v)/(\d{10,})~', $u, $m)) {
+    return 'https://www.tiktok.com/player/v1/' . $m[1];
   }
   return null;
 }

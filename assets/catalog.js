@@ -102,8 +102,9 @@
     } else {
       if (emptyState) emptyState.style.display = "none";
       grid.innerHTML = pageItems.map(p => {
-        const fit = p.imageFit || { scale: 1, x: 0, y: 0 };
-        const thumb = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📦");
+        /* Foto completa por defecto, con el ajuste de mover/acercar del panel. */
+        const encuadre = window.RCB_ESTILO_ENCUADRE ? window.RCB_ESTILO_ENCUADRE(p.imageFit) : "";
+        const thumb = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="prod-img-completa" style="${encuadre}">` : (p.icon || "📦");
         const tag = p.label === "oferta" ? '<span class="prod-tag tag-oferta">OFERTA</span>'
           : p.label === "nuevo" ? '<span class="prod-tag tag-nuevo">NUEVO</span>' : "";
         return `
@@ -155,10 +156,11 @@
     const p = state.all.find(x => x.id === id);
     if (!p) return;
     const modal = document.getElementById("product-modal");
-    /* Galería: hasta 3 imágenes. Con una sola no se muestran las miniaturas,
-       para que la ficha se vea igual que antes. */
-    const imagenes = window.RCB_IMAGENES_PRODUCTO ? window.RCB_IMAGENES_PRODUCTO(p) : [];
+    /* Galería de hasta 3 imágenes, mostradas COMPLETAS por defecto y con el
+       ajuste de mover/acercar que se haga en el panel. Con una sola imagen no
+       salen miniaturas. */
     const encuadre = window.RCB_ESTILO_ENCUADRE || (() => "");
+    const imagenes = window.RCB_IMAGENES_PRODUCTO ? window.RCB_IMAGENES_PRODUCTO(p) : [];
 
     let galeria;
     if (!imagenes.length) {
@@ -167,8 +169,7 @@
       galeria = `
         <div class="prod-galeria">
           <div class="modal-thumb prod-galeria-principal">
-            <img id="prod-galeria-img" src="${imagenes[0].url}" alt="${p.name}"
-                 style="width:100%;height:100%;object-fit:cover;border-radius:10px;${encuadre(imagenes[0].fit)}">
+            <img id="prod-galeria-img" src="${imagenes[0].url}" alt="${p.name}" style="${encuadre(imagenes[0].fit)}">
           </div>
           ${imagenes.length > 1 ? `
           <div class="prod-galeria-miniaturas">
@@ -180,6 +181,21 @@
           </div>` : ""}
         </div>`;
     }
+
+    /* Video corto (TikTok o YouTube Shorts), solo en productos de Herramientas.
+       Se reproduce aquí mismo, sin sacar al cliente de la web. */
+    const video = p.category === "herramientas" && window.RCB_VIDEO_CORTO
+      ? window.RCB_VIDEO_CORTO(p.video)
+      : null;
+    const videosHtml = !video ? "" : `
+      <div class="prod-videos">
+        <h3 class="prod-videos-titulo">Video del producto</h3>
+        <div class="prod-video prod-video-vertical">
+          <iframe src="${video.url}" title="Video de ${p.name}" loading="lazy" frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen></iframe>
+        </div>
+      </div>`;
 
     const sub = subcategoryName(p.subcategory);
     document.getElementById("modal-body").innerHTML = `
@@ -193,6 +209,7 @@
       </p>` : ""}
       <p style="margin:14px 0;color:#4B5563;">${p.description || ""}</p>
       <ul class="spec-list">${(p.specs || []).map(s => `<li>✔ ${s}</li>`).join("")}</ul>
+      ${videosHtml}
       <a href="https://wa.me/593993421505?text=${encodeURIComponent('Hola, quiero cotizar: ' + p.name + ' (SKU ' + p.id + ')')}" class="btn btn-primary" style="margin-top:16px;">💬 Cotizar por WhatsApp</a>
     `;
 
@@ -203,7 +220,7 @@
         const im = imagenes[Number(btn.dataset.galeria)];
         if (!im || !principal) return;
         principal.src = im.url;
-        principal.style.cssText = "width:100%;height:100%;object-fit:cover;border-radius:10px;" + encuadre(im.fit);
+        principal.style.cssText = encuadre(im.fit);
         document.querySelectorAll("[data-galeria]").forEach(b => b.classList.remove("activa"));
         btn.classList.add("activa");
       });
@@ -224,10 +241,22 @@
     sortSelect.addEventListener("change", e => { state.sort = e.target.value; renderGrid(); });
   }
 
+  /* Al cerrar la ficha se vacía su contenido: si no, un video que se estaba
+     reproduciendo seguiría sonando con la ventana ya oculta. */
+  function cerrarFicha() {
+    const modal = document.getElementById("product-modal");
+    if (!modal) return;
+    modal.classList.remove("open");
+    const cuerpo = document.getElementById("modal-body");
+    if (cuerpo) cuerpo.innerHTML = "";
+  }
   const modalClose = document.getElementById("modal-close");
-  if (modalClose) modalClose.addEventListener("click", () => document.getElementById("product-modal").classList.remove("open"));
+  if (modalClose) modalClose.addEventListener("click", cerrarFicha);
   const modalOverlay = document.getElementById("product-modal");
-  if (modalOverlay) modalOverlay.addEventListener("click", e => { if (e.target === modalOverlay) modalOverlay.classList.remove("open"); });
+  if (modalOverlay) modalOverlay.addEventListener("click", e => { if (e.target === modalOverlay) cerrarFicha(); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && modalOverlay && modalOverlay.classList.contains("open")) cerrarFicha();
+  });
 
   if (grid) render();
 })();

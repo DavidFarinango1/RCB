@@ -244,12 +244,12 @@
      y en el inicio; las otras dos son miniaturas dentro de la ficha. */
   const MAX_IMAGENES = window.RCB_MAX_IMAGENES_PRODUCTO || 3;
   let imagenesProducto = [];
-  const ajustadoresImagen = [];
 
   function renderImagenesProducto() {
     if (!productImagenesBox) return;
-    ajustadoresImagen.length = 0;
 
+    /* La foto se muestra COMPLETA por defecto. Con mover y acercar se puede
+       ajustar a gusto; lo que se ve aquí es exactamente lo que verá el cliente. */
     productImagenesBox.innerHTML = Array.from({ length: MAX_IMAGENES }, (_, i) => {
       const im = imagenesProducto[i];
       return `
@@ -272,9 +272,8 @@
     }).join("");
 
     for (let i = 0; i < MAX_IMAGENES; i++) {
-      const previa = productImagenesBox.querySelector(`[data-previa="${i}"]`);
       const ajustador = setupImageAdjuster({
-        box: previa,
+        box: productImagenesBox.querySelector(`[data-previa="${i}"]`),
         toolbar: productImagenesBox.querySelector(`[data-toolbar="${i}"]`),
         zoomInBtn: productImagenesBox.querySelector(`[data-zoom-in="${i}"]`),
         zoomOutBtn: productImagenesBox.querySelector(`[data-zoom-out="${i}"]`),
@@ -282,7 +281,6 @@
         getFit: () => (imagenesProducto[i] ? imagenesProducto[i].fit : defaultFit()),
         setFit: fit => { if (imagenesProducto[i]) imagenesProducto[i].fit = fit; }
       });
-      ajustadoresImagen[i] = ajustador;
       if (ajustador) ajustador.refresh();
 
       const input = productImagenesBox.querySelector(`[data-archivo="${i}"]`);
@@ -307,6 +305,50 @@
       }
     }
   }
+
+  /* ---------- Video corto del producto (solo categoría Herramientas) ---------- */
+  const CATEGORIA_CON_VIDEO = "herramientas";
+  const videoFila = document.getElementById("product-video-fila");
+  const videoInput = document.getElementById("field-video");
+  const videoAviso = document.getElementById("field-video-aviso");
+  const videoPrevia = document.getElementById("field-video-previa");
+
+  /* El campo solo aparece cuando el producto es de Herramientas. */
+  function actualizarCampoVideo() {
+    if (!videoFila) return;
+    const esHerramienta = categorySelect && categorySelect.value === CATEGORIA_CON_VIDEO;
+    videoFila.hidden = !esHerramienta;
+    /* Oculto no debe seguir reproduciendo nada. */
+    if (!esHerramienta && videoPrevia) videoPrevia.innerHTML = "";
+    if (esHerramienta) revisarVideoProducto();
+  }
+
+  /* Avisa en el momento si el enlace sirve y muestra el video. */
+  function revisarVideoProducto() {
+    if (!videoInput || !videoAviso || !videoPrevia) return;
+    const url = videoInput.value.trim();
+    const info = window.RCB_VIDEO_CORTO ? window.RCB_VIDEO_CORTO(url) : null;
+
+    if (!url) {
+      videoAviso.textContent = "";
+      videoAviso.className = "bloque-aviso";
+      videoPrevia.innerHTML = "";
+      return;
+    }
+    if (info) {
+      videoAviso.textContent = "✓ Video corto de " + info.servicio + " verificado. Se reproducirá dentro de la ficha del producto.";
+      videoAviso.className = "bloque-aviso es-ok";
+      if (!videoPrevia.querySelector('iframe[src="' + info.url + '"]')) {
+        videoPrevia.innerHTML = `<iframe src="${info.url}" frameborder="0" allowfullscreen></iframe>`;
+      }
+    } else {
+      videoAviso.textContent = "✕ " + (window.RCB_VIDEO_CORTO_MOTIVO ? window.RCB_VIDEO_CORTO_MOTIVO(url) : "Enlace no reconocido.");
+      videoAviso.className = "bloque-aviso es-error";
+      videoPrevia.innerHTML = "";
+    }
+  }
+  if (videoInput) videoInput.addEventListener("input", revisarVideoProducto);
+  if (categorySelect) categorySelect.addEventListener("change", actualizarCampoVideo);
 
   function populateCategorySelect(selectEl) {
     selectEl.innerHTML = getCategories().map(c => `<option value="${c.id}">${c.name}</option>`).join("");
@@ -388,8 +430,9 @@
       return;
     }
     tableBody.innerHTML = list.map(p => {
+      /* Igual que en la web: foto completa, con el ajuste de mover/acercar. */
       const fit = p.imageFit || defaultFit();
-      const thumb = p.image ? `<img src="${p.image}" alt="" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📦");
+      const thumb = p.image ? `<img src="${p.image}" alt="" class="prod-img-completa" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">` : (p.icon || "📦");
       return `
       <tr>
         <td><div class="admin-thumb">${thumb}</div></td>
@@ -435,10 +478,17 @@
       ? window.RCB_IMAGENES_PRODUCTO(p).map(im => ({ url: im.url, fit: { ...im.fit } }))
       : [];
     renderImagenesProducto();
+    if (videoInput) videoInput.value = p ? (p.video || "") : "";
+    actualizarCampoVideo();
 
     formOverlay.classList.add("open");
   }
-  function closeForm() { formOverlay.classList.remove("open"); form.reset(); }
+  function closeForm() {
+    formOverlay.classList.remove("open");
+    form.reset();
+    /* Vacía las vistas previas de video para que no sigan sonando. */
+    if (videoPrevia) videoPrevia.innerHTML = "";
+  }
   function deleteProduct(id) {
     if (!confirm("¿Eliminar este producto del catálogo?")) return;
     saveProducts(getProducts().filter(p => p.id !== id));
@@ -449,6 +499,17 @@
     form.addEventListener("submit", e => {
       e.preventDefault();
       const list = getProducts();
+
+      /* El video corto solo existe para Herramientas. Si el enlace no sirve,
+         no se guarda en silencio: se avisa para que lo corrijan o lo borren. */
+      const esHerramienta = categorySelect.value === CATEGORIA_CON_VIDEO;
+      const enlaceVideo = esHerramienta && videoInput ? videoInput.value.trim() : "";
+      if (enlaceVideo && !(window.RCB_VIDEO_CORTO && window.RCB_VIDEO_CORTO(enlaceVideo))) {
+        alert("El enlace del video corto no sirve:\n\n" + enlaceVideo + "\n\n" +
+          (window.RCB_VIDEO_CORTO_MOTIVO ? window.RCB_VIDEO_CORTO_MOTIVO(enlaceVideo) : "") +
+          "\n\nCorrígelo o bórralo antes de guardar.");
+        return;
+      }
 
       const product = {
         id: editingId || document.getElementById("field-id").value.trim().toUpperCase().replace(/\s+/g, "-"),
@@ -463,6 +524,7 @@
         images: imagenesProducto.map(im => ({ url: im.url, fit: im.fit })),
         image: imagenesProducto.length ? imagenesProducto[0].url : null,
         imageFit: imagenesProducto.length ? imagenesProducto[0].fit : defaultFit(),
+        video: enlaceVideo,
         stock: document.getElementById("field-stock").checked,
         description: document.getElementById("field-description").value.trim(),
         specs: document.getElementById("field-specs").value.split("\n").map(s => s.trim()).filter(Boolean)

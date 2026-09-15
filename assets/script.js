@@ -56,9 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     return c ? c.name : '';
   }
   function homeProductCardHtml(p, categories) {
+    /* Foto completa por defecto, con el ajuste de mover/acercar del panel. */
     const fit = p.imageFit || { scale: 1, x: 0, y: 0 };
     const thumb = p.image
-      ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
+      ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="prod-img-completa" style="transform:translate(${fit.x}%, ${fit.y}%) scale(${fit.scale});">`
       : (p.icon || '📦');
     const tag = p.label === 'oferta' ? '<span class="prod-tag tag-oferta">OFERTA</span>'
       : p.label === 'nuevo' ? '<span class="prod-tag tag-nuevo">NUEVO</span>' : '';

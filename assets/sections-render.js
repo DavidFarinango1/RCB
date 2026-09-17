@@ -39,6 +39,8 @@
      mantiene en la página (oculto a la vista) porque es el encabezado
      principal que lee Google; el texto y los destacados sí se ocultan. */
   if (data.mostrarTextos === false) box.classList.add("hero-solo-botones");
+  /* Y sin los dos botones: el banner queda solo con la imagen. */
+  if (data.mostrarBotones === false) box.classList.add("hero-sin-botones");
 
   /* Los tres destacados existen solo en el banner de Inicio. */
   if (Array.isArray(data.features)) {

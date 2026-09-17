@@ -1627,6 +1627,7 @@
        No borra nada: el título, el texto y los destacados siguen guardados y
        vuelven a verse en cuanto se marque la casilla otra vez. */
     const mostrarTextos = data.mostrarTextos !== false;
+    const mostrarBotones = data.mostrarBotones !== false;
     const interruptor = esInicio ? `
       <div class="form-row">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
@@ -1634,8 +1635,16 @@
           Mostrar el título, el texto y los destacados sobre la imagen
         </label>
         <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">
-          Si la desmarcas, en Inicio quedan únicamente los botones “Ver productos” y
-          “Hablar por WhatsApp”. Lo escrito no se borra: se guarda y reaparece al volver a marcarla.
+          Si la desmarcas, sobre la imagen no se muestran el título, el texto ni los tres
+          destacados. Lo escrito no se borra: se guarda y reaparece al volver a marcarla.
+        </p>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:10px;">
+          <input type="checkbox" data-sec-botones${mostrarBotones ? " checked" : ""} style="width:auto;margin:0;">
+          Mostrar los botones “Ver productos” y “Hablar por WhatsApp”
+        </label>
+        <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">
+          Con las dos casillas desmarcadas, el banner de Inicio queda solo con la imagen.
+          Los botones siguen existiendo y vuelven en cuanto marques esta casilla.
         </p>
       </div>` : "";
 
@@ -1744,6 +1753,8 @@
     if (id === "inicio") {
       const textos = pick("[data-sec-textos]");
       data.mostrarTextos = textos ? textos.checked : true;
+      const botones = pick("[data-sec-botones]");
+      data.mostrarBotones = botones ? botones.checked : true;
       data.features = [0, 1, 2].map(i => ({
         title: (box.querySelector(`[data-sec-feature-title="${i}"]`) || {}).value || "",
         text: (box.querySelector(`[data-sec-feature-text="${i}"]`) || {}).value || ""
@@ -1765,6 +1776,7 @@
       /* Con la casilla desmarcada la vista previa enseña lo mismo que verá el
          cliente: solo los dos botones sobre la imagen. */
       banner.classList.toggle("sin-textos", data.mostrarTextos === false);
+      banner.classList.toggle("sin-botones", data.mostrarBotones === false);
       banner.style.setProperty("--section-img", window.RCB_SECTION_IMAGE_CSS
         ? window.RCB_SECTION_IMAGE_CSS(data.image)
         : "none");

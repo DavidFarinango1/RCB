@@ -1669,6 +1669,7 @@ footer.site-footer {
 .section-preview.sin-textos [data-prev-subtitle],
 .section-preview.sin-textos .section-preview-features { display: none; }
 .section-preview.sin-textos .section-preview-botones { margin-top: 0; }
+.section-preview.sin-botones .section-preview-botones { display: none; }
 
 .section-preview-state {
   margin-top: 8px;
@@ -2317,3 +2318,7 @@ body.con-demo-aviso .social-float-stack { bottom: 78px; }
   white-space: nowrap;
 }
 .hero.hero-solo-botones .hero-cta { margin-top: 0; }
+
+/* Banner sin los dos botones: queda únicamente la imagen. Se ocultan sin
+   borrarlos, igual que los textos; vuelven desde el panel. */
+.hero.hero-sin-botones .hero-cta { display: none; }

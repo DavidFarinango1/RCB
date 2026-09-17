@@ -46,6 +46,10 @@ window.RCB_DEFAULT_SECTIONS = {
        título, el texto y los tres destacados. Nada se borra: se vuelve a
        mostrar desde el panel (Secciones → Inicio) cuando se quiera. */
     mostrarTextos: false,
+    /* En false se ocultan también los botones "Ver productos" y "Hablar por
+       WhatsApp": el banner queda solo con la imagen. Igual que arriba, no se
+       borra nada, se vuelve a mostrar desde el panel. */
+    mostrarBotones: false,
     features: [
       { title: "CALIDAD GARANTIZADA", text: "Productos probados y certificados" },
       { title: "MÁXIMA SEGURIDAD", text: "Protege tus equipos y tu inversión" },

@@ -91,7 +91,7 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
 <meta name="twitter:description" content="<?= rcb_e($descripcion) ?>">
 
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/styles.css?v=80">
+<link rel="stylesheet" href="assets/styles.css?v=81">
 </head>
 <body>
 
@@ -289,11 +289,11 @@ $nombreCat = $post ? rcb_nombre_categoria($categorias, $post['category'] ?? '') 
   <a href="https://wa.me/593993421505" class="whatsapp-float" aria-label="Hablar por WhatsApp"><img src="assets/whatsapp.svg" alt="WhatsApp"></a>
 </div>
 
-<script src="assets/api-client.js?v=80"></script>
-<script src="assets/public-data.js?v=80"></script>
-<script src="assets/categories.js?v=80"></script>
-<script src="assets/social-icons.js?v=80"></script>
-<script src="assets/script.js?v=80"></script>
-<script src="assets/copiar-enlace.js?v=80"></script>
+<script src="assets/api-client.js?v=81"></script>
+<script src="assets/public-data.js?v=81"></script>
+<script src="assets/categories.js?v=81"></script>
+<script src="assets/social-icons.js?v=81"></script>
+<script src="assets/script.js?v=81"></script>
+<script src="assets/copiar-enlace.js?v=81"></script>
 </body>
 </html>

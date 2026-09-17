@@ -42,6 +42,10 @@ window.RCB_DEFAULT_SECTIONS = {
     imagePos: "center right",
     overlay: 0,
     tint: 100,
+    /* En false, el banner de Inicio deja solo los dos botones: se ocultan el
+       título, el texto y los tres destacados. Nada se borra: se vuelve a
+       mostrar desde el panel (Secciones → Inicio) cuando se quiera. */
+    mostrarTextos: false,
     features: [
       { title: "CALIDAD GARANTIZADA", text: "Productos probados y certificados" },
       { title: "MÁXIMA SEGURIDAD", text: "Protege tus equipos y tu inversión" },

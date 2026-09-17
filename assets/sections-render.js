@@ -35,6 +35,11 @@
   const tint = data.tint == null ? 100 : Number(data.tint);
   box.style.setProperty("--section-tint", (isNaN(tint) ? 100 : tint) / 100);
 
+  /* Banner de Inicio sin textos: quedan solo los dos botones. El título se
+     mantiene en la página (oculto a la vista) porque es el encabezado
+     principal que lee Google; el texto y los destacados sí se ocultan. */
+  if (data.mostrarTextos === false) box.classList.add("hero-solo-botones");
+
   /* Los tres destacados existen solo en el banner de Inicio. */
   if (Array.isArray(data.features)) {
     const items = box.querySelectorAll(".hero-feature");

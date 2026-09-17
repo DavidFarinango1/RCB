@@ -1623,6 +1623,22 @@
     const pos = data.imagePos || "center center";
     const opt = (v, txt) => `<option value="${v}"${pos === v ? " selected" : ""}>${txt}</option>`;
 
+    /* Interruptor para dejar el banner de Inicio solo con los dos botones.
+       No borra nada: el título, el texto y los destacados siguen guardados y
+       vuelven a verse en cuanto se marque la casilla otra vez. */
+    const mostrarTextos = data.mostrarTextos !== false;
+    const interruptor = esInicio ? `
+      <div class="form-row">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+          <input type="checkbox" data-sec-textos${mostrarTextos ? " checked" : ""} style="width:auto;margin:0;">
+          Mostrar el título, el texto y los destacados sobre la imagen
+        </label>
+        <p style="font-size:0.78rem;color:#64748B;margin-top:4px;">
+          Si la desmarcas, en Inicio quedan únicamente los botones “Ver productos” y
+          “Hablar por WhatsApp”. Lo escrito no se borra: se guarda y reaparece al volver a marcarla.
+        </p>
+      </div>` : "";
+
     const features = esInicio ? `
       <hr style="border:none;border-top:1px solid var(--borde);margin:20px 0;">
       <h2 style="font-size:1rem;margin-bottom:4px;">Destacados del banner</h2>
@@ -1651,10 +1667,15 @@
               <h3 data-prev-title></h3>
               <p data-prev-subtitle></p>
               ${esInicio ? '<div class="section-preview-features" data-prev-features></div>' : ""}
+              ${esInicio ? `<div class="section-preview-botones">
+                <span class="prev-btn prev-btn-azul">Ver productos</span>
+                <span class="prev-btn">Hablar por WhatsApp</span>
+              </div>` : ""}
             </div>
           </div>
           <div class="section-preview-state" data-sec-state></div>
         </div>
+        ${interruptor}
         <div class="form-row">
           <label>Título</label>
           <textarea data-sec-title rows="2" placeholder="Título del banner">${val(data.title).replace(/&quot;/g, '"')}</textarea>
@@ -1721,6 +1742,8 @@
     const accent = pick("[data-sec-accent]");
     if (accent) data.accent = accent.value.trim();
     if (id === "inicio") {
+      const textos = pick("[data-sec-textos]");
+      data.mostrarTextos = textos ? textos.checked : true;
       data.features = [0, 1, 2].map(i => ({
         title: (box.querySelector(`[data-sec-feature-title="${i}"]`) || {}).value || "",
         text: (box.querySelector(`[data-sec-feature-text="${i}"]`) || {}).value || ""
@@ -1739,6 +1762,9 @@
 
     const banner = box.querySelector("[data-sec-banner]");
     if (banner) {
+      /* Con la casilla desmarcada la vista previa enseña lo mismo que verá el
+         cliente: solo los dos botones sobre la imagen. */
+      banner.classList.toggle("sin-textos", data.mostrarTextos === false);
       banner.style.setProperty("--section-img", window.RCB_SECTION_IMAGE_CSS
         ? window.RCB_SECTION_IMAGE_CSS(data.image)
         : "none");

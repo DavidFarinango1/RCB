@@ -1644,6 +1644,32 @@ footer.site-footer {
   color: var(--blanco);
   margin-bottom: 2px;
 }
+/* Botones de la vista previa de Inicio: son de adorno, solo para que se vea
+   cómo queda el banner cuando se ocultan los textos. */
+.section-preview-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.section-preview-botones .prev-btn {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--blanco);
+  border: 1px solid rgba(255,255,255,0.7);
+}
+.section-preview-botones .prev-btn-azul {
+  background: var(--azul-brillante);
+  border-color: transparent;
+}
+/* Casilla desmarcada: en la vista previa quedan solo los botones. */
+.section-preview.sin-textos [data-prev-title],
+.section-preview.sin-textos [data-prev-subtitle],
+.section-preview.sin-textos .section-preview-features { display: none; }
+.section-preview.sin-textos .section-preview-botones { margin-top: 0; }
+
 .section-preview-state {
   margin-top: 8px;
   font-size: 0.8rem;
@@ -2270,3 +2296,24 @@ body.con-demo-aviso .social-float-stack { bottom: 78px; }
   border: 0;
   border-radius: 8px;
 }
+
+/* ---------- Banner de Inicio con solo los botones ----------
+   Se activa desde el panel (Secciones → Inicio). No borra nada: basta con
+   volver a marcar la casilla para que el texto reaparezca. */
+.hero.hero-solo-botones p.lead,
+.hero.hero-solo-botones .hero-features { display: none; }
+
+/* El título sigue en la página para Google y los lectores de pantalla, pero
+   no se ve. Es el encabezado principal del inicio: quitarlo del todo le
+   restaría posicionamiento a la página. */
+.hero.hero-solo-botones h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.hero.hero-solo-botones .hero-cta { margin-top: 0; }
